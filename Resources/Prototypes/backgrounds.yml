@@ -1,6 +1,5 @@
 - type: background
   id: default
-  sprite: Backgrounds/default.rsi
+  sprite: Backgrounds/pole.rsi
   layers:
-    - state: default
-    
+    - sprite: Backgrounds/default.rsi

@@ -14,5 +14,8 @@ public sealed class BackgoundPrototype : IPrototype
     [DataField("sprite")]
     public string? RsiPath;
     
+    [DataField("state")]
+    public string? State;
+    
     [DataField("layers", readOnly: true)] public List<PrototypeLayerData> Layers = new();
 }
