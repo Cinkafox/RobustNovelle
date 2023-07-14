@@ -1,4 +1,5 @@
 using System.Globalization;
+using Cinka.Game.Background.Manager;
 using Cinka.Game.Gameplay;
 using Robust.Client;
 using Robust.Client.State;
@@ -14,6 +15,7 @@ namespace Cinka.Game;
 public sealed class EntryPoint : GameClient
 {
     [Dependency] private readonly IUserInterfaceManager _ui = default!;
+    [Dependency] private readonly IBackgroundManager _background = default!;
     
     private const string Culture = "ru-RU";
 
@@ -45,6 +47,7 @@ public sealed class EntryPoint : GameClient
 
         _ui.MainViewport.Visible = false;
         IoCManager.Resolve<IStateManager>().RequestStateChange<GameplayStateBase>();
+        _background.LoadBackground("default");
         
         IoCManager.Resolve<IBaseClient>().StartSinglePlayer();
         

@@ -1,0 +1,6 @@
+- type: background
+  id: default
+  sprite: Backgrounds/default.rsi
+  layers:
+    - state: default
+    
