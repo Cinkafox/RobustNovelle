@@ -1,0 +1,6 @@
+- type: entity
+  id: Camera
+  components:
+    - type: Input
+      context: "human"
+    - type: Eye

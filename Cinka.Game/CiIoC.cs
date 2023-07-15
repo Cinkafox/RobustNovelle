@@ -4,7 +4,7 @@ using Robust.Shared.IoC;
 
 namespace Cinka.Game;
 
-internal static class TemplateIoC
+internal static class CiIoC
 {
     public static void Register()
     {

@@ -1,21 +1,31 @@
 using System.Globalization;
 using Cinka.Game.Background.Manager;
 using Cinka.Game.Gameplay;
+using Cinka.Game.Input;
 using Robust.Client;
+using Robust.Client.Graphics;
+using Robust.Client.Input;
+using Robust.Client.Player;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
+using Robust.Shared.Log;
+using Robust.Shared.Map;
 using Robust.Shared.Timing;
 
 namespace Cinka.Game;
 
 public sealed class EntryPoint : GameClient
 {
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
+    [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
     [Dependency] private readonly IBackgroundManager _background = default!;
+    [Dependency] private readonly IStateManager _stateManager = default!;
+    [Dependency] private readonly IEntityManager _entityManager = default!;
+    [Dependency] private readonly IBaseClient _client = default!;
+    [Dependency] private readonly IInputManager _inputManager = default!;
     
     private const string Culture = "ru-RU";
 
@@ -24,33 +34,38 @@ public sealed class EntryPoint : GameClient
         base.PreInit();
         
         IoCManager.Resolve<ILocalizationManager>().LoadCulture(new CultureInfo(Culture));
+        
     }
 
     public override void Init()
     {
         var factory = IoCManager.Resolve<IComponentFactory>();
-        
         factory.DoAutoRegistrations();
 
-        TemplateIoC.Register();
-
+        CiIoC.Register();
+        
         IoCManager.BuildGraph();
         IoCManager.InjectDependencies(this);
-            
+        
         factory.GenerateNetIds();
-
-   }
+    }
 
     public override void PostInit()
     {
         base.PostInit();
+        
+        ContentContexts.SetupContexts(_inputManager.Contexts);
 
-        _ui.MainViewport.Visible = false;
-        IoCManager.Resolve<IStateManager>().RequestStateChange<GameplayStateBase>();
         _background.LoadBackground("default");
+        _stateManager.RequestStateChange<GameplayStateBase>();
+
+        _uiManager.MainViewport.Visible = false;
+        _client.StartSinglePlayer();
         
-        IoCManager.Resolve<IBaseClient>().StartSinglePlayer();
-        
+        IoCManager.Resolve<IMapManager>().CreateMap(new MapId(1));
+        var entity = _entityManager.SpawnEntity("Camera", new MapCoordinates(0, 0,new MapId(1) ));
+        IoCManager.Resolve<IPlayerManager>().LocalPlayer.AttachEntity(entity,_entityManager,_client);
+        IoCManager.Resolve<ILightManager>().Enabled = false;
     }
 
     protected override void Dispose(bool disposing)

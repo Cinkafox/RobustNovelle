@@ -1,3 +1,4 @@
+using Cinka.Game.UserInterface.Controls;
 using Cinka.Game.UserInterface.Systems;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
@@ -11,6 +12,9 @@ namespace Cinka.Game.Gameplay;
 public class GameplayStateBase : State
 {
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
+    
+    public MainViewport Viewport => _uiManager.ActiveScreen!.GetWidget<MainViewport>()!;
+    
     private readonly GameplayStateLoadController _loadController;
 
     public GameplayStateBase()

@@ -9,7 +9,4 @@
     <LayoutContainer Name="ViewportContainer" HorizontalExpand="True" VerticalExpand="True">
         <controls:MainViewport Name="MainViewport"/>
     </LayoutContainer>
-    <BoxContainer Name="TopLeft" Access="Protected" Orientation="Vertical">
-        <Label Text="MEOW"/>    
-    </BoxContainer>
 </ui:DefaultGameScreen>
