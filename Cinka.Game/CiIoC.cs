@@ -1,4 +1,8 @@
 using Cinka.Game.Background.Manager;
+using Cinka.Game.Camera.Manager;
+using Cinka.Game.Character.Managers;
+using Cinka.Game.Location.Managers;
+using Cinka.Game.StyleSheet;
 using Cinka.Game.Viewport;
 using Robust.Shared.IoC;
 
@@ -10,5 +14,9 @@ internal static class CiIoC
     {
         IoCManager.Register<ViewportManager, ViewportManager>();
         IoCManager.Register<IBackgroundManager,BackgroundManager>();
+        IoCManager.Register<IStylesheetManager, StylesheetManager>();
+        IoCManager.Register<ICharacterManager,CharacterManager>();
+        IoCManager.Register<ILocationManager,LocationManager>();
+        IoCManager.Register<ICameraManager,CameraManager>();
     }
 }

@@ -5,6 +5,7 @@
     <TargetFramework>$(TargetFramework)</TargetFramework>
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\bin\Cinka.Game\</OutputPath> <!-- This is important for gamepack mounting purposes. -->
     <OutputType Condition="'$(FullRelease)' != 'True'">Exe</OutputType>

@@ -6,7 +6,7 @@ using Robust.Shared.Serialization.Manager.Attributes;
 namespace Cinka.Game.Background.Data;
 
 [Prototype("background")]
-public sealed class BackgoundPrototype : IPrototype
+public sealed class BackgroundPrototype : IPrototype
 {
     [IdDataField]
     public string ID { get; }

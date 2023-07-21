@@ -1,0 +1,20 @@
+<widgets:DialogGui
+    xmlns="https://spacestation14.io"
+    xmlns:widgets="clr-namespace:Cinka.Game.UserInterface.Systems.Dialog.Widgets"
+    Name="Dialog"
+    Orientation="Vertical"
+    HorizontalAlignment="Center"
+    VerticalExpand="False"
+    VerticalAlignment="Bottom">
+    
+    <BoxContainer Orientation="Vertical">
+        <BoxContainer Orientation="Vertical" Name="Text">
+            <Label Text="Meow?"/>
+        </BoxContainer>
+        <BoxContainer Orientation="Horizontal">
+            <Button Text="Continue" HorizontalAlignment="Right"/>
+        </BoxContainer>
+    </BoxContainer>
+    
+
+</widgets:DialogGui>

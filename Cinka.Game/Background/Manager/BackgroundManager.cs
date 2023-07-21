@@ -17,12 +17,7 @@ public sealed class BackgroundManager : IBackgroundManager
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     private Texture[] _currentBackground;
-    private BackgoundPrototype _currentBackgroundPrototype;
-
-    public BackgroundManager()
-    {
-        
-    }
+    private BackgroundPrototype _currentBackgroundPrototype;
     
     public Texture[] GetCurrentBackground()
     {
@@ -31,7 +26,7 @@ public sealed class BackgroundManager : IBackgroundManager
 
     public void LoadBackground(string name)
     {
-        _currentBackgroundPrototype = _prototypeManager.Index<BackgoundPrototype>(name);
+        _currentBackgroundPrototype = _prototypeManager.Index<BackgroundPrototype>(name);
         _currentBackground = new Texture[_currentBackgroundPrototype.Layers.Count + 1];
 
         var backState = _currentBackgroundPrototype.State ?? "default";

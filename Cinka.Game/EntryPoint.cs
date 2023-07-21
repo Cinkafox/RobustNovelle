@@ -1,7 +1,11 @@
 using System.Globalization;
 using Cinka.Game.Background.Manager;
+using Cinka.Game.Camera.Manager;
+using Cinka.Game.Character.Managers;
 using Cinka.Game.Gameplay;
 using Cinka.Game.Input;
+using Cinka.Game.Location.Managers;
+using Cinka.Game.StyleSheet;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -21,9 +25,11 @@ namespace Cinka.Game;
 public sealed class EntryPoint : GameClient
 {
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
-    [Dependency] private readonly IBackgroundManager _background = default!;
+    [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
-    [Dependency] private readonly IEntityManager _entityManager = default!;
+    [Dependency] private readonly ICharacterManager _characterManager = default!;
+    [Dependency] private readonly IComponentFactory _componentFactory = default!;
+    [Dependency] private readonly ICameraManager _cameraManager = default!;
     [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
     
@@ -31,41 +37,35 @@ public sealed class EntryPoint : GameClient
 
     public override void PreInit()
     {
-        base.PreInit();
-        
         IoCManager.Resolve<ILocalizationManager>().LoadCulture(new CultureInfo(Culture));
-        
+        CiIoC.Register();
+        IoCManager.BuildGraph();
+        IoCManager.InjectDependencies(this);
     }
 
     public override void Init()
     {
-        var factory = IoCManager.Resolve<IComponentFactory>();
-        factory.DoAutoRegistrations();
 
-        CiIoC.Register();
-        
-        IoCManager.BuildGraph();
-        IoCManager.InjectDependencies(this);
-        
-        factory.GenerateNetIds();
+        _componentFactory.DoAutoRegistrations();
+        _componentFactory.GenerateNetIds();
     }
 
     public override void PostInit()
     {
-        base.PostInit();
-        
         ContentContexts.SetupContexts(_inputManager.Contexts);
-
-        _background.LoadBackground("default");
+        
+        //Нахуя нам свет в новелле да?
+        IoCManager.Resolve<ILightManager>().Enabled = false;
+        
         _stateManager.RequestStateChange<GameplayStateBase>();
-
         _uiManager.MainViewport.Visible = false;
         _client.StartSinglePlayer();
         
-        IoCManager.Resolve<IMapManager>().CreateMap(new MapId(1));
-        var entity = _entityManager.SpawnEntity("Camera", new MapCoordinates(0, 0,new MapId(1) ));
-        IoCManager.Resolve<IPlayerManager>().LocalPlayer.AttachEntity(entity,_entityManager,_client);
-        IoCManager.Resolve<ILightManager>().Enabled = false;
+        _characterManager.Initialize();
+        _locationManager.Initialize();
+        _cameraManager.Initialize();
+        
+        _characterManager.AddCharacter("cat");
     }
 
     protected override void Dispose(bool disposing)
