@@ -1,0 +1,131 @@
+- type: scene
+  id: default
+  location: gym_outside
+  characters:
+    - raveel
+  dialogs:
+    - actions:
+        - !type:AudioCleanBackgroundAction
+          path: "/Audio/back_city.ogg"
+        - !type:DefaultDialogAction
+      skipCommand: true
+    - name: Фембойчик
+      text: Ох.. вот и спортзал
+    - name: Фембойчик
+      text: Давно я не качался..
+    - name: Фембойчик
+      text: Хотя.. стоил ли зайти туда?
+      skipCommand: true
+      actions:
+      - !type:LoadButtons
+        buttons:
+          - name: Да
+            dialogAction:
+              !type:LoadSceneAction
+              prototype: gymstart
+          - name: Нет
+    - name: Фембойчик
+      text: Чтож...
+      skipCommand: true
+      delay: 150
+    - name: Фембойчик
+      text: Видно не судьба
+      delay: 50
+      newDialog: false
+    - text: Фембойчик медленно уходит в закат
+      
+- type: scene
+  id: gymstart
+  location: gym_outside
+  characters:
+    - raveel
+  dialogs:
+    - name: Фембойчик
+      text: Нус, тогда захожу!
+      actions:
+      - !type:LoadSceneAction
+        prototype: gymstartinside
+
+- type: scene
+  id: gymstartinside
+  location: gym
+  characters:
+    - raveel
+  dialogs:
+    - actions:
+        - !type:AudioCleanBackgroundAction
+          path: "/Audio/back_gym.ogg"
+        - !type:AudioAction
+          path: "/Audio/gym_enter.ogg"
+        - !type:DefaultDialogAction
+      skipCommand: true
+    - name: Фембойчик
+      text: ...
+    - name: Фембойчик
+      text: ну и народу.. БРР!
+    - name: Игорь
+      text: Приветствую вас, посетитель!
+    - name: Фембойчик
+      text: к.. КТО ЭТО?
+      actions:
+        - !type:LoadSceneAction
+          prototype: gymigorstart
+      
+      
+- type: scene
+  id: gymigorstart
+  location: gym
+  characters:
+    - igor
+  dialogs:
+    - name: Игорь
+      text: Привет, мой сладенький дру...
+    - name: Игорь
+      text: Кхэм! Я имел в виду приветствую!
+    - name: Фембойчик
+      text: З..здравствуйте.. а какое упражнение посоветуете?
+    - name: Игорь
+      text: Не боись! Для тебя у нас есть отдельная комната! Пройдём со мной!
+      actions:
+        - !type:LoadSceneAction
+          prototype: basement
+
+- type: scene
+  id: basement
+  location: basement
+  dialogs:
+    - actions:
+        - !type:AudioCleanBackgroundAction
+          path: "/Audio/back_basement.ogg"
+        - !type:AudioAction
+          path: "/Audio/gym_enter.ogg"
+        - !type:DefaultDialogAction
+      skipCommand: true
+    - name: Игорь
+      text: Вот мы на месте, распологайся поудобнее
+    - name: Фембойчик
+      text: а.. зачем тут.. намордник
+    - name: Игорь
+      text: Скоро узнаете, мой сладенький
+      actions:
+        - !type:AudioAction
+          path: "/Audio/another_victim.wav"
+        - !type:DefaultDialogAction
+    - name: Фембойчик
+      text: стоп.. зачем вы его взяли? И.. почему вы идёте в мою сторону?
+      actions:
+        - !type:AudioAction
+          path: "/Audio/aniki_grunt.wav"
+        - !type:DefaultDialogAction
+    - name: Фембойчик
+      text: СТОП! ПРОШУ НЕ НАДО! МФМФМФМФМ!
+      actions:
+        - !type:AudioAction
+          path: "/Audio/fpra.wav"
+        - !type:DefaultDialogAction
+    - name: Фембойчик
+      text: МФФМФМФММФ!!
+    - text: Вот и сказочке конец
+    - text: А кто слушал
+    - text: ...
+    - text: ты ебанат или да?

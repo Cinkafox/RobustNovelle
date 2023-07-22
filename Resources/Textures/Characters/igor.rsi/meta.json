@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Мама сфоткалась",
+  "size": {
+    "x": 204,
+    "y": 246
+  },
+  "states": [
+    {
+      "name": "default"
+    }
+  ]
+}

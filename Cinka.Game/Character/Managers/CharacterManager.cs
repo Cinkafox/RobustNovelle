@@ -52,6 +52,11 @@ public sealed class CharacterManager : ICharacterManager
         }
     }
 
+    public int Count()
+    {
+        return _characters.Count;
+    }
+
     public void RemoveCharacter(string prototype)
     {
         if(!_characters.TryGetValue(prototype,out var data))

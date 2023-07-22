@@ -5,6 +5,8 @@ using Cinka.Game.Dialog.DialogActions;
 using Cinka.Game.Location.Managers;
 using Cinka.Game.Scene.Data;
 using Cinka.Game.UserInterface.Systems.Dialog;
+using Robust.Client;
+using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
@@ -18,6 +20,8 @@ public sealed class SceneManager : ISceneManager
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly ICharacterManager _characterManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
+    [Dependency] private readonly IBaseClient _client = default!;
+    [Dependency] private readonly IClyde _clyde = default!;
 
     public SceneData? CurrentScene;
     
@@ -56,8 +60,13 @@ public sealed class SceneManager : ISceneManager
 
     public void ContinueDialog()
     {
-        if(CurrentScene == null || CurrentScene.Dialogs.Count == 0 || _dialogUiController.IsMessage) return;
-
+        if(CurrentScene == null  || _dialogUiController.IsMessage) return;
+        if (CurrentScene.Dialogs.Count == 0)
+        {
+            _clyde.MainWindow.Dispose();
+            return;
+        }
+        
         var currentDialog = CurrentScene.Dialogs[0];
 
         if(currentDialog.NewDialog) _dialogUiController.ClearAllDialog();

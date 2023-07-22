@@ -1,3 +1,17 @@
 - type: background
   id: default
   sprite: Backgrounds/pole.rsi
+  
+- type: background
+  id: gym
+  sprite: Backgrounds/gym.rsi
+  state: gym
+
+- type: background
+  id: gym_outside
+  sprite: Backgrounds/gym.rsi
+  state: gym_outside
+
+- type: background
+  id: basement
+  sprite: Backgrounds/basement.rsi

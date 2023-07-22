@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Мама нарисовала",
+  "size": {
+    "x": 640,
+    "y": 1280
+  },
+  "states": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "ah"
+    }
+  ]
+}

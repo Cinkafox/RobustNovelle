@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Input;
@@ -15,7 +16,8 @@ public sealed partial class DialogGui : UIWidget
     public DialogUIController _dialogUiController;
     public Label? currentLabel;
     public bool IsEmpty => currentLabel == null;
-    private IDialogAction? _action;
+    private List<IDialogAction>? _actions;
+    
     public DialogGui()
     {
         RobustXamlLoader.Load(this);
@@ -31,7 +33,7 @@ public sealed partial class DialogGui : UIWidget
     private void OnMessageEnded(Game.Dialog.Data.Dialog dialog)
     {
         Continue.Visible = true;
-        _action = dialog.DefaultAction;
+        _actions = dialog.Actions;
         if (dialog.SkipCommand)
             SkipMessage();
         
@@ -41,8 +43,12 @@ public sealed partial class DialogGui : UIWidget
     {
         if(ButtonContainer.ChildCount > 0)
             return;
-        _action?.Act();
-        _action = null;
+        foreach (var action in _actions)
+        {
+            action.Act();
+        }
+
+        _actions = null;
     }
 
     public void AppendText(string text)

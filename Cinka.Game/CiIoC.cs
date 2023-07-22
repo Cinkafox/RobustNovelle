@@ -1,3 +1,4 @@
+using Cinka.Game.Audio.Managers;
 using Cinka.Game.Background.Manager;
 using Cinka.Game.Camera.Manager;
 using Cinka.Game.Character.Managers;
@@ -20,5 +21,6 @@ internal static class CiIoC
         IoCManager.Register<ILocationManager,LocationManager>();
         IoCManager.Register<ICameraManager,CameraManager>();
         IoCManager.Register<ISceneManager,SceneManager>();
+        IoCManager.Register<IAudioManager,AudioManager>();
     }
 }

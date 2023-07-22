@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Сфоткали кто то хз",
+  "size": {
+    "x": 640,
+    "y": 480
+  },
+  "states": [
+    {
+      "name": "gym"
+    },
+    {
+      "name": "gym_outside"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 using System.Globalization;
+using Cinka.Game.Audio.Managers;
 using Cinka.Game.Background.Manager;
 using Cinka.Game.Camera.Manager;
 using Cinka.Game.Character.Managers;
@@ -34,6 +35,7 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IStylesheetManager _stylesheetManager = default!;
     [Dependency] private readonly ISceneManager _sceneManager = default!;
+    [Dependency] private readonly IAudioManager _audioManager = default!;
     
     private const string Culture = "ru-RU";
 
@@ -63,6 +65,7 @@ public sealed class EntryPoint : GameClient
         _uiManager.MainViewport.Visible = false;
         _client.StartSinglePlayer();
         
+        _audioManager.Initialize();
         _characterManager.Initialize();
         _locationManager.Initialize();
         _cameraManager.Initialize();

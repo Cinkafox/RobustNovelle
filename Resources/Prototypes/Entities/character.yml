@@ -5,3 +5,17 @@
   components:
     - type: Character
       sprite: Characters/cat.rsi
+      
+- type: entity
+  id: raveel
+  name: Raveel
+  components:
+    - type: Character
+      sprite: Characters/raveel.rsi
+  
+- type: entity
+  id: igor
+  name: Igor
+  components:
+    - type: Character
+      sprite: Characters/igor.rsi

@@ -7,6 +7,7 @@ public interface ICharacterManager
     public void Initialize();
     public void AddCharacter(string prototype);
     public void ClearCharacters();
+    public int Count();
     public void RemoveCharacter(string prototype);
     public bool TryGetCharacter(string prototype, out CharacterData? data);
     public string GetCharacterState(string prototype);

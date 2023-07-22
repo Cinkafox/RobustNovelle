@@ -10,11 +10,10 @@ namespace Cinka.Game.Dialog.Data;
 [DataDefinition]
 public sealed class Dialog
 {
-    [DataField("name")] 
-    public string Name = "???";
+    [DataField("name")] public string? Name;
     
     [DataField("text")]
-    public string Text = "...";
+    public string Text = "";
     
     [DataField("delay")]
     public float Delay = 100;
@@ -22,8 +21,8 @@ public sealed class Dialog
     [ViewVariables(VVAccess.ReadOnly)]
     public float PassedTime;
 
-    [DataField("action")]
-    public IDialogAction DefaultAction = new DefaultDialogAction() ;
+    [DataField("actions")]
+    public List<IDialogAction> Actions = new(){new DefaultDialogAction()} ;
 
     [DataField("newDialog")] public bool NewDialog = true;
     [DataField("skipCommand")] public bool SkipCommand;
