@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Cinka.Game.Dialog.Data;
 using Cinka.Game.UserInterface.Systems.Dialog.Widgets;
 using Robust.Client.UserInterface.Controllers;
-using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 
 namespace Cinka.Game.UserInterface.Systems.Dialog;
@@ -11,7 +11,10 @@ public sealed class DialogUIController : UIController
 {
 
     private readonly HashSet<DialogGui> _dialogGuis = new();
-    private readonly List<Dialog> _messageQueue = new();
+    private readonly List<Game.Dialog.Data.Dialog> _messageQueue = new();
+
+    public bool IsMessage => _messageQueue.Count > 0;
+    public event Action<Game.Dialog.Data.Dialog>? MessageEnded; 
 
     public override void Initialize()
     {
@@ -42,20 +45,29 @@ public sealed class DialogUIController : UIController
         _dialogGuis.Remove(dialogGui);
     }
 
-    public void AppendText(Dialog dialog)
+    public void AppendText(Game.Dialog.Data.Dialog dialog)
     {
         _messageQueue.Add(dialog);
     }
 
+    public void SpeedUpText()
+    {
+        if(!IsMessage)
+            return;
+
+        _messageQueue[0].Delay = 10;
+    }
+
     public override void FrameUpdate(FrameEventArgs args)
     {
-        if(_messageQueue.Count == 0)
+        if(!IsMessage)
             return;
         
         var currentDialog = _messageQueue[0];
 
         if (string.IsNullOrEmpty(currentDialog.Text))
         {
+            OnMessageEnded(currentDialog);
             _messageQueue.RemoveAt(0);
             return;
         }
@@ -74,18 +86,27 @@ public sealed class DialogUIController : UIController
 
 
     }
-}
 
-[Serializable,NetSerializable]
-public sealed class Dialog
-{
-    public string Text;
-    public float Delay;
-    public float PassedTime = 0;
-
-    public Dialog(string text, float delay)
+    public void ClearAllDialog()
     {
-        Text = text;
-        Delay = delay;
+        foreach (var dialog in _dialogGuis)
+        {
+            dialog.ClearText();
+        }
+    }
+
+    public void AddButton(DialogButton button)
+    {
+        foreach (var dialog in _dialogGuis)
+        {
+            dialog.AddButton(button);
+        }
+    }
+
+    private void OnMessageEnded(Game.Dialog.Data.Dialog obj)
+    {
+        MessageEnded?.Invoke(obj);
     }
 }
+
+

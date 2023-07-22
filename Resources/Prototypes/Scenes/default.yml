@@ -1,0 +1,33 @@
+- type: scene
+  id: default
+  location: default
+  characters:
+    - cat
+  dialogs:
+    - name: Кот
+      text: Мне... помяукать?
+      action: 
+        !type:LoadButtons
+        buttons: 
+            - name: Да
+              dialogAction:
+                !type:LoadSceneAction
+                prototype: meowyes
+            - name: нет
+    - name: Вы
+      text: Нет.. пожалуй
+    - name: Кот
+      text: Ф..фух..
+      
+- type: scene
+  id: meowyes
+  location: default
+  characters:
+    - cat
+  dialogs:
+    - name: Вы
+      text: Да.. пожалуйста..
+    - name: Кот
+      text: Х.. хорошо
+    - name: Кот
+      text: "*мявкает*"

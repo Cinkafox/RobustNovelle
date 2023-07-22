@@ -43,12 +43,20 @@ public sealed class CharacterManager : ICharacterManager
         _characters.Add(prototype,data);
         SetCharacterState(prototype,component.State);
     }
-    
+
+    public void ClearCharacters()
+    {
+        foreach (var characters in _characters.Keys.ToList())
+        {
+            RemoveCharacter(characters);
+        }
+    }
+
     public void RemoveCharacter(string prototype)
     {
         if(!_characters.TryGetValue(prototype,out var data))
             return;
-
+        
         _characters.Remove(prototype);
         _entityManager.QueueDeleteEntity(data.Uid);
     }
