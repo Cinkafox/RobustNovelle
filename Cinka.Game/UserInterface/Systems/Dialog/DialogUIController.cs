@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Cinka.Game.Dialog.Data;
+using Cinka.Game.Gameplay;
+using Cinka.Game.Input;
 using Cinka.Game.UserInterface.Systems.Dialog.Widgets;
 using Robust.Client.UserInterface.Controllers;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.Timing;
 
 namespace Cinka.Game.UserInterface.Systems.Dialog;
 
-public sealed class DialogUIController : UIController
+public sealed class DialogUIController : UIController , IOnStateEntered<GameplayStateBase>, IOnStateExited<GameplayStateBase>
 {
 
     private readonly HashSet<DialogGui> _dialogGuis = new();
@@ -67,8 +70,8 @@ public sealed class DialogUIController : UIController
 
         if (string.IsNullOrEmpty(currentDialog.Text))
         {
-            OnMessageEnded(currentDialog);
             _messageQueue.RemoveAt(0);
+            OnMessageEnded(currentDialog);
             return;
         }
 
@@ -79,6 +82,9 @@ public sealed class DialogUIController : UIController
             currentDialog.PassedTime = 0;
             foreach (var dialogGui in _dialogGuis)
             {
+                if (!string.IsNullOrEmpty(currentDialog.Name) && dialogGui.IsEmpty)
+                    dialogGui.AppendLabel($"{currentDialog.Name}: ");
+                
                 dialogGui.AppendLetter(currentDialog.Text[0]);
                 currentDialog.Text = currentDialog.Text.Substring(1);
             }
@@ -106,6 +112,16 @@ public sealed class DialogUIController : UIController
     private void OnMessageEnded(Game.Dialog.Data.Dialog obj)
     {
         MessageEnded?.Invoke(obj);
+    }
+
+    public void OnStateEntered(GameplayStateBase state)
+    {
+        
+    }
+
+    public void OnStateExited(GameplayStateBase state)
+    {
+        CommandBinds.Unregister<DialogUIController>();
     }
 }
 

@@ -6,11 +6,11 @@ public sealed class ContentContexts
 {
     public static void SetupContexts(IInputContextContainer contexts)
     {
-        var human = contexts.GetContext("human");
-        human.AddFunction(EngineKeyFunctions.MoveUp);
-        human.AddFunction(EngineKeyFunctions.MoveDown);
-        human.AddFunction(EngineKeyFunctions.MoveLeft);
-        human.AddFunction(EngineKeyFunctions.MoveRight);
-        human.AddFunction(EngineKeyFunctions.Walk);
+        var viewer = contexts.GetContext("human");
+        viewer.AddFunction(EngineKeyFunctions.GuiTabNavigateNext);
+        viewer.AddFunction(EngineKeyFunctions.GuiTabNavigatePrev);
+        viewer.AddFunction(EngineKeyFunctions.EscapeMenu);
+        viewer.AddFunction(ContentKeyFunctions.SkipDialog);
+        
     }
 }

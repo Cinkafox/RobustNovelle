@@ -26,4 +26,5 @@ public sealed class Dialog
     public IDialogAction DefaultAction = new DefaultDialogAction() ;
 
     [DataField("newDialog")] public bool NewDialog = true;
+    [DataField("skipCommand")] public bool SkipCommand;
 }

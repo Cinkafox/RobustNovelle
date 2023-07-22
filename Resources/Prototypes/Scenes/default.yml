@@ -6,6 +6,7 @@
   dialogs:
     - name: Кот
       text: Мне... помяукать?
+      skipCommand: true
       action: 
         !type:LoadButtons
         buttons: 
@@ -31,3 +32,19 @@
       text: Х.. хорошо
     - name: Кот
       text: "*мявкает*"
+      delay: 50
+    - name: Кот
+      text: Это
+      skipCommand: true
+      delay: 50
+    - name: Кот
+      text: ...
+      delay: 100
+      skipCommand: true
+      newDialog: false
+    - name: Кот
+      text: "Было странно >:("
+      delay: 50
+      newDialog: false
+    - name: Вы
+      text: Да.. есть такое..

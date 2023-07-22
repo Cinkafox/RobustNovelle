@@ -44,7 +44,7 @@ namespace Cinka.Game.StyleSheet
                     "/Fonts/NotoSans/NotoSansSymbols-Regular.ttf",
                     "/Fonts/NotoSans/NotoSansSymbols2-Regular.ttf"
                 },
-                24
+                16
             );
             var notoSans12Italic = resCache.GetFont
             (
@@ -54,7 +54,7 @@ namespace Cinka.Game.StyleSheet
                     "/Fonts/NotoSans/NotoSansSymbols-Regular.ttf",
                     "/Fonts/NotoSans/NotoSansSymbols2-Regular.ttf"
                 },
-                24
+                16
             );
             var textureCloseButton = resCache.GetTexture("/Textures/Interface/Novelle/cross.svg.png");
 
