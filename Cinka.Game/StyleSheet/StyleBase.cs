@@ -15,13 +15,7 @@ namespace Cinka.Game.StyleSheet
         public const string StyleClassLabelHeading = "LabelHeading";
         public const string StyleClassLabelSubText = "LabelSubText";
         public const string StyleClassItalic = "Italic";
-
         public const string ClassAngleRect = "AngleRect";
-
-        public const string ButtonOpenRight = "OpenRight";
-        public const string ButtonOpenLeft = "OpenLeft";
-        public const string ButtonOpenBoth = "OpenBoth";
-        public const string ButtonSquare = "ButtonSquare";
 
         public const string ButtonCaution = "Caution";
 
@@ -50,7 +44,7 @@ namespace Cinka.Game.StyleSheet
                     "/Fonts/NotoSans/NotoSansSymbols-Regular.ttf",
                     "/Fonts/NotoSans/NotoSansSymbols2-Regular.ttf"
                 },
-                12
+                24
             );
             var notoSans12Italic = resCache.GetFont
             (
@@ -60,7 +54,7 @@ namespace Cinka.Game.StyleSheet
                     "/Fonts/NotoSans/NotoSansSymbols-Regular.ttf",
                     "/Fonts/NotoSans/NotoSansSymbols2-Regular.ttf"
                 },
-                12
+                24
             );
             var textureCloseButton = resCache.GetTexture("/Textures/Interface/Novelle/cross.svg.png");
 

@@ -16,7 +16,7 @@ public sealed partial class DefaultGameScreen : UIScreen
         
         SetAnchorPreset(MainViewport, LayoutPreset.Wide);
         SetAnchorPreset(ViewportContainer, LayoutPreset.Wide);
-        SetAnchorAndMarginPreset(Dialog, LayoutPreset.BottomWide, margin: 30);
+        SetAnchorAndMarginPreset(Dialog, LayoutPreset.BottomWide);
         
     }
 }

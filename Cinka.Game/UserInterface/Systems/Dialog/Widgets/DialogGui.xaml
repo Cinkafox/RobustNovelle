@@ -3,18 +3,17 @@
     xmlns:widgets="clr-namespace:Cinka.Game.UserInterface.Systems.Dialog.Widgets"
     Name="Dialog"
     Orientation="Vertical"
-    HorizontalAlignment="Center"
-    VerticalExpand="False"
+    HorizontalAlignment="Stretch"
+    VerticalExpand="True"
+    HorizontalExpand="True"
     VerticalAlignment="Bottom">
     
-    <BoxContainer Orientation="Vertical">
-        <BoxContainer Orientation="Vertical" Name="Text">
-            <Label Text="Meow?"/>
+    <PanelContainer StyleClasses="windowPanel" HorizontalExpand="True" VerticalExpand="True" HorizontalAlignment="Stretch" >
+        <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalAlignment="Stretch" Margin="0 12 12 16">
+            <BoxContainer Orientation="Vertical" HorizontalAlignment="Center" VerticalExpand="True" Name="TextContainer" Margin="0 12 12 84"/>
+            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Name="ButtonContainer"/>
         </BoxContainer>
-        <BoxContainer Orientation="Horizontal">
-            <Button Text="Continue" HorizontalAlignment="Right"/>
-        </BoxContainer>
-    </BoxContainer>
+    </PanelContainer>
     
 
 </widgets:DialogGui>

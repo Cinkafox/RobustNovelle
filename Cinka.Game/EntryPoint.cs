@@ -6,6 +6,7 @@ using Cinka.Game.Gameplay;
 using Cinka.Game.Input;
 using Cinka.Game.Location.Managers;
 using Cinka.Game.StyleSheet;
+using Cinka.Game.UserInterface.Systems.Dialog;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -16,8 +17,6 @@ using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
-using Robust.Shared.Log;
-using Robust.Shared.Map;
 using Robust.Shared.Timing;
 
 namespace Cinka.Game;
@@ -32,6 +31,8 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly ICameraManager _cameraManager = default!;
     [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
+    [Dependency] private readonly IStylesheetManager _stylesheetManager = default!;
+    [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     
     private const string Culture = "ru-RU";
 
@@ -64,8 +65,15 @@ public sealed class EntryPoint : GameClient
         _characterManager.Initialize();
         _locationManager.Initialize();
         _cameraManager.Initialize();
+        _stylesheetManager.Initialize();
         
         _characterManager.AddCharacter("cat");
+        
+        var dialogController = _userInterfaceManager.GetUIController<DialogUIController>();
+        dialogController.AppendText(new Dialog("Meow? Sure! Or..",100));
+        dialogController.AppendText(new Dialog("No! Fuck you!",300));
+        dialogController.AppendText(new Dialog("ФУРРИЁБ",50));
+        
     }
 
     protected override void Dispose(bool disposing)
