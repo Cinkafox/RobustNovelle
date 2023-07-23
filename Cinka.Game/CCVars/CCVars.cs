@@ -35,5 +35,11 @@ namespace Cinka.Game.CCVars
         public static readonly CVarDef<int> ViewportWidth =
             CVarDef.Create("viewport.width", 21, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+        /*
+         * Save?
+         */
+        public static readonly CVarDef<string> LastScenePrototype = 
+            CVarDef.Create("game.last_scene", "default");
+
     }
 }

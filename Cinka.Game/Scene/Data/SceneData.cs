@@ -8,6 +8,9 @@ namespace Cinka.Game.Scene.Data;
 [DataDefinition]
 public sealed class SceneData
 {
+    [DataField("id")]
+    public string ID = "";
+    
     [DataField("location", customTypeSerializer: typeof(PrototypeIdSerializer<LocationPrototype>))]
     public string LocationPrototype = "default";
 

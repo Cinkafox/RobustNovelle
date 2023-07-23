@@ -16,7 +16,7 @@ public sealed class Dialog
     public string Text = "";
     
     [DataField("delay")]
-    public float Delay = 100;
+    public float Delay = 70;
     
     [ViewVariables(VVAccess.ReadOnly)]
     public float PassedTime;

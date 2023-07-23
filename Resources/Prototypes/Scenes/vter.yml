@@ -63,10 +63,17 @@
       text: ...
     - name: Фембойчик
       text: ну и народу.. БРР!
+      actions:
+        - !type:ChangeCharacterState
+          prototype: raveel
+          state: ah
+        - !type:DefaultDialogAction
     - name: Игорь
       text: Приветствую вас, посетитель!
     - name: Фембойчик
       text: к.. КТО ЭТО?
+      delay: 50
+      skipCommand: true
       actions:
         - !type:LoadSceneAction
           prototype: gymigorstart
@@ -80,6 +87,7 @@
   dialogs:
     - name: Игорь
       text: Привет, мой сладенький дру...
+      skipCommand: true
     - name: Игорь
       text: Кхэм! Я имел в виду приветствую!
     - name: Фембойчик

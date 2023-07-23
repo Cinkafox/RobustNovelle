@@ -1,15 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cinka.Game.Character.Managers;
-using Cinka.Game.Dialog.DialogActions;
 using Cinka.Game.Location.Managers;
 using Cinka.Game.Scene.Data;
 using Cinka.Game.UserInterface.Systems.Dialog;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
+using Robust.Shared.Configuration;
 using Robust.Shared.IoC;
-using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
 
 namespace Cinka.Game.Scene.Manager;
@@ -21,8 +21,7 @@ public sealed class SceneManager : ISceneManager
     [Dependency] private readonly ICharacterManager _characterManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly IGameController _gameController = default!;
-    [Dependency] private readonly IBaseClient _client = default!;
-    [Dependency] private readonly IClyde _clyde = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     public SceneData? CurrentScene;
     
@@ -32,15 +31,18 @@ public sealed class SceneManager : ISceneManager
     {
         IoCManager.InjectDependencies(this);
         _dialogUiController = _userInterfaceManager.GetUIController<DialogUIController>();
-        LoadScene("default");
+        LoadScene(_cfg.GetCVar(CCVars.CCVars.LastScenePrototype));
     }
 
     public void LoadScene(string prototype)
     {
         CleanupScene();
-        
+
         if (!_prototypeManager.TryIndex<ScenePrototype>(prototype, out var proto))
+        {
+            _cfg.SetCVar("game.last_scene","default");
             throw new Exception($"Scene {prototype} not found!");
+        }
         
         _locationManager.LoadLocation(proto.LocationPrototype);
         foreach (var characterPrototype in proto.Characters)
@@ -76,18 +78,46 @@ public sealed class SceneManager : ISceneManager
         CurrentScene.Dialogs.RemoveAt(0);
     }
     
-    public SceneData? GetCurrentScenePrototype()
+    public SceneData? GetCurrentScene()
     {
         return CurrentScene;
+    }
+
+    public void SaveScenePosition()
+    {
+        if (CurrentScene != null)
+        {
+            _cfg.SetCVar(CCVars.CCVars.LastScenePrototype,CurrentScene.ID);
+        }
     }
 
     private SceneData CopyToData(ScenePrototype prototype)
     {
         return new SceneData()
         {
+            ID = prototype.ID,
             Characters = prototype.Characters,
-            Dialogs = prototype.Dialogs.ToList(),
+            Dialogs = CopyDialogs(prototype.Dialogs),
             LocationPrototype = prototype.LocationPrototype
         };
+    }
+
+    private List<Dialog.Data.Dialog> CopyDialogs(List<Dialog.Data.Dialog> dialogs)
+    {
+        var copiedDialog = new List<Dialog.Data.Dialog>();
+        foreach (var dialog in dialogs)
+        {
+            copiedDialog.Add(new Dialog.Data.Dialog()
+            {
+                Actions = dialog.Actions.ToList(),
+                Delay = dialog.Delay,
+                Name = dialog.Name + "",
+                NewDialog = dialog.NewDialog,
+                SkipCommand = dialog.SkipCommand,
+                Text = dialog.Text + ""
+            });
+        }
+
+        return copiedDialog;
     }
 }
