@@ -20,6 +20,7 @@ public sealed class SceneManager : ISceneManager
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly ICharacterManager _characterManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
+    [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IClyde _clyde = default!;
 
@@ -63,7 +64,7 @@ public sealed class SceneManager : ISceneManager
         if(CurrentScene == null  || _dialogUiController.IsMessage) return;
         if (CurrentScene.Dialogs.Count == 0)
         {
-            _clyde.MainWindow.Dispose();
+            _gameController.Shutdown("Конец");
             return;
         }
         

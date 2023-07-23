@@ -24,7 +24,7 @@ internal static class Program
             SplashLogo = new ResPath("/Textures/Interface/loading.png"),
                 
             // Check "RobustToolbox/Resources/Textures/Logo/icon" for an example window icon set.
-            WindowIconSet = new ResPath("/Textures/Interface/meo.ico"),
+            //WindowIconSet = new ResPath("/Textures/Interface/meo.png"),
                 
             // There are a few more options, be sure to check them all!
         });
