@@ -1,0 +1,1 @@
+console-line-edit-placeholder = команды для взрыва жопы

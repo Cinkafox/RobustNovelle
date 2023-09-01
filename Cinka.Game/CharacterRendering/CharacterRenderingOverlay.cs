@@ -31,8 +31,9 @@ public sealed class CharacterRenderingOverlay : Overlay
     protected override void Draw(in OverlayDrawArgs args)
     {
         var handle = args.WorldHandle;
-
-        var lcount = 0f;
+        var charCount = _characterManager.Count();
+        var currentCharCount = 0f;
+        
         foreach (var character in _characterManager.EnumerateCharacters())
         {
             var sprite = character.Sprite[character.State];
@@ -41,16 +42,15 @@ public sealed class CharacterRenderingOverlay : Overlay
             var texture = frames[(int)(_frames*_lastDelta/delay) % frames.Length];
                 
             var prop = (texture.Width / (float)texture.Height);
-
-            var charcount = _characterManager.Count();
-            var size = args.WorldBounds.BottomLeft.X ;
-            var shift = new Vector2(size / charcount * lcount,0);
+            //var shift = new Vector2(args.WorldBounds.BottomLeft.X / charCount * currentCharCount,0);
+            var shift = new Vector2(0, 0);
+            
             handle.DrawTextureRect(texture,new Box2(
                 args.WorldBounds.BottomLeft * new Vector2(prop,1) + shift,
                 args.WorldBounds.TopRight* new Vector2(prop,1) + shift
                 ));
             
-            lcount++;
+            currentCharCount++;
         }
     }
 }

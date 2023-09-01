@@ -8,5 +8,5 @@ public sealed class DialogButton
 {
     [DataField("name")] public string Name = "default";
 
-    [DataField("dialogAction")] public IDialogAction? OnAction = new DefaultDialogAction();
+    [DataField("dialogAction")] public IDialogAction OnAction = new DefaultDialogAction();
 }

@@ -10,9 +10,9 @@ namespace Cinka.Game.UserInterface.Systems.Dialog.Widgets;
 [GenerateTypedNameReferences]
 public sealed partial class DialogGui : UIWidget
 {
-    public DialogUIController _dialogUiController;
-    public Label? currentLabel;
-    public bool IsEmpty => currentLabel == null;
+    private readonly DialogUIController _dialogUiController;
+    private Label? _currentLabel;
+    public bool IsEmpty => _currentLabel == null;
     private List<IDialogAction>? _actions;
     
     public DialogGui()
@@ -30,9 +30,10 @@ public sealed partial class DialogGui : UIWidget
     {
         Continue.Visible = true;
         _actions = dialog.Actions;
-        if (dialog.SkipCommand)
+        _actions.Add(dialog.Action);
+
+        if (dialog.SkipDialog)
             SkipMessage();
-        
     }
 
     private void Act()
@@ -63,10 +64,10 @@ public sealed partial class DialogGui : UIWidget
     
     public void AppendLetter(char let)
     {
-        if (currentLabel == null)
+        if (_currentLabel == null)
             AppendLabel();
         
-        currentLabel.Text += let;
+        _currentLabel.Text += let;
     }
     
     public Label AppendLabel(string? text = null)
@@ -74,7 +75,7 @@ public sealed partial class DialogGui : UIWidget
         var label = new Label();
         label.Text = text;
         TextContainer.AddChild(label);
-        currentLabel = label;
+        _currentLabel = label;
         return label;
     }
 
@@ -92,7 +93,7 @@ public sealed partial class DialogGui : UIWidget
         Continue.Visible = false;
         TextContainer.DisposeAllChildren();
         ClearButtons();
-        currentLabel = null;
+        _currentLabel = null;
     }
 
     public void ClearButtons()

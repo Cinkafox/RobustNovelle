@@ -7,17 +7,16 @@
     - actions:
         - !type:AudioCleanBackgroundAction
           path: "/Audio/back_city.ogg"
-        - !type:DefaultDialogAction
-      skipCommand: true
+      skipDialog: true
     - name: Фембойчик
       text: Ох.. вот и спортзал
     - name: Фембойчик
       text: Давно я не качался..
     - name: Фембойчик
       text: Хотя.. стоил ли зайти туда?
-      skipCommand: true
-      actions:
-      - !type:LoadButtons
+      skipDialog: true
+      action:
+        !type:LoadButtons
         buttons:
           - name: Да
             dialogAction:
@@ -26,7 +25,7 @@
           - name: Нет
     - name: Фембойчик
       text: Чтож...
-      skipCommand: true
+      skipDialog: true
       delay: 150
     - name: Фембойчик
       text: Видно не судьба
@@ -42,8 +41,8 @@
   dialogs:
     - name: Фембойчик
       text: Нус, тогда захожу!
-      actions:
-      - !type:LoadSceneAction
+      action:
+        !type:LoadSceneAction
         prototype: gymstartinside
 
 - type: scene
@@ -57,8 +56,7 @@
           path: "/Audio/back_gym.ogg"
         - !type:AudioAction
           path: "/Audio/gym_enter.ogg"
-        - !type:DefaultDialogAction
-      skipCommand: true
+      skipDialog: true
     - name: Фембойчик
       text: ...
     - name: Фембойчик
@@ -67,15 +65,14 @@
         - !type:ChangeCharacterState
           prototype: raveel
           state: anim
-        - !type:DefaultDialogAction
     - name: Игорь
       text: Приветствую вас, посетитель!
     - name: Фембойчик
       text: к.. КТО ЭТО?
       delay: 50
-      skipCommand: true
-      actions:
-        - !type:LoadSceneAction
+      skipDialog: true
+      action:
+          !type:LoadSceneAction
           prototype: gymigorstart
       
       
@@ -87,15 +84,15 @@
   dialogs:
     - name: Игорь
       text: Привет, мой сладенький дру...
-      skipCommand: true
+      skipDialog: true
     - name: Игорь
       text: Кхэм! Я имел в виду приветствую!
     - name: Фембойчик
       text: З..здравствуйте.. а какое упражнение посоветуете?
     - name: Игорь
       text: Не боись! Для тебя у нас есть отдельная комната! Пройдём со мной!
-      actions:
-        - !type:LoadSceneAction
+      action:
+          !type:LoadSceneAction
           prototype: basement
 
 - type: scene
@@ -107,8 +104,7 @@
           path: "/Audio/back_basement.ogg"
         - !type:AudioAction
           path: "/Audio/gym_enter.ogg"
-        - !type:DefaultDialogAction
-      skipCommand: true
+      skipDialog: true
     - name: Игорь
       text: Вот мы на месте, распологайся поудобнее
     - name: Фембойчик
@@ -118,19 +114,16 @@
       actions:
         - !type:AudioAction
           path: "/Audio/another_victim.wav"
-        - !type:DefaultDialogAction
     - name: Фембойчик
       text: стоп.. зачем вы его взяли? И.. почему вы идёте в мою сторону?
       actions:
         - !type:AudioAction
           path: "/Audio/aniki_grunt.wav"
-        - !type:DefaultDialogAction
     - name: Фембойчик
       text: СТОП! ПРОШУ НЕ НАДО! МФМФМФМФМ!
       actions:
         - !type:AudioAction
           path: "/Audio/fpra.wav"
-        - !type:DefaultDialogAction
     - name: Фембойчик
       text: МФФМФМФММФ!!
     - text: Вот и сказочке конец

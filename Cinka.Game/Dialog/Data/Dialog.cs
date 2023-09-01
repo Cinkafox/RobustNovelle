@@ -22,8 +22,10 @@ public sealed class Dialog
     public float PassedTime;
 
     [DataField("actions")]
-    public List<IDialogAction> Actions = new(){new DefaultDialogAction()} ;
+    public List<IDialogAction> Actions = new();
 
+    [DataField("action")] public IDialogAction Action = new DefaultDialogAction();
+    
     [DataField("newDialog")] public bool NewDialog = true;
-    [DataField("skipCommand")] public bool SkipCommand;
+    [DataField("skipDialog")] public bool SkipDialog;
 }

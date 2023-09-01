@@ -7,7 +7,6 @@ public interface ISceneManager
     public void Initialize();
     public void LoadScene(string prototype);
     public void ContinueDialog();
-    public SceneData? GetCurrentScene();
-
+    public ScenePrototype? GetCurrentScene();
     public void SaveScenePosition();
 }
