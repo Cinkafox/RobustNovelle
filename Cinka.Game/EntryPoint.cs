@@ -8,18 +8,15 @@ using Cinka.Game.Input;
 using Cinka.Game.Location.Managers;
 using Cinka.Game.Scene.Manager;
 using Cinka.Game.StyleSheet;
-using Cinka.Game.UserInterface.Systems.Dialog;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
-using Robust.Client.Player;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
-using Robust.Shared.Timing;
 
 namespace Cinka.Game;
 
@@ -72,19 +69,5 @@ public sealed class EntryPoint : GameClient
         _stylesheetManager.Initialize();
         _sceneManager.Initialize();
 
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-            
-        // DEVNOTE: You'll want to do a proper shutdown here.
-    }
-
-    public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
-    {
-        base.Update(level, frameEventArgs);
-            
-        // DEVNOTE: Game update loop goes here. Usually you'll want some independent GameTicker.
     }
 }
