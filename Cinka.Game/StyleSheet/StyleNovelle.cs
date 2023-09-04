@@ -30,6 +30,11 @@ public sealed class StyleNovelle : StyleBase
     public static readonly Color ButtonColorCautionHovered = Color.FromHex("#cf2f2f");
     public static readonly Color ButtonColorCautionPressed = Color.FromHex("#3e6c45");
     public static readonly Color ButtonColorCautionDisabled = Color.FromHex("#602a2a");
+    
+    public static readonly Color ButtonColorDialogDefault = Color.FromHex("#15273a");
+    public static readonly Color ButtonColorDialogHovered = Color.FromHex("#15273a");
+    public static readonly Color ButtonColorDialogPressed = Color.FromHex("#15273a");
+    public static readonly Color ButtonColorDialogDisabled = Color.FromHex("#15273a");
 
     public static readonly Color ButtonColorGoodDefault = Color.FromHex("#3E6C45");
     public static readonly Color ButtonColorGoodHovered = Color.FromHex("#31843E");
@@ -110,6 +115,20 @@ public sealed class StyleNovelle : StyleBase
                 Element<ContainerButton>().Class(ContainerButton.StyleClassButton).Class(ButtonCaution)
                     .Pseudo(ContainerButton.StylePseudoClassDisabled)
                     .Prop(Control.StylePropertyModulateSelf, ButtonColorCautionDisabled),
+                
+                // Colors for the meow buttons.
+                Element<ContainerButton>().Class(ContainerButton.StyleClassButton).Class(ButtonDialog)
+                    .Pseudo(ContainerButton.StylePseudoClassNormal)
+                    .Prop(Control.StylePropertyModulateSelf, ButtonColorDialogDefault),
+
+                Element<ContainerButton>().Class(ContainerButton.StyleClassButton).Class(ButtonDialog)
+                    .Pseudo(ContainerButton.StylePseudoClassHover)
+                    .Prop(Control.StylePropertyModulateSelf, ButtonColorDialogHovered),
+
+                Element<ContainerButton>().Class(ContainerButton.StyleClassButton).Class(ButtonDialog)
+                    .Pseudo(ContainerButton.StylePseudoClassPressed)
+                    .Prop(Control.StylePropertyModulateSelf, ButtonColorDialogPressed),
+                
                 
                 
         }).ToList());

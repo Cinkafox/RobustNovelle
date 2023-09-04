@@ -18,6 +18,7 @@ namespace Cinka.Game.StyleSheet
         public const string ClassAngleRect = "AngleRect";
 
         public const string ButtonCaution = "Caution";
+        public const string ButtonDialog = "Dialog";
 
         public const int DefaultGrabberSize = 10;
 
