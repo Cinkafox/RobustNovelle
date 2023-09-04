@@ -81,6 +81,7 @@
   location: gym
   characters:
     - igor
+    - raveel
   dialogs:
     - name: Игорь
       text: Привет, мой сладенький дру...
