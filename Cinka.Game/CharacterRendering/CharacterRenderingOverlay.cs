@@ -20,8 +20,8 @@ public sealed class CharacterRenderingOverlay : Overlay
 
     private int _characterRendering = 0;
 
-    private static float _shift = 2;
-    
+    private const float Shift = 2;
+
     public CharacterRenderingOverlay()
     {
         IoCManager.InjectDependencies(this);
@@ -52,13 +52,13 @@ public sealed class CharacterRenderingOverlay : Overlay
         var delay = sprite.GetDelay(_frames % frames.Length);
         var texture = frames[(int)(_frames*_lastDelta/delay) % frames.Length];
                 
-        var prop = (texture.Width / (float)texture.Height);
+        var ratio = (texture.Width / (float)texture.Height);
         var charCountChet = _characterRendering % 2;
-        var shift = new Vector2((1 - charCountChet * 2) * charactersCount * _shift - _shift * (1-charCountChet), 0);
-            
+        var shift = new Vector2((1 - charCountChet * 2) * charactersCount * Shift - Shift * (1-charCountChet), 0);
+        
         handle.DrawTextureRect(texture,new Box2(
-            bounds.BottomLeft * new Vector2(prop,1) + shift + new Vector2(1,0),
-            bounds.TopRight* new Vector2(prop,1) + shift - new Vector2(1,0)
+            bounds.BottomLeft * new Vector2(ratio,1) + shift + new Vector2(1,0),
+            bounds.TopRight* new Vector2(ratio,1) + shift - new Vector2(1,0)
         ));
         
         _characterRendering++;

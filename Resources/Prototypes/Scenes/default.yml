@@ -1,11 +1,11 @@
 - type: scene
-  id: default1
+  id: default
   location: default
   characters:
     - cat
   dialogs:
     - name: Кот
-      text: Мне... помяукать?
+      text: Привет, это тестовая шняга, показать приколы?
       skipDialog: true
       action:
         !type:LoadButtons
@@ -18,33 +18,21 @@
     - name: Вы
       text: Нет.. пожалуй
     - name: Кот
-      text: Ф..фух..
+      text: Ну как хотите
       
 - type: scene
   id: meowyes
   location: default
   characters:
     - cat
+    - raveel
   dialogs:
     - name: Вы
       text: Да.. пожалуйста..
     - name: Кот
-      text: Х.. хорошо
+      text: Хм.. что бы мне показать?
     - name: Кот
-      text: "*мявкает*"
+      text: "*пожимает плечами*"
       delay: 50
-    - name: Кот
-      text: Это
-      skipDialog: true
-      delay: 50
-    - name: Кот
-      text: ...
-      delay: 100
-      skipDialog: true
-      newDialog: false
-    - name: Кот
-      text: "Было странно >:("
-      delay: 50
-      newDialog: false
     - name: Вы
-      text: Да.. есть такое..
+      text: Хм..

@@ -1,2 +1,2 @@
 console-line-edit-placeholder = команды для взрыва жопы
-discord-rpc-on-server = играет в новеллу про фембойчика!
+discord-rpc-on-server = играет в симулятор мяукалки
