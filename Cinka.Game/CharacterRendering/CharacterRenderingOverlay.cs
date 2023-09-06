@@ -1,3 +1,4 @@
+using System;
 using Cinka.Game.Character;
 using Cinka.Game.Character.Managers;
 using Robust.Client.Graphics;
@@ -51,15 +52,20 @@ public sealed class CharacterRenderingOverlay : Overlay
         var frames = sprite.GetFrames(0);
         var delay = sprite.GetDelay(_frames % frames.Length);
         var texture = frames[(int)(_frames*_lastDelta/delay) % frames.Length];
-                
-        var ratio = (texture.Width / (float)texture.Height);
-        var charCountChet = _characterRendering % 2;
-        var shift = new Vector2((1 - charCountChet * 2) * charactersCount * Shift - Shift * (1-charCountChet), 0);
+
+        var viewSize = bounds.TopRight * 2;
         
-        handle.DrawTextureRect(texture,new Box2(
-            bounds.BottomLeft * new Vector2(ratio,1) + shift + new Vector2(1,0),
-            bounds.TopRight* new Vector2(ratio,1) + shift - new Vector2(1,0)
-        ));
+        var charCountChet = _characterRendering % 2;
+        var shift = (1 - charCountChet * 2) * charactersCount * Shift - Shift * (1-charCountChet);
+
+        var hRatio = viewSize.Y / texture.Height;
+        var wRatio = viewSize.X / texture.Width;
+        
+        var ratio = float.Min(hRatio,wRatio);
+
+        var centerX = texture.Width * ratio / 2 + shift;
+
+        handle.DrawTextureRect(texture,Box2.FromDimensions(-new Vector2(centerX,viewSize.Y/2),texture.Size*ratio));
         
         _characterRendering++;
     }
