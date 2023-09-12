@@ -11,14 +11,11 @@ namespace Cinka.Game.Dialog.DialogActions;
 [UsedImplicitly]
 public sealed class LoadButtons : IDialogAction
 {
-    [DataField("buttons")]
-    public HashSet<DialogButton> Buttons = new();
+    [DataField("buttons")] public HashSet<DialogButton> Buttons = new();
+
     public void Act()
     {
         var controller = IoCManager.Resolve<IUserInterfaceManager>().GetUIController<DialogUIController>();
-        foreach (var button in Buttons)
-        {
-            controller.AddButton(button);
-        }
+        foreach (var button in Buttons) controller.AddButton(button);
     }
 }

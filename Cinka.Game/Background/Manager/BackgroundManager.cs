@@ -2,13 +2,10 @@ using Cinka.Game.Background.Data;
 using JetBrains.Annotations;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
-using Robust.Client.Utility;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
-using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
-using Robust.Shared.Utility;
 
 namespace Cinka.Game.Background.Manager;
 
@@ -18,7 +15,7 @@ public sealed class BackgroundManager : IBackgroundManager
 
     private Texture[] _currentBackground;
     private BackgroundPrototype _currentBackgroundPrototype;
-    
+
     public Texture[] GetCurrentBackground()
     {
         return _currentBackground;
@@ -40,11 +37,16 @@ public sealed class BackgroundManager : IBackgroundManager
             var layerState = layer.State ?? "default";
             if (!TryGetRSI(layer, out var rsi) || !rsi.TryGetState(layerState, out var state))
                 state = bstate;
-            
-            _currentBackground[i+1] = state.Frame0;
+
+            _currentBackground[i + 1] = state.Frame0;
         }
     }
-    
+
+    public void UnloadBackground()
+    {
+        _currentBackground = null;
+    }
+
 
     private bool TryGetRSI([CanBeNull] PrototypeLayerData data, out RSI rsi)
     {
@@ -56,12 +58,7 @@ public sealed class BackgroundManager : IBackgroundManager
             rsi = StaticIoC.ResC
                 .GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / _currentBackgroundPrototype.RsiPath)
                 .RSI;
-        
-        return rsi != null;
-    }
 
-    public void UnloadBackground()
-    {
-        _currentBackground = null;
+        return rsi != null;
     }
 }

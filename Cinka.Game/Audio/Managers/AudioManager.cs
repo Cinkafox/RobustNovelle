@@ -8,11 +8,11 @@ namespace Cinka.Game.Audio.Managers;
 
 public class AudioManager : IAudioManager
 {
-    private AudioSystem _audio;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
-    
+    private AudioSystem _audio;
+
     private IPlayingAudioStream? _currentBackground;
-    
+
     public void Initialize()
     {
         _audio = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<AudioSystem>();
@@ -21,7 +21,7 @@ public class AudioManager : IAudioManager
 
     public void PlayBackground(string path)
     {
-        _currentBackground = _audio.PlayGlobal(path, 
+        _currentBackground = _audio.PlayGlobal(path,
             _playerManager.LocalPlayer.Session, AudioParams.Default.WithLoop(true).WithVolume(-6));
     }
 

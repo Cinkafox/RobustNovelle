@@ -1,17 +1,15 @@
 ﻿using Robust.Server;
 
+namespace Cinka.Host;
 
-namespace Cinka.Host
+internal static class Program
 {
-    internal static class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        ContentStart.StartLibrary(args, new ServerOptions
         {
-            ContentStart.StartLibrary(args,new ServerOptions()
-            {
-                ContentModulePrefix = "Cinka.",
-                ContentBuildDirectory = "Cinka.Host"
-            });
-        }
+            ContentModulePrefix = "Cinka.",
+            ContentBuildDirectory = "Cinka.Host"
+        });
     }
 }

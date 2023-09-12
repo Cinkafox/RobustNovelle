@@ -7,11 +7,9 @@ namespace Cinka.Game.Character.Components;
 [RegisterComponent]
 public sealed class CharacterComponent : Component
 {
-    [DataField("sprite")]
-    public string RsiPath = string.Empty;
-    
-    [DataField("state")]
-    public string State = "default";
-    
-    [DataField("layers", readOnly: true)] public List<PrototypeLayerData> Layers = new();
+    [DataField("layers", true)] public List<PrototypeLayerData> Layers = new();
+
+    [DataField("sprite")] public string RsiPath = string.Empty;
+
+    [DataField("state")] public string State = "default";
 }

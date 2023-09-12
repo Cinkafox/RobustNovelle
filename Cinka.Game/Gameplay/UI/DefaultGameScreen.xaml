@@ -8,7 +8,7 @@
     VerticalAlignment="Bottom"
     HorizontalAlignment="Center">
     <LayoutContainer Name="ViewportContainer" HorizontalExpand="True" VerticalExpand="True">
-        <controls:MainViewport Name="MainViewport"/>
+        <controls:MainViewport Name="MainViewport" />
     </LayoutContainer>
-    <dialog:DialogGui Name="Dialog"/>
+    <dialog:DialogGui Name="Dialog" />
 </ui:DefaultGameScreen>

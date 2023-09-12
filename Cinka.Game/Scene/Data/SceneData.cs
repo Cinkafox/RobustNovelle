@@ -8,16 +8,13 @@ namespace Cinka.Game.Scene.Data;
 [DataDefinition]
 public sealed class SceneData
 {
-    [DataField("id")]
-    public string ID = "";
-    
+    //customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))
+    [DataField("characters")] public HashSet<string> Characters = new();
+
+    [DataField("dialogs")] public List<Dialog.Data.Dialog> Dialogs = new();
+
+    [DataField("id")] public string ID = "";
+
     [DataField("location", customTypeSerializer: typeof(PrototypeIdSerializer<LocationPrototype>))]
     public string LocationPrototype = "default";
-
-    //customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))
-    [DataField("characters")]
-    public HashSet<string> Characters = new();
-
-    [DataField("dialogs")]
-    public List<Dialog.Data.Dialog> Dialogs = new();
 }

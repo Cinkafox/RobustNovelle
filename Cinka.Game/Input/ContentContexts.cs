@@ -11,6 +11,5 @@ public sealed class ContentContexts
         viewer.AddFunction(EngineKeyFunctions.GuiTabNavigatePrev);
         viewer.AddFunction(EngineKeyFunctions.EscapeMenu);
         viewer.AddFunction(ContentKeyFunctions.SkipDialog);
-        
     }
 }

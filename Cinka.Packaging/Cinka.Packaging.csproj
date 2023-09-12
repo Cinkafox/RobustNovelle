@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\RobustToolbox\Robust.Packaging\Robust.Packaging.csproj" />
+        <ProjectReference Include="..\RobustToolbox\Robust.Packaging\Robust.Packaging.csproj"/>
     </ItemGroup>
-    <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
+    <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets"/>
 </Project>

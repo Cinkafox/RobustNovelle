@@ -10,33 +10,20 @@ namespace Cinka.Game.Location.Managers;
 
 public sealed class LocationManager : ILocationManager
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IBackgroundManager _backgroundManager = default!;
-
-    private Dictionary<string,MapId> _locationsId = new ();
-    private Dictionary<string, LocationPrototype> _locationPrototypes = new();
+    [Dependency] private readonly IMapManager _mapManager = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     private MapId _currentLocationId;
+    private readonly Dictionary<string, LocationPrototype> _locationPrototypes = new();
 
-    private bool TryInitializeLocation(string prototype)
-    {
-        if(!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var prot))
-            return false;
-        
-        var mapId = _mapManager.CreateMap();
-        Logger.Debug($"Current location ID: {mapId}");
-        _locationsId.TryAdd(prototype,mapId);
-        _locationPrototypes.TryAdd(prototype,prot);
-        
-        return true;
-    }
-    
+    private readonly Dictionary<string, MapId> _locationsId = new();
+
     public void Initialize()
     {
         IoCManager.InjectDependencies(this);
         LoadLocation("default");
     }
-    
+
 
     public MapId GetCurrentLocationId()
     {
@@ -45,18 +32,32 @@ public sealed class LocationManager : ILocationManager
 
     public void LoadLocation(string prototype)
     {
-        LoadLocation(prototype,true);
+        LoadLocation(prototype, true);
     }
 
-    public void LoadLocation(string prototype,bool init)
+    private bool TryInitializeLocation(string prototype)
+    {
+        if (!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var prot))
+            return false;
+
+        var mapId = _mapManager.CreateMap();
+        Logger.Debug($"Current location ID: {mapId}");
+        _locationsId.TryAdd(prototype, mapId);
+        _locationPrototypes.TryAdd(prototype, prot);
+
+        return true;
+    }
+
+    public void LoadLocation(string prototype, bool init)
     {
         if (!_locationsId.TryGetValue(prototype, out var mapId))
         {
             if (!init) return;
             TryInitializeLocation(prototype);
-            LoadLocation(prototype,false);
+            LoadLocation(prototype, false);
             return;
         }
+
         _backgroundManager.LoadBackground(_locationPrototypes[prototype].BackgroundPrototype);
         _currentLocationId = mapId;
     }

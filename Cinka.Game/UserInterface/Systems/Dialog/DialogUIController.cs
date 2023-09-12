@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Gameplay;
-using Cinka.Game.Input;
 using Cinka.Game.UserInterface.Systems.Dialog.Widgets;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Input.Binding;
@@ -10,14 +9,24 @@ using Robust.Shared.Timing;
 
 namespace Cinka.Game.UserInterface.Systems.Dialog;
 
-public sealed class DialogUIController : UIController , IOnStateEntered<GameplayStateBase>, IOnStateExited<GameplayStateBase>
+public sealed class DialogUIController : UIController, IOnStateEntered<GameplayStateBase>,
+    IOnStateExited<GameplayStateBase>
 {
-
     private readonly HashSet<DialogGui> _dialogGuis = new();
     private readonly List<Game.Dialog.Data.Dialog> _messageQueue = new();
 
     public bool IsMessage => _messageQueue.Count > 0;
-    public event Action<Game.Dialog.Data.Dialog>? MessageEnded; 
+
+    public void OnStateEntered(GameplayStateBase state)
+    {
+    }
+
+    public void OnStateExited(GameplayStateBase state)
+    {
+        CommandBinds.Unregister<DialogUIController>();
+    }
+
+    public event Action<Game.Dialog.Data.Dialog>? MessageEnded;
 
     public override void Initialize()
     {
@@ -30,12 +39,10 @@ public sealed class DialogUIController : UIController , IOnStateEntered<Gameplay
 
     private void OnScreenLoad()
     {
-        
     }
 
     private void OnScreenUnload()
     {
-        
     }
 
     public void RegisterDialog(DialogGui dialogGui)
@@ -55,7 +62,7 @@ public sealed class DialogUIController : UIController , IOnStateEntered<Gameplay
 
     public void SpeedUpText()
     {
-        if(!IsMessage)
+        if (!IsMessage)
             return;
 
         _messageQueue[0].Delay = 10;
@@ -63,9 +70,9 @@ public sealed class DialogUIController : UIController , IOnStateEntered<Gameplay
 
     public override void FrameUpdate(FrameEventArgs args)
     {
-        if(!IsMessage)
+        if (!IsMessage)
             return;
-        
+
         var currentDialog = _messageQueue[0];
 
         if (string.IsNullOrEmpty(currentDialog.Text))
@@ -84,45 +91,25 @@ public sealed class DialogUIController : UIController , IOnStateEntered<Gameplay
             {
                 if (!string.IsNullOrEmpty(currentDialog.Name) && dialogGui.IsEmpty)
                     dialogGui.AppendLabel($"{currentDialog.Name}: ");
-                
+
                 dialogGui.AppendLetter(currentDialog.Text[0]);
                 currentDialog.Text = currentDialog.Text.Substring(1);
             }
         }
-
-
     }
 
     public void ClearAllDialog()
     {
-        foreach (var dialog in _dialogGuis)
-        {
-            dialog.ClearText();
-        }
+        foreach (var dialog in _dialogGuis) dialog.ClearText();
     }
 
     public void AddButton(DialogButton button)
     {
-        foreach (var dialog in _dialogGuis)
-        {
-            dialog.AddButton(button);
-        }
+        foreach (var dialog in _dialogGuis) dialog.AddButton(button);
     }
 
     private void OnMessageEnded(Game.Dialog.Data.Dialog obj)
     {
         MessageEnded?.Invoke(obj);
     }
-
-    public void OnStateEntered(GameplayStateBase state)
-    {
-        
-    }
-
-    public void OnStateExited(GameplayStateBase state)
-    {
-        CommandBinds.Unregister<DialogUIController>();
-    }
 }
-
-

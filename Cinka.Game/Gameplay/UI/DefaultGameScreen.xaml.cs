@@ -11,12 +11,11 @@ public sealed partial class DefaultGameScreen : UIScreen
     public DefaultGameScreen()
     {
         RobustXamlLoader.Load(this);
-        
+
         AutoscaleMaxResolution = new Vector2i(1080, 770);
-        
+
         SetAnchorPreset(MainViewport, LayoutPreset.Wide);
         SetAnchorPreset(ViewportContainer, LayoutPreset.Wide);
         SetAnchorAndMarginPreset(Dialog, LayoutPreset.BottomWide);
-        
     }
 }

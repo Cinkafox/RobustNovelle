@@ -15,27 +15,23 @@ public sealed class EntryPoint : GameServer
         // Configure ACZ correctly.
         var aczProvider = new ContentMagicAczProvider(IoCManager.Resolve<IDependencyCollection>());
         IoCManager.Resolve<IStatusHost>().SetMagicAczProvider(aczProvider);
-        
+
         var factory = IoCManager.Resolve<IComponentFactory>();
         var prototypes = IoCManager.Resolve<IPrototypeManager>();
 
         factory.DoAutoRegistrations();
-        
-        foreach (var ignoreName in IgnoredComponents.List)
-        {
-            factory.RegisterIgnore(ignoreName);
-        }
-        
+
+        foreach (var ignoreName in IgnoredComponents.List) factory.RegisterIgnore(ignoreName);
+
         prototypes.RegisterIgnore("background");
         prototypes.RegisterIgnore("scene");
         prototypes.RegisterIgnore("location");
         prototypes.RegisterIgnore("scene");
 
         ServerContentIoC.Register();
-        
+
         IoCManager.BuildGraph();
-            
+
         factory.GenerateNetIds();
     }
 }
-

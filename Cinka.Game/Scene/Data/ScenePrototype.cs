@@ -9,16 +9,13 @@ namespace Cinka.Game.Scene.Data;
 [Prototype("scene")]
 public sealed class ScenePrototype : IPrototype
 {
-    [IdDataField]
-    public string ID { get; }
+    //customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))
+    [DataField("characters")] public HashSet<string> Characters = new();
+
+    [DataField("dialogs")] public List<Dialog.Data.Dialog> Dialogs = new();
 
     [DataField("location", customTypeSerializer: typeof(PrototypeIdSerializer<LocationPrototype>))]
     public string LocationPrototype = "default";
 
-    //customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))
-    [DataField("characters")]
-    public HashSet<string> Characters = new();
-
-    [DataField("dialogs")]
-    public List<Dialog.Data.Dialog> Dialogs = new();
+    [IdDataField] public string ID { get; }
 }

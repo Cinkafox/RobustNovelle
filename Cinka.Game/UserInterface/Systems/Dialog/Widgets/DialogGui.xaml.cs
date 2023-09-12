@@ -11,10 +11,9 @@ namespace Cinka.Game.UserInterface.Systems.Dialog.Widgets;
 public sealed partial class DialogGui : UIWidget
 {
     private readonly DialogUIController _dialogUiController;
-    private Label? _currentLabel;
-    public bool IsEmpty => _currentLabel == null;
     private List<IDialogAction>? _actions;
-    
+    private Label? _currentLabel;
+
     public DialogGui()
     {
         RobustXamlLoader.Load(this);
@@ -24,7 +23,9 @@ public sealed partial class DialogGui : UIWidget
         Skip.OnPressed += _ => SkipMessage();
         _dialogUiController.MessageEnded += OnMessageEnded;
     }
-    
+
+    public bool IsEmpty => _currentLabel == null;
+
 
     private void OnMessageEnded(Game.Dialog.Data.Dialog dialog)
     {
@@ -38,12 +39,9 @@ public sealed partial class DialogGui : UIWidget
 
     private void Act()
     {
-        if(ButtonContainer.ChildCount > 0)
+        if (ButtonContainer.ChildCount > 0)
             return;
-        foreach (var action in _actions)
-        {
-            action.Act();
-        }
+        foreach (var action in _actions) action.Act();
 
         _actions = null;
     }
@@ -56,20 +54,20 @@ public sealed partial class DialogGui : UIWidget
 
     public void SkipMessage()
     {
-        if(_dialogUiController.IsMessage)
+        if (_dialogUiController.IsMessage)
             _dialogUiController.SpeedUpText();
         else
             Act();
     }
-    
+
     public void AppendLetter(char let)
     {
         if (_currentLabel == null)
             AppendLabel();
-        
+
         _currentLabel.Text += let;
     }
-    
+
     public Label AppendLabel(string? text = null)
     {
         var label = new Label();
@@ -87,7 +85,7 @@ public sealed partial class DialogGui : UIWidget
         btn.Margin = new Thickness(12, 0, 12, 0);
         ButtonContainer.AddChild(btn);
     }
-    
+
     public void ClearText()
     {
         Continue.Visible = false;

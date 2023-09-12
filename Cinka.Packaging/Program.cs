@@ -23,7 +23,6 @@ async Task Build(bool skipBuild)
     logger.Info("Building project...");
 
     if (!skipBuild)
-    {
         await ProcessHelpers.RunCheck(new ProcessStartInfo
         {
             FileName = "dotnet",
@@ -39,7 +38,6 @@ async Task Build(bool skipBuild)
                 "/m"
             }
         });
-    }
 
     logger.Info("Packaging client...");
 
@@ -64,5 +62,5 @@ void WipeBin()
 {
     logger.Info("Clearing old build artifacts (if any)...");
 
-    Directory.Delete("bin", recursive: true);
+    Directory.Delete("bin", true);
 }
