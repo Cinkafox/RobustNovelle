@@ -66,4 +66,9 @@ public sealed class EntryPoint : GameClient
         _stylesheetManager.Initialize();
         _sceneManager.Initialize();
     }
+
+    public override void Shutdown()
+    {
+        _audioManager.Shutdown();
+    }
 }

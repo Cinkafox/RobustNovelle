@@ -1,5 +1,5 @@
 - type: scene
-  id: default
+  id: default1
   location: default
   characters:
     - cat
@@ -18,14 +18,15 @@
     - name: Вы
       text: Нет.. пожалуй
     - name: Кот
-      text: Ну как хотите
+      text: ТЫ ПОНИМАЕШЬ Я ВО АВГАНИСТАНЕ ВОЕВАЛ!!!
+    - name: Кот
+      text: ЧУРКА!
       
 - type: scene
   id: meowyes
   location: default
   characters:
     - cat
-    - raveel
   dialogs:
     - name: Вы
       text: Да.. пожалуйста..

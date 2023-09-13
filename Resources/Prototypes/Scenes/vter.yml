@@ -1,12 +1,12 @@
 - type: scene
-  id: default1
+  id: default
   location: gym_outside
   characters:
     - raveel
   dialogs:
     - actions:
-        - !type:AudioCleanBackgroundAction
-          path: "/Audio/back_city.ogg"
+        - !type:AudioAction
+          prototype: backCity
       skipDialog: true
     - name: Фембойчик
       text: Ох.. вот и спортзал
@@ -52,10 +52,10 @@
     - raveel
   dialogs:
     - actions:
-        - !type:AudioCleanBackgroundAction
-          path: "/Audio/back_gym.ogg"
         - !type:AudioAction
-          path: "/Audio/gym_enter.ogg"
+          prototype: backGym
+        - !type:AudioAction
+          prototype: gymEnter
       skipDialog: true
     - name: Фембойчик
       text: ...
@@ -101,10 +101,10 @@
   location: basement
   dialogs:
     - actions:
-        - !type:AudioCleanBackgroundAction
-          path: "/Audio/back_basement.ogg"
         - !type:AudioAction
-          path: "/Audio/gym_enter.ogg"
+          prototype: backBasement
+        - !type:AudioAction
+          prototype: gymEnter
       skipDialog: true
     - name: Игорь
       text: Вот мы на месте, распологайся поудобнее
@@ -114,17 +114,17 @@
       text: Скоро узнаете, мой сладенький
       actions:
         - !type:AudioAction
-          path: "/Audio/another_victim.wav"
+          prototype: anotherVictim
     - name: Фембойчик
       text: стоп.. зачем вы его взяли? И.. почему вы идёте в мою сторону?
       actions:
         - !type:AudioAction
-          path: "/Audio/aniki_grunt.wav"
+          prototype: anikiGrunt
     - name: Фембойчик
       text: СТОП! ПРОШУ НЕ НАДО! МФМФМФМФМ!
       actions:
         - !type:AudioAction
-          path: "/Audio/fpra.wav"
+          prototype: fpra
     - name: Фембойчик
       text: МФФМФМФММФ!!
     - text: Вот и сказочке конец
