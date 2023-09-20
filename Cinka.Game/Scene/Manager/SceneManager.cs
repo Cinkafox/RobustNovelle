@@ -41,7 +41,7 @@ public sealed class SceneManager : ISceneManager
             throw new Exception($"Scene {prototype} not found!");
         }
 
-        _locationManager.LoadLocation(proto.LocationPrototype);
+        _locationManager.LoadLocation(proto.Location);
         foreach (var characterPrototype in proto.Characters) _characterManager.AddCharacter(characterPrototype);
 
         _currentScene = proto;

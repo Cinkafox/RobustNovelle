@@ -11,7 +11,7 @@ namespace Cinka.Game.Dialog.DialogActions;
 [UsedImplicitly]
 public sealed partial class LoadButtons : IDialogAction
 {
-    [DataField("buttons")] public HashSet<DialogButton> Buttons = new();
+    [DataField] public HashSet<DialogButton> Buttons = new();
 
     public void Act()
     {

@@ -8,19 +8,19 @@ namespace Cinka.Game.Dialog.Data;
 [DataDefinition]
 public sealed partial class Dialog
 {
-    [DataField("action")] public IDialogAction Action = new DefaultDialogAction();
+    [DataField] public IDialogAction Action = new DefaultDialogAction();
 
-    [DataField("actions")] public List<IDialogAction> Actions = new();
+    [DataField] public List<IDialogAction> Actions = new();
 
-    [DataField("delay")] public float Delay = 70;
+    [DataField] public float Delay = 70;
 
-    [DataField("name")] public string? Name;
+    [DataField] public string? Name;
 
-    [DataField("newDialog")] public bool NewDialog = true;
+    [DataField] public bool NewDialog = true;
 
+    [DataField] public bool SkipDialog;
+
+    [DataField] public string Text = "";
+    
     [ViewVariables(VVAccess.ReadOnly)] public float PassedTime;
-
-    [DataField("skipDialog")] public bool SkipDialog;
-
-    [DataField("text")] public string Text = "";
 }

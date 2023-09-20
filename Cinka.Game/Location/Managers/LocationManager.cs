@@ -58,7 +58,7 @@ public sealed class LocationManager : ILocationManager
             return;
         }
 
-        _backgroundManager.LoadBackground(_locationPrototypes[prototype].BackgroundPrototype);
+        _backgroundManager.LoadBackground(_locationPrototypes[prototype].Background);
         _currentLocationId = mapId;
     }
 }

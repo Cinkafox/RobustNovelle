@@ -10,6 +10,5 @@ public sealed class LocationPrototype : IPrototype
 {
     [IdDataField] public string ID { get; private set; } = default!;
     
-    [DataField("background", customTypeSerializer: typeof(PrototypeIdSerializer<BackgroundPrototype>))]
-    public string BackgroundPrototype = string.Empty;
+    [DataField] public ProtoId<BackgroundPrototype> Background = string.Empty;
 }

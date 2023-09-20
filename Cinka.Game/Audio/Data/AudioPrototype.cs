@@ -16,9 +16,9 @@ public sealed class AudioPrototype : IPrototype, ISerializationHooks
 {
     [IdDataField] public string ID { get; } = default!;
 
-    [DataField("path", required: true)] public string Path = default!;
+    [DataField(required: true)] public string Path = default!;
 
-    [DataField("isBackground")] public bool IsBackground = false;
+    [DataField] public bool IsBackground = false;
 
     [ViewVariables] public AudioResource AudioStream = default!;
 
