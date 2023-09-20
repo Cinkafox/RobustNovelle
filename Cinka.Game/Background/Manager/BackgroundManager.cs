@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Cinka.Game.Background.Data;
 using JetBrains.Annotations;
 using Robust.Client.Graphics;
@@ -13,8 +14,8 @@ public sealed class BackgroundManager : IBackgroundManager
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
-    private Texture[] _currentBackground;
-    private BackgroundPrototype _currentBackgroundPrototype;
+    private Texture[] _currentBackground = {};
+    private BackgroundPrototype? _currentBackgroundPrototype;
 
     public Texture[] GetCurrentBackground()
     {
@@ -44,17 +45,17 @@ public sealed class BackgroundManager : IBackgroundManager
 
     public void UnloadBackground()
     {
-        _currentBackground = null;
+        _currentBackground = System.Array.Empty<Texture>();
     }
 
 
-    private bool TryGetRSI([CanBeNull] PrototypeLayerData data, out RSI rsi)
+    private bool TryGetRSI(PrototypeLayerData? data,[NotNullWhen(true)] out RSI? rsi)
     {
         rsi = null;
 
         if (data?.RsiPath != null)
             rsi = StaticIoC.ResC.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / data.RsiPath).RSI;
-        else if (_currentBackgroundPrototype.RsiPath != null)
+        else if (_currentBackgroundPrototype?.RsiPath != null)
             rsi = StaticIoC.ResC
                 .GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / _currentBackgroundPrototype.RsiPath)
                 .RSI;

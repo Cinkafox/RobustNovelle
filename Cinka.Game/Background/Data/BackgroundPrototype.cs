@@ -8,11 +8,12 @@ namespace Cinka.Game.Background.Data;
 [Prototype("background")]
 public sealed class BackgroundPrototype : IPrototype
 {
+    [IdDataField] public string ID { get; private set; } = default!;
+    
     [DataField("layers", true)] public List<PrototypeLayerData> Layers = new();
 
     [DataField("sprite")] public string? RsiPath;
 
     [DataField("state")] public string? State;
-
-    [IdDataField] public string ID { get; }
+    
 }

@@ -10,7 +10,9 @@ namespace Cinka.Game.Dialog.DialogActions;
 public sealed class LoadSceneAction : IDialogAction
 {
     [DataField("prototype", required: true)]
-    public string ScenePrototype;
+    public string ScenePrototype = default!;
+
+    [DataField] public ProtoID prototype = default!;
 
     public void Act()
     {

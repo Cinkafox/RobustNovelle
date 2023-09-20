@@ -14,7 +14,7 @@ namespace Cinka.Game.Audio.Data;
 [Prototype("audio")]
 public sealed class AudioPrototype : IPrototype, ISerializationHooks
 {
-    [IdDataField] public string ID { get; }
+    [IdDataField] public string ID { get; } = default!;
 
     [DataField("path", required: true)] public string Path = default!;
 
@@ -24,7 +24,7 @@ public sealed class AudioPrototype : IPrototype, ISerializationHooks
 
     void ISerializationHooks.AfterDeserialization()
     {
-        if (!ResC.TryGetResource<AudioResource>(new ResPath(Path), out AudioStream))
+        if (!ResC.TryGetResource<AudioResource>(new ResPath(Path), out AudioStream!))
         {
             throw new FileNotFoundException($"Could not find a audio file: {Path}");
         }

@@ -9,6 +9,8 @@ namespace Cinka.Game.Scene.Data;
 [Prototype("scene")]
 public sealed class ScenePrototype : IPrototype
 {
+    [IdDataField] public string ID { get; private set; } = default!;
+    
     //customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))
     [DataField("characters")] public HashSet<string> Characters = new();
 
@@ -16,6 +18,5 @@ public sealed class ScenePrototype : IPrototype
 
     [DataField("location", customTypeSerializer: typeof(PrototypeIdSerializer<LocationPrototype>))]
     public string LocationPrototype = "default";
-
-    [IdDataField] public string ID { get; }
+    
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Cinka.Game.Character.Components;
 using Cinka.Game.Location.Managers;
@@ -78,7 +79,7 @@ public sealed class CharacterManager : ICharacterManager
             data.State = state;
     }
 
-    public bool TryGetCharacter(string prototype, out CharacterData? data)
+    public bool TryGetCharacter(string prototype,[NotNullWhen(true)] out CharacterData? data)
     {
         return _characters.TryGetValue(prototype, out data);
     }
@@ -102,7 +103,7 @@ public sealed class CharacterManager : ICharacterManager
         return data;
     }
 
-    private bool TryGetRSI(string rsiPath, out RSI? rsi)
+    private bool TryGetRSI(string rsiPath,[NotNullWhen(true)] out RSI? rsi)
     {
         rsi = null;
         if (!StaticIoC.ResC.TryGetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / rsiPath,

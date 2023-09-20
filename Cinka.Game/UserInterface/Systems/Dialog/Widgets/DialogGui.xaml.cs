@@ -11,7 +11,7 @@ namespace Cinka.Game.UserInterface.Systems.Dialog.Widgets;
 public sealed partial class DialogGui : UIWidget
 {
     private readonly DialogUIController _dialogUiController;
-    private List<IDialogAction>? _actions;
+    private List<IDialogAction> _actions = new List<IDialogAction>();
     private Label? _currentLabel;
 
     public DialogGui()
@@ -43,7 +43,7 @@ public sealed partial class DialogGui : UIWidget
             return;
         foreach (var action in _actions) action.Act();
 
-        _actions = null;
+        _actions = new List<IDialogAction>();
     }
 
     public void AppendText(string text)
@@ -65,7 +65,7 @@ public sealed partial class DialogGui : UIWidget
         if (_currentLabel == null)
             AppendLabel();
 
-        _currentLabel.Text += let;
+        _currentLabel!.Text += let;
     }
 
     public Label AppendLabel(string? text = null)
