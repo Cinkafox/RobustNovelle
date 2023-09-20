@@ -49,7 +49,7 @@ public sealed class AudioManager : IAudioManager
         if(!_prototypeManager.TryIndex<AudioPrototype>(audioPrototype,out var prototype))
             return;
 
-        Play(prototype.AudioStream,AudioParams.Default,isBackground: prototype.IsBackground);
+        Play(prototype.Audio,AudioParams.Default,isBackground: prototype.IsBackground);
     }
     
     

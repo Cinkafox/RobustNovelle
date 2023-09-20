@@ -12,21 +12,14 @@ using static Cinka.Game.StaticIoC;
 namespace Cinka.Game.Audio.Data;
 
 [Prototype("audio")]
-public sealed class AudioPrototype : IPrototype, ISerializationHooks
+public sealed class AudioPrototype : IPrototype
 {
     [IdDataField] public string ID { get; } = default!;
 
-    [DataField(required: true)] public string Path = default!;
+    //[DataField(required: true)] public string Path = default!;
 
     [DataField] public bool IsBackground = false;
 
-    [ViewVariables] public AudioResource AudioStream = default!;
-
-    void ISerializationHooks.AfterDeserialization()
-    {
-        if (!ResC.TryGetResource<AudioResource>(new ResPath(Path), out AudioStream!))
-        {
-            throw new FileNotFoundException($"Could not find a audio file: {Path}");
-        }
-    }
+    [DataField("path", required:true, customTypeSerializer:typeof(AudioSerializer))] 
+    public AudioSpecifier Audio = default!;
 }
