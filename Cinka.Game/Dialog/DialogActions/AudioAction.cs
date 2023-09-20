@@ -7,7 +7,7 @@ using Robust.Shared.Serialization.Manager.Attributes;
 namespace Cinka.Game.Dialog.DialogActions;
 
 [UsedImplicitly]
-public sealed class AudioAction : IDialogAction
+public sealed partial class AudioAction : IDialogAction
 {
     [DataField("prototype",required:true)] private string _audioPrototype = default!;
 

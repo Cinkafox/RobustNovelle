@@ -1,21 +1,21 @@
 using Cinka.Game.Dialog.Data;
+using Cinka.Game.Scene.Data;
 using Cinka.Game.Scene.Manager;
 using JetBrains.Annotations;
 using Robust.Shared.IoC;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager.Attributes;
+using Robust.Shared.Toolshed.TypeParsers;
 
 namespace Cinka.Game.Dialog.DialogActions;
 
 [UsedImplicitly]
-public sealed class LoadSceneAction : IDialogAction
+public sealed partial class LoadSceneAction : IDialogAction
 {
-    [DataField("prototype", required: true)]
-    public string ScenePrototype = default!;
-
-    [DataField] public ProtoID prototype = default!;
-
+    [DataField] public ProtoId<ScenePrototype> Prototype = default!;
+    
     public void Act()
     {
-        IoCManager.Resolve<ISceneManager>().LoadScene(ScenePrototype);
+        IoCManager.Resolve<ISceneManager>().LoadScene(Prototype);
     }
 }

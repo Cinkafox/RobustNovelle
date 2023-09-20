@@ -81,7 +81,7 @@ public sealed partial class DialogGui : UIWidget
     {
         var btn = new Button();
         btn.Text = button.Name;
-        btn.OnPressed += _ => button.OnAction.Act();
+        btn.OnPressed += _ => button.DialogAction.Act();
         btn.Margin = new Thickness(12, 0, 12, 0);
         ButtonContainer.AddChild(btn);
     }

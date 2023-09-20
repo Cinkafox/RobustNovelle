@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 using Cinka.Game.Character.Components;
 using Cinka.Game.Location.Managers;
 using Robust.Client.Graphics;

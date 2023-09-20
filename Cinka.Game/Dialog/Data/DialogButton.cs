@@ -4,9 +4,9 @@ using Robust.Shared.Serialization.Manager.Attributes;
 namespace Cinka.Game.Dialog.Data;
 
 [DataDefinition]
-public sealed class DialogButton
+public sealed partial class DialogButton
 {
-    [DataField("name")] public string Name = "default";
+    [DataField] public string Name = "default";
 
-    [DataField("dialogAction")] public IDialogAction OnAction = new DefaultDialogAction();
+    [DataField] public IDialogAction DialogAction = new DefaultDialogAction();
 }

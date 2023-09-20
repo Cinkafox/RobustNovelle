@@ -3,7 +3,7 @@ using Robust.Shared.Serialization.Manager.Attributes;
 namespace Cinka.Game.Dialog.Data;
 
 [ImplicitDataDefinitionForInheritors]
-public interface IDialogAction
+public partial interface IDialogAction
 {
     void Act();
 }

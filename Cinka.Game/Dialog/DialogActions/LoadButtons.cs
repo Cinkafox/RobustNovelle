@@ -9,7 +9,7 @@ using Robust.Shared.Serialization.Manager.Attributes;
 namespace Cinka.Game.Dialog.DialogActions;
 
 [UsedImplicitly]
-public sealed class LoadButtons : IDialogAction
+public sealed partial class LoadButtons : IDialogAction
 {
     [DataField("buttons")] public HashSet<DialogButton> Buttons = new();
 

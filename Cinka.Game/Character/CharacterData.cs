@@ -1,3 +1,4 @@
+using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Maths;
@@ -7,7 +8,7 @@ using Robust.Shared.ViewVariables;
 namespace Cinka.Game.Character;
 
 [DataDefinition]
-public sealed class CharacterData
+public sealed partial class CharacterData
 {
     [DataField("scale")] public Vector2 Scale = Vector2.One;
 

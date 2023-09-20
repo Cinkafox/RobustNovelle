@@ -1,3 +1,4 @@
+using System.Numerics;
 using Cinka.Game.Viewport;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Configuration;

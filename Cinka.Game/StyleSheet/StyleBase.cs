@@ -1,3 +1,4 @@
+using System.Numerics;
 using Cinka.Game.Resources;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;

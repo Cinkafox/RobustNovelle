@@ -6,7 +6,7 @@ using Robust.Shared.ViewVariables;
 namespace Cinka.Game.Dialog.Data;
 
 [DataDefinition]
-public sealed class Dialog
+public sealed partial class Dialog
 {
     [DataField("action")] public IDialogAction Action = new DefaultDialogAction();
 

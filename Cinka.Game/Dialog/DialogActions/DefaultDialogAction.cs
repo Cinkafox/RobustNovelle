@@ -6,7 +6,7 @@ using Robust.Shared.IoC;
 namespace Cinka.Game.Dialog.DialogActions;
 
 [UsedImplicitly]
-public sealed class DefaultDialogAction : IDialogAction
+public sealed partial class DefaultDialogAction : IDialogAction
 {
     public void Act()
     {
