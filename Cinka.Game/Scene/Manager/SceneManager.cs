@@ -8,6 +8,7 @@ using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
 using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization.Manager;
 
 namespace Cinka.Game.Scene.Manager;
 
@@ -19,6 +20,7 @@ public sealed class SceneManager : ISceneManager
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
+    [Dependency] private readonly ISerializationManager _serializationManager = default!;
 
     private ScenePrototype? _currentScene;
 
@@ -40,11 +42,12 @@ public sealed class SceneManager : ISceneManager
             _cfg.SetCVar("game.last_scene", "default");
             throw new Exception($"Scene {prototype} not found!");
         }
+        
+        _currentScene = _serializationManager.CreateCopy(proto, notNullableOverride:true);
 
-        _locationManager.LoadLocation(proto.Location);
-        foreach (var characterPrototype in proto.Characters) _characterManager.AddCharacter(characterPrototype);
-
-        _currentScene = proto;
+        _locationManager.LoadLocation(_currentScene.Location);
+        foreach (var characterPrototype in _currentScene.Characters) _characterManager.AddCharacter(characterPrototype);
+        
         ContinueDialog();
     }
 
@@ -59,6 +62,7 @@ public sealed class SceneManager : ISceneManager
 
         var currentDialog = _currentScene.Dialogs[0];
         if (currentDialog.NewDialog) _dialogUiController.ClearAllDialog();
+        if (string.IsNullOrEmpty(currentDialog.Text)) currentDialog.SkipDialog = true;
         _dialogUiController.AppendText(currentDialog);
 
         _currentScene.Dialogs.RemoveAt(0);

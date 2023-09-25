@@ -20,7 +20,7 @@ public sealed partial class Dialog
 
     [DataField] public bool SkipDialog;
 
-    [DataField] public string Text = "";
+    [DataField] public string Text = string.Empty;
     
     [ViewVariables(VVAccess.ReadOnly)] public float PassedTime;
 }

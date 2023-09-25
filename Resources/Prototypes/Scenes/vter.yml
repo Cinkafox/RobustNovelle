@@ -7,7 +7,6 @@
     - actions:
         - !type:AudioAction
           prototype: backCity
-      skipDialog: true
     - name: Фембойчик
       text: Ох.. вот и спортзал
     - name: Фембойчик
@@ -56,7 +55,6 @@
           prototype: backGym
         - !type:AudioAction
           prototype: gymEnter
-      skipDialog: true
     - name: Фембойчик
       text: ...
     - name: Фембойчик
@@ -83,6 +81,10 @@
     - igor
     - raveel
   dialogs:
+    - actions:
+        - !type:ChangeCharacterState
+          prototype: raveel
+          state: anim
     - name: Игорь
       text: Привет, мой сладенький дру...
       skipDialog: true
@@ -105,7 +107,6 @@
           prototype: backBasement
         - !type:AudioAction
           prototype: gymEnter
-      skipDialog: true
     - name: Игорь
       text: Вот мы на месте, распологайся поудобнее
     - name: Фембойчик
