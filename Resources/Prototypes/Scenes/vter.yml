@@ -13,15 +13,12 @@
       text: Давно я не качался..
     - name: Фембойчик
       text: Хотя.. стоил ли зайти туда?
-      skipDialog: true
-      action:
-        !type:LoadButtons
-        buttons:
-          - name: Да
-            dialogAction:
-              !type:LoadSceneAction
-              prototype: gymstart
-          - name: Нет
+      buttons:
+        - name: Да
+          dialogAction:
+            !type:LoadSceneAction
+            prototype: gymstart
+        - name: Нет
     - name: Фембойчик
       text: Чтож...
       skipDialog: true
@@ -40,9 +37,9 @@
   dialogs:
     - name: Фембойчик
       text: Нус, тогда захожу!
-      action:
-        !type:LoadSceneAction
-        prototype: gymstartinside
+    - actions:
+        - !type:LoadSceneAction
+          prototype: gymstartinside
 
 - type: scene
   id: gymstartinside
@@ -59,18 +56,23 @@
       text: ...
     - name: Фембойчик
       text: ну и народу.. БРР!
-      actions:
+    - actions:
         - !type:ChangeCharacterState
           prototype: raveel
           state: anim
+    #- actions:
+    #    - !type:ChangeCharacterState
+    #      prototype: raveel
+    #  delay: 500
+    #  skipDialog: true
     - name: Игорь
       text: Приветствую вас, посетитель!
     - name: Фембойчик
       text: к.. КТО ЭТО?
       delay: 50
       skipDialog: true
-      action:
-          !type:LoadSceneAction
+    - actions:
+        - !type:LoadSceneAction
           prototype: gymigorstart
       
       
@@ -94,8 +96,8 @@
       text: З..здравствуйте.. а какое упражнение посоветуете?
     - name: Игорь
       text: Не боись! Для тебя у нас есть отдельная комната! Пройдём со мной!
-      action:
-          !type:LoadSceneAction
+    - actions:
+        - !type:LoadSceneAction
           prototype: basement
 
 - type: scene
@@ -113,17 +115,17 @@
       text: а.. зачем тут.. намордник
     - name: Игорь
       text: Скоро узнаете, мой сладенький
-      actions:
+    - actions:
         - !type:AudioAction
           prototype: anotherVictim
     - name: Фембойчик
       text: стоп.. зачем вы его взяли? И.. почему вы идёте в мою сторону?
-      actions:
+    - actions:
         - !type:AudioAction
           prototype: anikiGrunt
     - name: Фембойчик
       text: СТОП! ПРОШУ НЕ НАДО! МФМФМФМФМ!
-      actions:
+    - actions:
         - !type:AudioAction
           prototype: fpra
     - name: Фембойчик

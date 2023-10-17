@@ -7,14 +7,12 @@
     - name: Кот
       text: Привет, это тестовая шняга, показать приколы?
       skipDialog: true
-      action:
-        !type:LoadButtons
-        buttons:
-          - name: Да
-            dialogAction:
-              !type:LoadSceneAction
-              prototype: meowyes
-          - name: Нет
+      buttons:
+        - name: Да
+          dialogAction:
+            !type:LoadSceneAction
+            prototype: meowyes
+        - name: Нет
     - name: Вы
       text: Нет.. пожалуй
     - name: Кот

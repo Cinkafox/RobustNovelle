@@ -2,9 +2,14 @@ using System;
 using System.Collections.Generic;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Gameplay;
+using Cinka.Game.Input;
 using Cinka.Game.UserInterface.Systems.Dialog.Widgets;
+using Robust.Client.Input;
 using Robust.Client.UserInterface.Controllers;
+using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.IoC;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Cinka.Game.UserInterface.Systems.Dialog;
@@ -12,6 +17,9 @@ namespace Cinka.Game.UserInterface.Systems.Dialog;
 public sealed class DialogUIController : UIController, IOnStateEntered<GameplayStateBase>,
     IOnStateExited<GameplayStateBase>
 {
+    [Dependency] private readonly IInputManager _input = default!;
+    [Dependency] private readonly IPrototypeManager _prototype = default!;
+    
     private readonly HashSet<DialogGui> _dialogGuis = new();
     private readonly List<Game.Dialog.Data.Dialog> _messageQueue = new();
 
@@ -23,7 +31,6 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
 
     public void OnStateExited(GameplayStateBase state)
     {
-        CommandBinds.Unregister<DialogUIController>();
     }
 
     public event Action<Game.Dialog.Data.Dialog>? MessageEnded;
@@ -35,6 +42,12 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;
         gameplayStateLoad.OnScreenUnload += OnScreenUnload;
+        
+        var cmdhandler = InputCmdHandler.FromDelegate(_ =>
+            SkipMessage());
+        
+        _input.SetInputCommand(ContentKeyFunctions.SkipDialog,cmdhandler);
+        _input.SetInputCommand(EngineKeyFunctions.UIClick,cmdhandler);
     }
 
     private void OnScreenLoad()
@@ -47,6 +60,8 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
 
     public void RegisterDialog(DialogGui dialogGui)
     {
+        var dialogStyle = _prototype.Index<DialogPrototype>("default");
+        dialogGui.SetStyle(dialogStyle,dialogStyle);
         _dialogGuis.Add(dialogGui);
     }
 
@@ -66,6 +81,18 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
             return;
 
         _messageQueue[0].Delay = 10;
+    }
+
+    public void SkipMessage()
+    {
+        if(IsMessage) SpeedUpText();
+        else
+        {
+            foreach (var dialog in _dialogGuis)
+            {
+                dialog.InvokeButton();
+            }
+        }
     }
 
     public override void FrameUpdate(FrameEventArgs args)
@@ -90,7 +117,7 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
             foreach (var dialogGui in _dialogGuis)
             {
                 if (!string.IsNullOrEmpty(currentDialog.Name) && dialogGui.IsEmpty)
-                    dialogGui.AppendLabel($"{currentDialog.Name}: ");
+                    dialogGui.AppendLabel($"[bold]{currentDialog.Name}[/bold]: ");
 
                 dialogGui.AppendLetter(currentDialog.Text[0]);
                 currentDialog.Text = currentDialog.Text.Substring(1);

@@ -9,6 +9,7 @@ public sealed class ContentContexts
         var viewer = contexts.GetContext("human");
         viewer.AddFunction(EngineKeyFunctions.GuiTabNavigateNext);
         viewer.AddFunction(EngineKeyFunctions.GuiTabNavigatePrev);
+        viewer.AddFunction(EngineKeyFunctions.UIClick);
         viewer.AddFunction(EngineKeyFunctions.EscapeMenu);
         viewer.AddFunction(ContentKeyFunctions.SkipDialog);
     }

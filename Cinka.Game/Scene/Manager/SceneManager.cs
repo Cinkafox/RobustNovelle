@@ -1,5 +1,6 @@
 using System;
 using Cinka.Game.Character.Managers;
+using Cinka.Game.Dialog.Data;
 using Cinka.Game.Location.Managers;
 using Cinka.Game.Scene.Data;
 using Cinka.Game.UserInterface.Systems.Dialog;
@@ -62,9 +63,15 @@ public sealed class SceneManager : ISceneManager
 
         var currentDialog = _currentScene.Dialogs[0];
         if (currentDialog.NewDialog) _dialogUiController.ClearAllDialog();
-        if (string.IsNullOrEmpty(currentDialog.Text)) currentDialog.SkipDialog = true;
+        if (IsEmptyString(currentDialog.Text))
+        {
+            currentDialog.IsDialog = false;
+            if (currentDialog.Buttons.Count == 0) currentDialog.SkipDialog = true;
+            else if (currentDialog.Actions.Count != 0)
+                throw new Exception($"Долбоеб блять какие действие с текстом? {currentDialog.Text}");
+        }
+        
         _dialogUiController.AppendText(currentDialog);
-
         _currentScene.Dialogs.RemoveAt(0);
     }
 
@@ -83,5 +90,10 @@ public sealed class SceneManager : ISceneManager
         _characterManager.ClearCharacters();
         _dialogUiController.ClearAllDialog();
         _currentScene = null;
+    }
+
+    private bool IsEmptyString(string text)
+    {
+        return string.IsNullOrEmpty(text) || text == " ";
     }
 }
