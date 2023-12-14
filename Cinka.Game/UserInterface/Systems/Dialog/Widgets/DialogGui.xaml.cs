@@ -8,6 +8,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.RichText;
 using Robust.Client.UserInterface.XAML;
+using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Utility;
@@ -23,9 +24,7 @@ public sealed partial class DialogGui : UIWidget
     private List<IDialogAction> _actions = new ();
     private List<DialogButton> _buttons = new();
     private FormattedMessage _currentMessage = new();
-
-    private DialogStyle _dialogStyle = default!;
-    private DialogStyle _buttonStyle = default!;
+    
 
     public DialogGui()
     {
@@ -33,21 +32,10 @@ public sealed partial class DialogGui : UIWidget
         _dialogUiController = UserInterfaceManager.GetUIController<DialogUIController>();
         _dialogUiController.RegisterDialog(this);
         
-        Text.SetMessage(_currentMessage,defaultColor:_dialogStyle.TextColor);
+        Text.SetMessage(_currentMessage,defaultColor: Color.Black);
         
         _dialogUiController.MessageEnded += OnMessageEnded;
     }
-
-    public void SetStyle(DialogStyle dialogStyle, DialogStyle buttonStyle)
-    {
-        _dialogStyle = dialogStyle;
-        _buttonStyle = buttonStyle;
-        
-        Text.HorizontalAlignment = dialogStyle.HorizontalAlignment;
-        
-        InitDialogStyle(_dialogStyle,SkipContainer);
-    }
-    
 
     public bool IsEmpty => _currentMessage.IsEmpty;
 
@@ -85,10 +73,16 @@ public sealed partial class DialogGui : UIWidget
         Act();
     }
 
+    public void SetEmote(Texture? texture)
+    {
+        PersRect.Texture = texture;
+        PersRect.Visible = texture != null;
+    }
+
     public void AppendLetter(char let)
     {
         _currentMessage.AddText(let.ToString());
-        Text.SetMessage(_currentMessage,defaultColor:_dialogStyle.TextColor);
+        Text.SetMessage(_currentMessage,defaultColor:Color.Black);
     }
 
     public FormattedMessage AppendLabel(string? text = null)
@@ -112,7 +106,8 @@ public sealed partial class DialogGui : UIWidget
         var btn = new Button();
         btn.Text = button.Name;
         btn.OnPressed += _ => button.DialogAction.Act();
-        btn.Margin = new Thickness(12, 0, 12, 0);
+        btn.Margin = new Thickness(0, 0, 36, 0);
+        btn.MinWidth = 162;
         ButtonContainer.AddChild(btn);
         _buttons.Add(button);
     }
@@ -127,31 +122,5 @@ public sealed partial class DialogGui : UIWidget
     {
         ButtonContainer.DisposeAllChildren();
         _buttons.Clear();
-    }
-
-    public void InitDialogStyle(DialogStyle dialogStyle, PanelContainer container)
-    {
-        SkipContainer.ModulateSelfOverride = dialogStyle.BackgroundModulate;
-        var backgroundImage = StaticIoC.ResC.GetResource<TextureResource>(dialogStyle.BackgroundPath);
-
-        var backgroundImageMode = StyleBoxTexture.StretchMode.Stretch;
-        var backgroundPatchMargin = dialogStyle.BackgroundPatchMargin;
-        var margin = dialogStyle.Margin;
-        container.PanelOverride = new StyleBoxTexture
-        {
-            Texture = backgroundImage,
-            Mode = backgroundImageMode,
-            PatchMarginLeft = backgroundPatchMargin.Left,
-            PatchMarginBottom = backgroundPatchMargin.Bottom,
-            PatchMarginRight = backgroundPatchMargin.Right,
-            PatchMarginTop = backgroundPatchMargin.Top,
-            
-            ExpandMarginLeft = margin.Left,
-            ExpandMarginBottom = margin.Bottom,
-            ExpandMarginRight = margin.Right,
-            ExpandMarginTop = margin.Top
-        };
-        
-        container.InvalidateArrange();
     }
 }

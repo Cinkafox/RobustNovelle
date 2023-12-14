@@ -8,14 +8,18 @@
       
 - type: entity
   id: raveel
-  name: Raveel
+  name: Фембойчик
   components:
     - type: Character
       sprite: Characters/raveel.rsi
+    - type: Emote
+      sprite: Emotes/raveel.rsi
   
 - type: entity
   id: igor
-  name: Igor
+  name: Игорь
   components:
     - type: Character
       sprite: Characters/igor.rsi
+    - type: Emote
+      sprite: Emotes/igor.rsi

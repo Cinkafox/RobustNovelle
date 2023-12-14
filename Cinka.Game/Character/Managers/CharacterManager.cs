@@ -25,9 +25,9 @@ public sealed class CharacterManager : ICharacterManager
         IoCManager.InjectDependencies(this);
     }
 
-    public void AddCharacter(string prototype)
+    public void AddCharacter(Scene.Data.Character character)
     {
-        var uid = _entityManager.SpawnEntity(prototype,
+        var uid = _entityManager.SpawnEntity(character.Entity,
             new MapCoordinates(Vector2.Zero, _locationManager.GetCurrentLocationId()));
 
         if (!_entityManager.TryGetComponent<CharacterComponent>(uid, out var component))
@@ -44,8 +44,10 @@ public sealed class CharacterManager : ICharacterManager
             return;
         }
 
-        _characters.Add(prototype, data);
-        SetCharacterState(prototype, component.State);
+        data.Visible = character.Visible;
+
+        _characters.Add(character.Entity, data);
+        SetCharacterState(character.Entity, component.State);
     }
 
     public void ClearCharacters()
@@ -87,7 +89,7 @@ public sealed class CharacterManager : ICharacterManager
 
     public IEnumerable<CharacterData> EnumerateCharacters()
     {
-        foreach (var (_, data) in _characters) yield return data;
+        foreach (var (_, data) in _characters) if(data.Visible) yield return data;
     }
 
 

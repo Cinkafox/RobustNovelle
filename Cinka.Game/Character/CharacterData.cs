@@ -10,6 +10,8 @@ namespace Cinka.Game.Character;
 [DataDefinition]
 public sealed partial class CharacterData
 {
+    [DataField] public bool Visible = true;
+    
     [DataField("scale")] public Vector2 Scale = Vector2.One;
 
     [ViewVariables] public RSI Sprite;

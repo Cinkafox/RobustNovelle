@@ -2,16 +2,16 @@
   id: default
   location: gym_outside
   characters:
-    - raveel
+    - entity: raveel
   dialogs:
     - actions:
         - !type:AudioAction
           prototype: backCity
-    - name: Фембойчик
+    - character: raveel
       text: Ох.. вот и спортзал
-    - name: Фембойчик
+    - character: raveel
       text: Давно я не качался..
-    - name: Фембойчик
+    - character: raveel
       text: Хотя.. стоил ли зайти туда?
       buttons:
         - name: Да
@@ -19,13 +19,12 @@
             !type:LoadSceneAction
             prototype: gymstart
         - name: Нет
-    - name: Фембойчик
+    - character: raveel
       text: Чтож...
       skipDialog: true
-      delay: 150
-    - name: Фембойчик
+      delay: 100
+    - character: raveel
       text: Видно не судьба
-      delay: 50
       newDialog: false
     - text: Фембойчик медленно уходит в закат
       
@@ -33,10 +32,11 @@
   id: gymstart
   location: gym_outside
   characters:
-    - raveel
+    - entity: raveel
   dialogs:
-    - name: Фембойчик
+    - character: raveel
       text: Нус, тогда захожу!
+      emote: hehe
     - actions:
         - !type:LoadSceneAction
           prototype: gymstartinside
@@ -45,32 +45,31 @@
   id: gymstartinside
   location: gym
   characters:
-    - raveel
+    - entity: raveel
+    - entity: igor
+      visible: false
   dialogs:
     - actions:
         - !type:AudioAction
           prototype: backGym
         - !type:AudioAction
           prototype: gymEnter
-    - name: Фембойчик
+    - character: raveel
       text: ...
-    - name: Фембойчик
+    - character: raveel
       text: ну и народу.. БРР!
+      emote: hehe
     - actions:
         - !type:ChangeCharacterState
           prototype: raveel
           state: anim
-    #- actions:
-    #    - !type:ChangeCharacterState
-    #      prototype: raveel
-    #  delay: 500
-    #  skipDialog: true
-    - name: Игорь
+    - character: igor
       text: Приветствую вас, посетитель!
-    - name: Фембойчик
+    - character: raveel
       text: к.. КТО ЭТО?
       delay: 50
       skipDialog: true
+      emote: insane
     - actions:
         - !type:LoadSceneAction
           prototype: gymigorstart
@@ -80,21 +79,21 @@
   id: gymigorstart
   location: gym
   characters:
-    - igor
-    - raveel
+    - entity: raveel
+    - entity: igor
   dialogs:
     - actions:
         - !type:ChangeCharacterState
           prototype: raveel
           state: anim
-    - name: Игорь
+    - character: igor
       text: Привет, мой сладенький дру...
       skipDialog: true
-    - name: Игорь
+    - character: igor
       text: Кхэм! Я имел в виду приветствую!
-    - name: Фембойчик
+    - character: raveel
       text: З..здравствуйте.. а какое упражнение посоветуете?
-    - name: Игорь
+    - character: igor
       text: Не боись! Для тебя у нас есть отдельная комната! Пройдём со мной!
     - actions:
         - !type:LoadSceneAction
@@ -103,33 +102,43 @@
 - type: scene
   id: basement
   location: basement
+  characters:
+    - entity: igor
+      visible: false
+    - entity: raveel
+      visible: false
   dialogs:
     - actions:
         - !type:AudioAction
           prototype: backBasement
         - !type:AudioAction
           prototype: gymEnter
-    - name: Игорь
+    - character: igor
       text: Вот мы на месте, распологайся поудобнее
-    - name: Фембойчик
+    - character: raveel
       text: а.. зачем тут.. намордник
-    - name: Игорь
+      emote: hehe
+    - character: igor
       text: Скоро узнаете, мой сладенький
+      emote: insane
     - actions:
         - !type:AudioAction
           prototype: anotherVictim
-    - name: Фембойчик
+    - character: raveel
       text: стоп.. зачем вы его взяли? И.. почему вы идёте в мою сторону?
+      emote: insane
     - actions:
         - !type:AudioAction
           prototype: anikiGrunt
-    - name: Фембойчик
+    - character: raveel
       text: СТОП! ПРОШУ НЕ НАДО! МФМФМФМФМ!
+      emote: insane
     - actions:
         - !type:AudioAction
           prototype: fpra
-    - name: Фембойчик
+    - character: raveel
       text: МФФМФМФММФ!!
+      emote: insane
     - text: Вот и сказочке конец
     - text: А кто слушал
     - text: ...

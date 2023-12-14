@@ -1,37 +1,37 @@
 using System;
 using System.Collections.Generic;
+using Cinka.Game.Character.Components;
+using Cinka.Game.Character.Managers;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Gameplay;
 using Cinka.Game.Input;
 using Cinka.Game.UserInterface.Systems.Dialog.Widgets;
+using Robust.Client.GameObjects;
 using Robust.Client.Input;
+using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface.Controllers;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.IoC;
+using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Timing;
 
 namespace Cinka.Game.UserInterface.Systems.Dialog;
 
-public sealed class DialogUIController : UIController, IOnStateEntered<GameplayStateBase>,
-    IOnStateExited<GameplayStateBase>
+public sealed class DialogUIController : UIController
 {
     [Dependency] private readonly IInputManager _input = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly ICharacterManager _characterManager = default!;
+    [Dependency] private readonly IEntityManager _entityManager = default!;
     
     private readonly HashSet<DialogGui> _dialogGuis = new();
     private readonly List<Game.Dialog.Data.Dialog> _messageQueue = new();
 
     public bool IsMessage => _messageQueue.Count > 0;
-
-    public void OnStateEntered(GameplayStateBase state)
-    {
-    }
-
-    public void OnStateExited(GameplayStateBase state)
-    {
-    }
 
     public event Action<Game.Dialog.Data.Dialog>? MessageEnded;
 
@@ -60,8 +60,6 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
 
     public void RegisterDialog(DialogGui dialogGui)
     {
-        var dialogStyle = _prototype.Index<DialogPrototype>("default");
-        dialogGui.SetStyle(dialogStyle,dialogStyle);
         _dialogGuis.Add(dialogGui);
     }
 
@@ -77,7 +75,7 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
 
     public void SpeedUpText()
     {
-        if (!IsMessage)
+        if (!IsMessage || _messageQueue[0].DontLetSkip)
             return;
 
         _messageQueue[0].Delay = 10;
@@ -116,8 +114,27 @@ public sealed class DialogUIController : UIController, IOnStateEntered<GameplayS
             currentDialog.PassedTime = 0;
             foreach (var dialogGui in _dialogGuis)
             {
-                if (!string.IsNullOrEmpty(currentDialog.Name) && dialogGui.IsEmpty)
-                    dialogGui.AppendLabel($"[bold]{currentDialog.Name}[/bold]: ");
+                //TODO: Вынести бы это как-то в отдельный метод
+                if (dialogGui.IsEmpty)
+                {
+                    if(!string.IsNullOrEmpty(currentDialog.Name) )
+                        dialogGui.AppendLabel($"[bold]{currentDialog.Name}[/bold]: ");
+                    
+                    //TODO: переделать потом да
+                    if (currentDialog.Character != null 
+                        && _characterManager.TryGetCharacter(currentDialog.Character, out var characterData) 
+                        && _entityManager.TryGetComponent<EmoteComponent>(characterData.Uid,out var emoteComponent)
+                        && StaticIoC.ResC.TryGetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / emoteComponent.RsiPath,
+                            out var rs)
+                        && rs.RSI.TryGetState(currentDialog.Emote, out var state))
+                    {
+                        dialogGui.SetEmote(state.Frame0);
+                    }
+                    else if (currentDialog.IsDialog)
+                    {
+                        dialogGui.SetEmote(null);
+                    }
+                }
 
                 dialogGui.AppendLetter(currentDialog.Text[0]);
                 currentDialog.Text = currentDialog.Text.Substring(1);

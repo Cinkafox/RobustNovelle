@@ -4,9 +4,11 @@ using Cinka.Game.Dialog.Data;
 using Cinka.Game.Location.Managers;
 using Cinka.Game.Scene.Data;
 using Cinka.Game.UserInterface.Systems.Dialog;
+using Microsoft.CodeAnalysis;
 using Robust.Client;
 using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
+using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager;
@@ -22,6 +24,7 @@ public sealed class SceneManager : ISceneManager
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly ISerializationManager _serializationManager = default!;
+    [Dependency] private readonly IEntityManager _entityManager = default!;
 
     private ScenePrototype? _currentScene;
 
@@ -69,6 +72,13 @@ public sealed class SceneManager : ISceneManager
             if (currentDialog.Buttons.Count == 0) currentDialog.SkipDialog = true;
             else if (currentDialog.Actions.Count != 0)
                 throw new Exception($"Долбоеб блять какие действие с текстом? {currentDialog.Text}");
+        }
+
+        //TODO: не ну это какое то говно ебанное да! Переделать потом
+        if (currentDialog.Character != null && _characterManager.TryGetCharacter(currentDialog.Character, out var characterData) 
+                                            && _entityManager.TryGetComponent<MetaDataComponent>(characterData.Uid,out var metadata))
+        {
+            currentDialog.Name = metadata.EntityName;
         }
         
         _dialogUiController.AppendText(currentDialog);

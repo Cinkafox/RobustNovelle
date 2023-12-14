@@ -2,7 +2,7 @@
   id: default1
   location: default
   characters:
-    - cat
+    - entity: cat
   dialogs:
     - name: Кот
       text: Привет, это тестовая шняга, показать приколы?
@@ -24,7 +24,7 @@
   id: meowyes
   location: default
   characters:
-    - cat
+    - entity: cat
   dialogs:
     - name: Вы
       text: Да.. пожалуйста..
