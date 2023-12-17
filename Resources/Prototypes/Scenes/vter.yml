@@ -54,6 +54,7 @@
           prototype: backGym
         - !type:AudioAction
           prototype: gymEnter
+          effect: LivingRoom
     - character: raveel
       text: ...
     - character: raveel
@@ -113,6 +114,7 @@
           prototype: backBasement
         - !type:AudioAction
           prototype: gymEnter
+          effect: Bathroom
     - character: igor
       text: Вот мы на месте, распологайся поудобнее
     - character: raveel
@@ -130,12 +132,14 @@
     - actions:
         - !type:AudioAction
           prototype: anikiGrunt
+          effect: Bathroom
     - character: raveel
       text: СТОП! ПРОШУ НЕ НАДО! МФМФМФМФМ!
       emote: insane
     - actions:
         - !type:AudioAction
           prototype: fpra
+          effect: Bathroom
     - character: raveel
       text: МФФМФМФММФ!!
       emote: insane

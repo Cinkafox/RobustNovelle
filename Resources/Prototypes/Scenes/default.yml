@@ -4,34 +4,65 @@
   characters:
     - entity: cat
   dialogs:
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: Generic
     - name: Кот
-      text: Привет, это тестовая шняга, показать приколы?
-      skipDialog: true
-      buttons:
-        - name: Да
-          dialogAction:
-            !type:LoadSceneAction
-            prototype: meowyes
-        - name: Нет
-    - name: Вы
-      text: Нет.. пожалуй
-    - name: Кот
-      text: ТЫ ПОНИМАЕШЬ Я ВО АВГАНИСТАНЕ ВОЕВАЛ!!!
-    - name: Кот
-      text: ЧУРКА!
+      text: Тест Generic
       
-- type: scene
-  id: meowyes
-  location: default
-  characters:
-    - entity: cat
-  dialogs:
-    - name: Вы
-      text: Да.. пожалуйста..
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: PaddedCell
     - name: Кот
-      text: Хм.. что бы мне показать?
+      text: Тест PaddedCell
+      
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: Room
     - name: Кот
-      text: "*пожимает плечами*"
-      delay: 50
-    - name: Вы
-      text: Хм..
+      text: Тест Room
+      
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: Bathroom
+    - name: Кот
+      text: Тест Bathroom
+      
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: ConcertHall
+    - name: Кот
+      text: Тест ConcertHall
+      
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: Arena
+    - name: Кот
+      text: Тест Arena
+      
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: Hallway
+    - name: Кот
+      text: Тест Hallway
+      
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: Plain
+    - name: Кот
+      text: Тест Plain
+      
+    - actions:
+        - !type:AudioAction
+          prototype: gymEnter
+          effect: Psychotic
+    - name: Кот
+      text: Тест Psychotic
