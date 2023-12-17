@@ -18,12 +18,12 @@ public static class ContentPackaging
 
         var inputPass = graph.Input;
 
-        await RobustClientPackaging.WriteContentAssemblies(
+        await RobustSharedPackaging.WriteContentAssemblies(
             inputPass,
             contentDir,
             "Cinka.Game",
             new[] { "Cinka.Game" },
-            cancel);
+            cancel: cancel);
 
         await RobustClientPackaging.WriteClientResources(contentDir, inputPass, cancel);
 

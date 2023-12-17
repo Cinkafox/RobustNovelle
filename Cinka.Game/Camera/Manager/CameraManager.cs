@@ -23,6 +23,7 @@ public sealed class CameraManager : ICameraManager
         var entity = _entityManager.SpawnEntity(CameraProtoName,
             new MapCoordinates(0, 0, _locationManager.GetCurrentLocationId()));
         if (_playerManager.LocalPlayer == null) throw new Exception("PUK SRINK PLAYER IS NULL!");
-        _playerManager.LocalPlayer.AttachEntity(entity, _entityManager, _client);
+
+        _playerManager.SetAttachedEntity(_playerManager.LocalSession, entity);
     }
 }

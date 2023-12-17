@@ -1,3 +1,4 @@
+using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager.Attributes;
 
@@ -10,8 +11,8 @@ public sealed class AudioPrototype : IPrototype
 
     //[DataField(required: true)] public string Path = default!;
 
-    [DataField] public bool IsBackground = false;
+    [DataField] public bool IsBackground;
 
-    [DataField("path", required:true, customTypeSerializer:typeof(AudioSerializer))] 
-    public AudioSpecifier Audio = default!;
+    [DataField("path", required:true, customTypeSerializer:typeof(SoundSpecifierTypeSerializer))] 
+    public SoundSpecifier Audio = default!;
 }

@@ -1,7 +1,6 @@
 using System.Globalization;
-using Cinka.Game.Audio.Managers;
+using Cinka.Game.Audio.Data;
 using Cinka.Game.Camera.Manager;
-using Cinka.Game.Character.Managers;
 using Cinka.Game.Gameplay;
 using Cinka.Game.Input;
 using Cinka.Game.Location.Managers;
@@ -10,19 +9,20 @@ using Cinka.Game.StyleSheet;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
+using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
+using Robust.Shared.Prototypes;
 
 namespace Cinka.Game;
 
 public sealed class EntryPoint : GameClient
 {
     private const string Culture = "ru-RU";
-    [Dependency] private readonly IAudioManager _audioManager = default!;
     [Dependency] private readonly ICameraManager _cameraManager = default!;
     [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
@@ -32,6 +32,8 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IStateManager _stateManager = default!;
     [Dependency] private readonly IStylesheetManager _stylesheetManager = default!;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
+    [Dependency] private readonly IResourceCache _resource = default!;
+    [Dependency] private readonly IPrototypeManager _prototype = default!;
 
     public override void PreInit()
     {
@@ -54,11 +56,16 @@ public sealed class EntryPoint : GameClient
         //Нахуя нам свет в новелле да?
         IoCManager.Resolve<ILightManager>().Enabled = false;
 
+        //Some cache shit
+        foreach (var audio in _prototype.EnumeratePrototypes<AudioPrototype>())
+        {
+            _resource.TryGetResource<AudioResource>(audio.Audio.GetSound(), out _);
+        }
+
         _stateManager.RequestStateChange<GameplayStateBase>();
         _uiManager.MainViewport.Visible = false;
         _client.StartSinglePlayer();
-
-        _audioManager.Initialize();
+        
         _locationManager.Initialize();
         _cameraManager.Initialize();
         _stylesheetManager.Initialize();
@@ -67,6 +74,6 @@ public sealed class EntryPoint : GameClient
 
     public override void Shutdown()
     {
-        _audioManager.Shutdown();
+        
     }
 }
