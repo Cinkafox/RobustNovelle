@@ -1,5 +1,6 @@
 using Cinka.Game.Character.Managers;
 using Cinka.Game.Dialog.Data;
+using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager.Attributes;
@@ -14,6 +15,6 @@ public sealed partial class ChangeCharacterState : IDialogAction
 
     public void Act()
     {
-        IoCManager.Resolve<ICharacterManager>().SetCharacterState(Prototype, State);
+        IoCManager.Resolve<EntityManager>().System<CharacterSystem>().SetCharacterState(Prototype,State);
     }
 }

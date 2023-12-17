@@ -13,6 +13,7 @@ namespace Cinka.Game.Background.Manager;
 public sealed class BackgroundManager : IBackgroundManager
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly IResourceCache _cache = default!;
 
     private Texture[] _currentBackground = {};
     private BackgroundPrototype? _currentBackgroundPrototype;
@@ -54,9 +55,9 @@ public sealed class BackgroundManager : IBackgroundManager
         rsi = null;
 
         if (data?.RsiPath != null)
-            rsi = StaticIoC.ResC.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / data.RsiPath).RSI;
+            rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / data.RsiPath).RSI;
         else if (_currentBackgroundPrototype?.RsiPath != null)
-            rsi = StaticIoC.ResC
+            rsi = _cache
                 .GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / _currentBackgroundPrototype.RsiPath)
                 .RSI;
 

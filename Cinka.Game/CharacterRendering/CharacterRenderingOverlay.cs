@@ -1,8 +1,11 @@
+using System.Linq;
 using System.Numerics;
 using Cinka.Game.Character;
+using Cinka.Game.Character.Components;
 using Cinka.Game.Character.Managers;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
+using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
@@ -12,7 +15,8 @@ namespace Cinka.Game.CharacterRendering;
 public sealed class CharacterRenderingOverlay : Overlay
 {
     private const float Shift = 2;
-    [Dependency] private readonly ICharacterManager _characterManager = default!;
+    private readonly CharacterSystem _characterSystem;
+    [Dependency] private readonly EntityManager _entityManager = default!;
 
     private int _characterRendering;
     private float _elapsedTime;
@@ -22,13 +26,14 @@ public sealed class CharacterRenderingOverlay : Overlay
     public CharacterRenderingOverlay()
     {
         IoCManager.InjectDependencies(this);
+        _characterSystem = _entityManager.System<CharacterSystem>();
     }
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceEntities;
 
     protected override void FrameUpdate(FrameEventArgs args)
     {
-        _frames = _frames + 1;
+        _frames += 1;
         _elapsedTime += args.DeltaSeconds;
         _lastDelta = _elapsedTime / _frames;
     }
@@ -38,11 +43,13 @@ public sealed class CharacterRenderingOverlay : Overlay
         var handle = args.WorldHandle;
         _characterRendering = 0;
 
-        foreach (var character in _characterManager.EnumerateCharacters())
-            DrawCharacter(character, handle, args.WorldBounds, _characterManager.Count());
+        var characters = _characterSystem.EnumerateCharacters().ToList();
+
+        foreach (var character in characters)
+            DrawCharacter(character, handle, args.WorldBounds, characters.Count);
     }
 
-    private void DrawCharacter(CharacterData character, DrawingHandleWorld handle, Box2Rotated bounds,
+    private void DrawCharacter(CharacterComponent character, DrawingHandleWorld handle, Box2Rotated bounds,
         int charactersCount)
     {
         var sprite = character.Sprite[character.State];

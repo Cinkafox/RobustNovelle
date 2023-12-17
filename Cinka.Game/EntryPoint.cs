@@ -24,7 +24,6 @@ public sealed class EntryPoint : GameClient
     private const string Culture = "ru-RU";
     [Dependency] private readonly IAudioManager _audioManager = default!;
     [Dependency] private readonly ICameraManager _cameraManager = default!;
-    [Dependency] private readonly ICharacterManager _characterManager = default!;
     [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
@@ -60,7 +59,6 @@ public sealed class EntryPoint : GameClient
         _client.StartSinglePlayer();
 
         _audioManager.Initialize();
-        _characterManager.Initialize();
         _locationManager.Initialize();
         _cameraManager.Initialize();
         _stylesheetManager.Initialize();

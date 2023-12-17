@@ -5,6 +5,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using static Robust.Client.UserInterface.StylesheetHelpers;
 
@@ -37,7 +38,7 @@ public sealed class StyleNovelle : StyleBase
 
     public StyleNovelle(IResourceCache resCache) : base(resCache)
     {
-        var backgroundImage = StaticIoC.ResC.GetResource<TextureResource>(BackgroundPath);
+        var backgroundImage = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>(BackgroundPath);
 
         var backgroundImageMode = StyleBoxTexture.StretchMode.Stretch;
         var backgroundPatchMargin = BackgroundPatchMargin;
@@ -51,7 +52,7 @@ public sealed class StyleNovelle : StyleBase
             PatchMarginTop = backgroundPatchMargin.Top,
         };
         
-        var backgroundButtonImage = StaticIoC.ResC.GetResource<TextureResource>(BackgroundPath);
+        var backgroundButtonImage = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>(BackgroundPath);
 
         var backgroundButtonImageMode = StyleBoxTexture.StretchMode.Stretch;
         var backgroundButtonPatchMargin = BackgroundPatchMargin;

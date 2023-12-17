@@ -25,7 +25,6 @@ public sealed class DialogUIController : UIController
 {
     [Dependency] private readonly IInputManager _input = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly ICharacterManager _characterManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
     
     private readonly HashSet<DialogGui> _dialogGuis = new();
@@ -119,21 +118,7 @@ public sealed class DialogUIController : UIController
                 {
                     if(!string.IsNullOrEmpty(currentDialog.Name) )
                         dialogGui.AppendLabel($"[bold]{currentDialog.Name}[/bold]: ");
-                    
-                    //TODO: переделать потом да
-                    if (currentDialog.Character != null 
-                        && _characterManager.TryGetCharacter(currentDialog.Character, out var characterData) 
-                        && _entityManager.TryGetComponent<EmoteComponent>(characterData.Uid,out var emoteComponent)
-                        && StaticIoC.ResC.TryGetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / emoteComponent.RsiPath,
-                            out var rs)
-                        && rs.RSI.TryGetState(currentDialog.Emote, out var state))
-                    {
-                        dialogGui.SetEmote(state.Frame0);
-                    }
-                    else if (currentDialog.IsDialog)
-                    {
-                        dialogGui.SetEmote(null);
-                    }
+                    _entityManager.EventBus.RaiseEvent(EventSource.Local,new DialogMessageStarted(dialogGui,currentDialog));
                 }
 
                 dialogGui.AppendLetter(currentDialog.Text[0]);
@@ -155,5 +140,17 @@ public sealed class DialogUIController : UIController
     private void OnMessageEnded(Game.Dialog.Data.Dialog obj)
     {
         MessageEnded?.Invoke(obj);
+    }
+}
+
+public sealed partial class DialogMessageStarted
+{
+    public DialogGui DialogGui;
+    public Game.Dialog.Data.Dialog CurrentDialog;
+
+    public DialogMessageStarted(DialogGui dialogGui, Game.Dialog.Data.Dialog currentDialog)
+    {
+        DialogGui = dialogGui;
+        CurrentDialog = currentDialog;
     }
 }

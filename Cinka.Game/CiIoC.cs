@@ -17,7 +17,6 @@ public static class CiIoC
         IoCManager.Register<ViewportManager, ViewportManager>();
         IoCManager.Register<IBackgroundManager, BackgroundManager>();
         IoCManager.Register<IStylesheetManager, StylesheetManager>();
-        IoCManager.Register<ICharacterManager, CharacterManager>();
         IoCManager.Register<ILocationManager, LocationManager>();
         IoCManager.Register<ICameraManager, CameraManager>();
         IoCManager.Register<ISceneManager, SceneManager>();

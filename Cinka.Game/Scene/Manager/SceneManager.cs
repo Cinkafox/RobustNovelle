@@ -18,13 +18,14 @@ namespace Cinka.Game.Scene.Manager;
 public sealed class SceneManager : ISceneManager
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly ICharacterManager _characterManager = default!;
     [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly ISerializationManager _serializationManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
+
+    private CharacterSystem _characterSystem = default!;
 
     private ScenePrototype? _currentScene;
 
@@ -33,7 +34,10 @@ public sealed class SceneManager : ISceneManager
     public void Initialize()
     {
         IoCManager.InjectDependencies(this);
+        
         _dialogUiController = _userInterfaceManager.GetUIController<DialogUIController>();
+        _characterSystem = _entityManager.System<CharacterSystem>();
+        
         LoadScene(_cfg.GetCVar(CCVars.CCVars.LastScenePrototype));
     }
 
@@ -50,7 +54,7 @@ public sealed class SceneManager : ISceneManager
         _currentScene = _serializationManager.CreateCopy(proto, notNullableOverride:true);
 
         _locationManager.LoadLocation(_currentScene.Location);
-        foreach (var characterPrototype in _currentScene.Characters) _characterManager.AddCharacter(characterPrototype);
+        foreach (var characterPrototype in _currentScene.Characters) _characterSystem.AddCharacter(characterPrototype);
         
         ContinueDialog();
     }
@@ -75,8 +79,8 @@ public sealed class SceneManager : ISceneManager
         }
 
         //TODO: не ну это какое то говно ебанное да! Переделать потом
-        if (currentDialog.Character != null && _characterManager.TryGetCharacter(currentDialog.Character, out var characterData) 
-                                            && _entityManager.TryGetComponent<MetaDataComponent>(characterData.Uid,out var metadata))
+        if (currentDialog.Character != null && _characterSystem.TryGetCharacter(currentDialog.Character, out var characterData, out var uid) 
+                                            && _entityManager.TryGetComponent<MetaDataComponent>(uid, out var metadata))
         {
             currentDialog.Name = metadata.EntityName;
         }
@@ -97,7 +101,7 @@ public sealed class SceneManager : ISceneManager
 
     public void CleanupScene()
     {
-        _characterManager.ClearCharacters();
+        _characterSystem.ClearCharacters();
         _dialogUiController.ClearAllDialog();
         _currentScene = null;
     }
