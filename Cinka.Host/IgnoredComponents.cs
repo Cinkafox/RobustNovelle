@@ -4,6 +4,8 @@ public static class IgnoredComponents
 {
     public static string[] List => new[]
     {
-        "Character"
+        "Character",
+        "Voice",
+        "Emote"
     };
 }

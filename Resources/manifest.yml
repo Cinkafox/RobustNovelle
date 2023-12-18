@@ -3,3 +3,4 @@ assemblyPrefix: Cinka
 defaultWindowTitle: Femboy adventure
 windowIconSet: /Textures/Interface/meo.png
 splashLogo: /Textures/Interface/loading.png
+autoConnect: false # Fuck you
