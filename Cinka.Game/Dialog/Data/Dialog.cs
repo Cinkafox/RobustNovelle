@@ -29,5 +29,5 @@ public sealed partial class Dialog
     
     [ViewVariables(VVAccess.ReadOnly)] public float PassedTime;
     
-    [DataField] public HashSet<DialogButton> Buttons = new();
+    [DataField] public HashSet<DialogButton> Choices = new();
 }

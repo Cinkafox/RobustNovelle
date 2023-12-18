@@ -13,7 +13,7 @@
       text: Давно я не качался..
     - character: raveel
       text: Хотя.. стоил ли зайти туда?
-      buttons:
+      choices:
         - name: Да
           dialogAction:
             !type:LoadSceneAction

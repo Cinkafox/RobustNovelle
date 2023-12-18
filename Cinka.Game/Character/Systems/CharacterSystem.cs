@@ -56,10 +56,12 @@ public sealed class CharacterSystem : EntitySystem
         QueueDel(uid);
     }
     
-    public bool TryGetCharacter(string prototype,[NotNullWhen(true)] out CharacterComponent? component,out EntityUid uid)
+    public bool TryGetCharacter(string? prototype,[NotNullWhen(true)] out CharacterComponent? component,out EntityUid uid)
     {
+        uid = EntityUid.Invalid;
         component = null;
-        if (!_characters.TryGetValue(prototype, out uid)) return false;
+        
+        if (prototype != null && !_characters.TryGetValue(prototype, out uid)) return false;
         
         return TryComp(uid, out component);
     }

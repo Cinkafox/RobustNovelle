@@ -11,6 +11,6 @@ public sealed class AudioPrototype : IPrototype
 
     [DataField] public bool IsBackground;
 
-    [DataField("path", required:true, customTypeSerializer:typeof(SoundSpecifierTypeSerializer))] 
+    [DataField(required:true)] //,customTypeSerializer:typeof(SoundSpecifierTypeSerializer))] 
     public SoundSpecifier Audio = default!;
 }

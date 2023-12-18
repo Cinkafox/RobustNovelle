@@ -1,36 +1,41 @@
 using System.Diagnostics.CodeAnalysis;
 using Cinka.Game.Character.Components;
-using Cinka.Game.UserInterface.Systems.Dialog;
+using Cinka.Game.Character.Managers;
+using Cinka.Game.Dialog;
+using Cinka.Game.Dialog.Systems;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Log;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 
-namespace Cinka.Game.Character.Managers;
+namespace Cinka.Game.Character.Systems;
 
 public sealed class EmoteSystem : EntitySystem
 {
-    [Dependency] private readonly CharacterSystem _characterSystem = default!;
     [Dependency] private readonly IResourceCache _cache = default!;
+    [Dependency] private readonly DialogSystem _dialog = default!;
     
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<DialogMessageStarted>(OnDialogMessageStarted);
+        SubscribeLocalEvent<EmoteComponent,DialogStartedEvent>(OnDialogStarted);
+        SubscribeLocalEvent<DialogStartedEvent>(OnDialogStartedWt);
     }
 
-    private void OnDialogMessageStarted(DialogMessageStarted ev)
+    private void OnDialogStartedWt(DialogStartedEvent ev)
     {
-        if (ev.CurrentDialog.Character != null 
-            && _characterSystem.TryGetCharacter(ev.CurrentDialog.Character, out var characterComponent, out var uid) 
-            && TryGetEmotesSprite(uid, out var resource) && resource.RSI.TryGetState(ev.CurrentDialog.Emote, out var state))
-        {
-            ev.DialogGui.SetEmote(state.Frame0);
-        }
-        else if (ev.CurrentDialog.IsDialog)
-        {
-            ev.DialogGui.SetEmote(null);
-        }
+        if(ev.Dialog is { IsDialog: true, Character: null })
+            _dialog.SetEmote(null);
+    }
+    
+    private void OnDialogStarted(EntityUid uid, EmoteComponent component, DialogStartedEvent args)
+    {
+        if (TryGetEmotesSprite(uid, out var resource) && resource.RSI.TryGetState(args.Dialog.Emote, out var state))
+            _dialog.SetEmote(state.Frame0);
+        else if (args.Dialog.IsDialog)
+            _dialog.SetEmote(null);
+        
     }
 
     public bool TryGetEmotesSprite(EntityUid uid, [NotNullWhen(true)] out RSIResource? resource,

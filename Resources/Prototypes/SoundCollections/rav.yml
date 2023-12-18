@@ -1,0 +1,7 @@
+- type: soundCollection
+  id: Meow
+  files:
+    - /Audio/Meow/meow1.wav
+    - /Audio/Meow/meow2.wav
+    - /Audio/Meow/meow3.wav
+    - /Audio/Meow/meow4.wav

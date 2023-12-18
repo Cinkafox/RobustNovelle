@@ -12,6 +12,8 @@
   components:
     - type: Character
       sprite: Characters/raveel.rsi
+    - type: Voice
+      voice: voiceMeow
     - type: Emote
       sprite: Emotes/raveel.rsi
   

@@ -1,6 +1,7 @@
 using System;
 using Cinka.Game.Character.Managers;
 using Cinka.Game.Dialog.Data;
+using Cinka.Game.Dialog.Systems;
 using Cinka.Game.Location.Managers;
 using Cinka.Game.Scene.Data;
 using Cinka.Game.UserInterface.Systems.Dialog;
@@ -26,17 +27,15 @@ public sealed class SceneManager : ISceneManager
     [Dependency] private readonly IEntityManager _entityManager = default!;
 
     private CharacterSystem _characterSystem = default!;
-
+    private DialogSystem _dialogSystem = default!;
     private ScenePrototype? _currentScene;
-
-    private DialogUIController _dialogUiController = default!;
 
     public void Initialize()
     {
         IoCManager.InjectDependencies(this);
         
-        _dialogUiController = _userInterfaceManager.GetUIController<DialogUIController>();
         _characterSystem = _entityManager.System<CharacterSystem>();
+        _dialogSystem = _entityManager.System<DialogSystem>();
         
         LoadScene(_cfg.GetCVar(CCVars.CCVars.LastScenePrototype));
     }
@@ -55,39 +54,11 @@ public sealed class SceneManager : ISceneManager
 
         _locationManager.LoadLocation(_currentScene.Location);
         foreach (var characterPrototype in _currentScene.Characters) _characterSystem.AddCharacter(characterPrototype);
+        foreach (var dialog in _currentScene.Dialogs) _dialogSystem.AddDialog(dialog);
         
-        ContinueDialog();
+        _dialogSystem.ContinueDialog();
     }
-
-    public void ContinueDialog()
-    {
-        if (_currentScene == null || _dialogUiController.IsMessage) return;
-        if (_currentScene.Dialogs.Count == 0)
-        {
-            _gameController.Shutdown("Конец");
-            return;
-        }
-
-        var currentDialog = _currentScene.Dialogs[0];
-        if (currentDialog.NewDialog) _dialogUiController.ClearAllDialog();
-        if (IsEmptyString(currentDialog.Text))
-        {
-            currentDialog.IsDialog = false;
-            if (currentDialog.Buttons.Count == 0) currentDialog.SkipDialog = true;
-            else if (currentDialog.Actions.Count != 0)
-                throw new Exception($"Долбоеб блять какие действие с текстом? {currentDialog.Text}");
-        }
-
-        //TODO: не ну это какое то говно ебанное да! Переделать потом
-        if (currentDialog.Character != null && _characterSystem.TryGetCharacter(currentDialog.Character, out var characterData, out var uid) 
-                                            && _entityManager.TryGetComponent<MetaDataComponent>(uid, out var metadata))
-        {
-            currentDialog.Name = metadata.EntityName;
-        }
-        
-        _dialogUiController.AppendText(currentDialog);
-        _currentScene.Dialogs.RemoveAt(0);
-    }
+    
 
     public ScenePrototype? GetCurrentScene()
     {
@@ -102,12 +73,7 @@ public sealed class SceneManager : ISceneManager
     public void CleanupScene()
     {
         _characterSystem.ClearCharacters();
-        _dialogUiController.ClearAllDialog();
+        _dialogSystem.CleanupDialog();
         _currentScene = null;
-    }
-
-    private bool IsEmptyString(string text)
-    {
-        return string.IsNullOrEmpty(text) || text == " ";
     }
 }
