@@ -125,7 +125,8 @@
       emote: insane
     - actions:
         - !type:AudioAction
-          prototype: anotherVictim
+          prototype: augh
+          effect: Bathroom
     - character: raveel
       text: стоп.. зачем вы его взяли? И.. почему вы идёте в мою сторону?
       emote: insane

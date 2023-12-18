@@ -23,5 +23,7 @@
   components:
     - type: Character
       sprite: Characters/igor.rsi
+    - type: Voice
+      voice: voiceAugh
     - type: Emote
       sprite: Emotes/igor.rsi

@@ -5,3 +5,11 @@
     - /Audio/Meow/meow2.wav
     - /Audio/Meow/meow3.wav
     - /Audio/Meow/meow4.wav
+  
+- type: soundCollection
+  id: Augh
+  files:
+    - /Audio/Augh/auuughh1.wav
+    - /Audio/Augh/auuughh2.wav
+    - /Audio/Augh/auuughh3.wav
+
