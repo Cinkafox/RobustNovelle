@@ -15,3 +15,20 @@
 - type: background
   id: basement
   sprite: Backgrounds/basement.rsi
+  
+- type: background
+  id: space
+  sprite: Backgrounds/space.rsi
+
+- type: background
+  id: station
+  sprite: Backgrounds/station.rsi
+  
+- type: background
+  id: gate
+  sprite: Backgrounds/station.rsi
+  state: gate
+  
+- type: background
+  id: ban
+  sprite: Backgrounds/ban.rsi

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Бан нахуй",
+  "size": {
+    "x": 788,
+    "y": 281
+  },
+  "states": [
+    {
+      "name": "default"
+    }
+  ]
+}

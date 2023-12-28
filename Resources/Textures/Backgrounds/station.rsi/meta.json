@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Мама тут родила",
+  "size": {
+    "x": 1280,
+    "y": 833
+  },
+  "states": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "gate"
+    }
+  ]
+}

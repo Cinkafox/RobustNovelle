@@ -27,3 +27,12 @@
       voice: voiceAugh
     - type: Emote
       sprite: Emotes/igor.rsi
+      
+- type: entity
+  id: kids
+  name: ДЕТИ!!!
+  components:
+    - type: Character
+      sprite: Characters/kids.rsi
+    - type: Voice
+      voice: voiceAugh

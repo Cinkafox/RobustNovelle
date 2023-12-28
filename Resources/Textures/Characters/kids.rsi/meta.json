@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Я детей санрайза сфоткал",
+  "size": {
+    "x": 1280,
+    "y": 720
+  },
+  "states": [
+    {
+      "name": "default"
+    }
+  ]
+}
