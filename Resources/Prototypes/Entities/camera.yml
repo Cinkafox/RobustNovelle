@@ -1,6 +1,8 @@
 - type: entity
   id: Camera
+  parent:
+    - charbase
   components:
-    - type: Input
-      context: "human"
     - type: Eye
+    - type: InputMover
+      toParent: true

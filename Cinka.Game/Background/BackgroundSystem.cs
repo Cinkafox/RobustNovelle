@@ -11,6 +11,6 @@ public sealed class BackgroundSystem : EntitySystem
 
     public override void Initialize()
     {
-        _overlay.AddOverlay(new BackgroundOverlay());
+        //_overlay.AddOverlay(new BackgroundOverlay());
     }
 }

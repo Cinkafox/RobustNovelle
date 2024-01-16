@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Cinka.Game.Camera.Manager;
 using Cinka.Game.Character.Components;
 using Cinka.Game.Location.Managers;
+using Robust.Client.GameObjects;
+using Robust.Client.Physics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Log;
 using Robust.Shared.Map;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 
@@ -15,6 +19,10 @@ public sealed class CharacterSystem : EntitySystem
 {
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IResourceCache _cache = default!;
+    [Dependency] private readonly ICameraManager _cameraManager = default!;
+    [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
+    [Dependency] private readonly TransformSystem _transform = default!;
+    [Dependency] private readonly IMapManager _map = default!;
     
     private Dictionary<string, EntityUid> _characters = new();
 
@@ -34,20 +42,28 @@ public sealed class CharacterSystem : EntitySystem
 
     public void AddCharacter(Scene.Data.Character character)
     {
-        var uid = Spawn(character.Entity,
-            new MapCoordinates(Vector2.Zero, _locationManager.GetCurrentLocationId()));
+        var uid = Spawn(character.Entity, new MapCoordinates(100,100,_locationManager.GetCurrentLocationId()));
 
         if (!TryComp<CharacterComponent>(uid, out var component))
         {
             QueueDel(uid);
             return;
         }
-
+        
         component.Visible = character.Visible;
         
         _characters.Add(character.Entity,uid);
         
         SetCharacterState(character.Entity, component.State);
+        
+        _transform.SetWorldPosition(uid,Vector2.Zero);
+
+        if (character.IsPlayer)
+        {
+            _cameraManager.AttachEntity(uid);
+        }
+        
+
     }
 
     public void RemoveCharacter(string prototype)

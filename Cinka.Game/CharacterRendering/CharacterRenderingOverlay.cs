@@ -3,6 +3,7 @@ using System.Numerics;
 using Cinka.Game.Character;
 using Cinka.Game.Character.Components;
 using Cinka.Game.Character.Managers;
+using Cinka.Game.Dialog.Systems;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
@@ -16,6 +17,7 @@ public sealed class CharacterRenderingOverlay : Overlay
 {
     private const float Shift = 2;
     private readonly CharacterSystem _characterSystem;
+    private readonly DialogSystem _dialogSystem;
     [Dependency] private readonly EntityManager _entityManager = default!;
 
     private int _characterRendering;
@@ -27,9 +29,10 @@ public sealed class CharacterRenderingOverlay : Overlay
     {
         IoCManager.InjectDependencies(this);
         _characterSystem = _entityManager.System<CharacterSystem>();
+        _dialogSystem = _entityManager.System<DialogSystem>();
     }
 
-    public override OverlaySpace Space => OverlaySpace.WorldSpaceEntities;
+    public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
     protected override void FrameUpdate(FrameEventArgs args)
     {
@@ -40,6 +43,8 @@ public sealed class CharacterRenderingOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
+        if(!_dialogSystem.IsVisible()) return;
+        
         var handle = args.WorldHandle;
         _characterRendering = 0;
 

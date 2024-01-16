@@ -3,6 +3,7 @@ using Cinka.Game.Character.Managers;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Dialog.Systems;
 using Cinka.Game.Location.Managers;
+using Cinka.Game.Parallax.Managers;
 using Cinka.Game.Scene.Data;
 using Cinka.Game.UserInterface.Systems.Dialog;
 using Microsoft.CodeAnalysis;
@@ -19,12 +20,11 @@ namespace Cinka.Game.Scene.Manager;
 public sealed class SceneManager : ISceneManager
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly ISerializationManager _serializationManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
+    [Dependency] private readonly IParallaxManager _parallaxManager = default!;
 
     private CharacterSystem _characterSystem = default!;
     private DialogSystem _dialogSystem = default!;
@@ -36,6 +36,7 @@ public sealed class SceneManager : ISceneManager
         
         _characterSystem = _entityManager.System<CharacterSystem>();
         _dialogSystem = _entityManager.System<DialogSystem>();
+        _parallaxManager.LoadDefaultParallax();
         
         LoadScene(_cfg.GetCVar(CCVars.CCVars.LastScenePrototype));
     }

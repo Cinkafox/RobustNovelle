@@ -1,13 +1,11 @@
 - type: scene
-  id: default1
+  id: default
   location: default
   characters:
     - entity: cat
+      isPlayer: true
+    - entity: kids
+      visible: false
   dialogs:
-    - actions:
-        - !type:AudioAction
-          prototype: test
     - name: Кот
-      text: Тест эффектов да
-    - actions:
-        - !type:LoadEffectButtonAction
+      text: Мяу

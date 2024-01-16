@@ -17,7 +17,7 @@ namespace Cinka.Game.UserInterface.Systems;
 
 public sealed class ViewportUIController : UIController
 {
-    public const int ViewportHeight = 15;
+    public const int ViewportHeight = 9;
 
     public static readonly Vector2i ViewportSize = (EyeManager.PixelsPerMeter * 21, EyeManager.PixelsPerMeter * 15);
     [Dependency] private readonly IConfigurationManager _configurationManager = default!;

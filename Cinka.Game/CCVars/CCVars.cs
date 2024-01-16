@@ -14,7 +14,7 @@ public sealed class CCVars : CVars
         CVarDef.Create("viewport.stretch", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<int> ViewportFixedScaleFactor =
-        CVarDef.Create("viewport.fixed_scale_factor", 2, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("viewport.fixed_scale_factor",  2, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     // This default is basically specifically chosen so fullscreen/maximized 1080p hits a 2x snap and does NN.
     public static readonly CVarDef<int> ViewportSnapToleranceMargin =
@@ -30,14 +30,16 @@ public sealed class CCVars : CVars
         CVarDef.Create("viewport.minimum_width", 15, CVar.REPLICATED);
 
     public static readonly CVarDef<int> ViewportMaximumWidth =
-        CVarDef.Create("viewport.maximum_width", 21, CVar.REPLICATED);
+        CVarDef.Create("viewport.maximum_width", 28, CVar.REPLICATED);
 
     public static readonly CVarDef<int> ViewportWidth =
-        CVarDef.Create("viewport.width", 21, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("viewport.width", 16, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /*
      * Save?
      */
     public static readonly CVarDef<string> LastScenePrototype =
         CVarDef.Create("game.last_scene", "default");
+
+    public static readonly CVarDef<bool> ParallaxDebug = CVarDef.Create("paralax.deb", false);
 }

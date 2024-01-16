@@ -46,9 +46,8 @@ public sealed class DialogSystem : EntitySystem
         _dialogUiController = _userInterfaceManager.GetUIController<DialogUIController>();
         var cmdhandler = InputCmdHandler.FromDelegate(_ =>
             SkipMessage());
-        
-        _input.SetInputCommand(ContentKeyFunctions.SkipDialog,cmdhandler);
-        _input.SetInputCommand(EngineKeyFunctions.UIClick,cmdhandler);
+
+        CommandBinds.Builder.Bind(ContentKeyFunctions.SkipDialog, cmdhandler).Register<DialogSystem>();
         
         SubscribeLocalEvent<DialogEndedEvent>(OnDialogEnd);
     }
@@ -120,9 +119,11 @@ public sealed class DialogSystem : EntitySystem
     {
         if (_dialogQueue.Count == 0)
         {
-            _gameController.Shutdown("Конец");
+            _dialogUiController.Hide();
             return;
         }
+        
+        _dialogUiController.Show();
         
         SetDialogText(CurrentDialog.Text);
         
@@ -170,6 +171,11 @@ public sealed class DialogSystem : EntitySystem
         {
             RaiseLocalEvent(startedEv);
         }
+    }
+
+    public bool IsVisible()
+    {
+        return _dialogUiController.IsVisible();
     }
     
 

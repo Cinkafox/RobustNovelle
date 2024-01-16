@@ -1,5 +1,5 @@
 - type: scene
-  id: default
+  id: default3
   location: space
   dialogs:
     - actions:

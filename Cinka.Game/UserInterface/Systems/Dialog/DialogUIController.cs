@@ -55,4 +55,19 @@ public sealed class DialogUIController : UIController
     {
         return _dialogGui?.Buttons != null ? _dialogGui.Buttons : [];
     }
+
+    public void Hide()
+    {
+        if (_dialogGui != null) _dialogGui.Visible = false;
+    }
+
+    public void Show()
+    {
+        if (_dialogGui != null && !_dialogGui.Visible) _dialogGui.Visible = true;
+    }
+
+    public bool IsVisible()
+    {
+        return _dialogGui?.Visible ?? false;
+    }
 }

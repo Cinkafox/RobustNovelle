@@ -12,5 +12,10 @@ public sealed class ContentContexts
         viewer.AddFunction(EngineKeyFunctions.UIClick);
         viewer.AddFunction(EngineKeyFunctions.EscapeMenu);
         viewer.AddFunction(ContentKeyFunctions.SkipDialog);
+        viewer.AddFunction(EngineKeyFunctions.MoveUp);
+        viewer.AddFunction(EngineKeyFunctions.MoveDown);
+        viewer.AddFunction(EngineKeyFunctions.MoveLeft);
+        viewer.AddFunction(EngineKeyFunctions.MoveRight);
+        viewer.AddFunction(EngineKeyFunctions.Walk);
     }
 }

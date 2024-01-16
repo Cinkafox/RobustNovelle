@@ -1,13 +1,38 @@
 - type: entity
+  id: charbase
+  abstract: true
+  components:
+    - type: Physics
+      bodyType: KinematicController
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape:
+            !type:PhysShapeCircle
+            radius: 0.35
+          density: 50
+    - type: Input
+      context: "human"
+    - type: InputMover
+
+- type: entity
   id: cat
+  parent: 
+    - charbase
   name: cat
   description: just a cat
   components:
+    - type: Sprite
+      layers:
+        - state: bingus
+          sprite: Characters/bingus.rsi
     - type: Character
       sprite: Characters/cat.rsi
       
 - type: entity
   id: raveel
+  parent:
+    - charbase
   name: Фембойчик
   components:
     - type: Character
@@ -19,6 +44,8 @@
   
 - type: entity
   id: igor
+  parent:
+    - charbase
   name: Игорь
   components:
     - type: Character
@@ -30,8 +57,14 @@
       
 - type: entity
   id: kids
+  parent:
+    - charbase
   name: ДЕТИ!!!
   components:
+    - type: Sprite
+      layers:
+        - state: bingus
+          sprite: Characters/bingus.rsi
     - type: Character
       sprite: Characters/kids.rsi
     - type: Voice

@@ -23,4 +23,5 @@ public sealed partial class Character
 {
     [DataField] public EntProtoId Entity = new();
     [DataField] public bool Visible = true;
+    [DataField] public bool IsPlayer = false;
 } 
