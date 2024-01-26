@@ -1,0 +1,18 @@
+- type: entity
+  id: charbase
+  abstract: true
+  components:
+    - type: Physics
+      bodyType: KinematicController
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape:
+            !type:PhysShapeCircle
+            radius: 0.35
+          density: 50
+    - type: Input
+      context: "human"
+    - type: InputMover
+    - type: Clickable
+    - type: InteractionOutline

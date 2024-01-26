@@ -4,8 +4,24 @@
   characters:
     - entity: cat
       isPlayer: true
-    - entity: kids
-      visible: false
+      position: -3,0
+    - entity: cat2
+      position: -4,0
+  dialog: meow
+
+
+- type: dialog
+  id: meow
+  characters:
+    - cat
   dialogs:
     - name: Кот
       text: Мяу
+      
+- type: dialog
+  id: coolMeow
+  characters:
+    - cat2
+  dialogs:
+    - name: Кот(круче)
+      text: "*Няшная отрыжка* Мяу нахуй!"

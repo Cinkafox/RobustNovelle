@@ -24,7 +24,7 @@ public sealed class CharacterSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly IMapManager _map = default!;
     
-    private Dictionary<string, EntityUid> _characters = new();
+    private readonly Dictionary<string, EntityUid> _characters = new();
 
     public override void Initialize()
     {
@@ -40,30 +40,33 @@ public sealed class CharacterSystem : EntitySystem
         component.Sprite = rs.RSI;
     }
 
-    public void AddCharacter(Scene.Data.Character character)
+    public void AddCharacter(Data.Character character)
     {
-        var uid = Spawn(character.Entity, new MapCoordinates(100,100,_locationManager.GetCurrentLocationId()));
+        if(!_characters.TryGetValue(character.Entity,out var uid))
+        {
+            uid = EntityManager.Spawn(character.Entity,
+                new MapCoordinates(0, 0, _locationManager.GetCurrentLocationId()),character.Components);
+            _characters.Add(character.Entity,uid);
+        }
 
         if (!TryComp<CharacterComponent>(uid, out var component))
         {
-            QueueDel(uid);
+            Logger.Error($"Entity ${character.Entity} does not have CharacterComponent!");
+            RemoveCharacter(character.Entity);
             return;
         }
         
-        component.Visible = character.Visible;
-        
-        _characters.Add(character.Entity,uid);
-        
         SetCharacterState(character.Entity, component.State);
-        
-        _transform.SetWorldPosition(uid,Vector2.Zero);
 
         if (character.IsPlayer)
         {
             _cameraManager.AttachEntity(uid);
         }
         
-
+        if (character.Position.HasValue)
+        {
+            _transform.SetLocalPosition(uid,character.Position.Value);
+        }
     }
 
     public void RemoveCharacter(string prototype)
@@ -95,11 +98,11 @@ public sealed class CharacterSystem : EntitySystem
             data.State = state;
     }
     
-    public IEnumerable<CharacterComponent> EnumerateCharacters()
+    public IEnumerable<CharacterComponent> EnumerateVisibleCharacters()
     {
         foreach (var (_, uid) in _characters)
         {
-            if (TryComp<CharacterComponent>(uid, out var characterComponent) && characterComponent.Visible)
+            if (TryComp<CharacterComponent>(uid, out var characterComponent) && characterComponent.IsVisible)
                 yield return characterComponent;
         }
     }

@@ -54,10 +54,15 @@ public sealed class SceneManager : ISceneManager
         _currentScene = _serializationManager.CreateCopy(proto, notNullableOverride:true);
 
         _locationManager.LoadLocation(_currentScene.Location);
-        foreach (var characterPrototype in _currentScene.Characters) _characterSystem.AddCharacter(characterPrototype);
-        foreach (var dialog in _currentScene.Dialogs) _dialogSystem.AddDialog(dialog);
+        foreach (var characterPrototype in _currentScene.Characters)
+        {
+            _characterSystem.AddCharacter(characterPrototype);
+        }
         
-        _dialogSystem.ContinueDialog();
+        if (proto.Dialog.HasValue)
+        {
+            _dialogSystem.LoadDialog(proto.Dialog.Value);
+        }
     }
     
 

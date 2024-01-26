@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cinka.Game.Character.Components;
 using Cinka.Game.Character.Managers;
+using Cinka.Game.Dialog.Components;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Dialog.DialogActions;
 using Cinka.Game.Input;
@@ -18,17 +20,16 @@ using Robust.Shared.Input.Binding;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager;
-using Robust.Shared.Timing;
 
 namespace Cinka.Game.Dialog.Systems;
 
-public sealed class DialogSystem : EntitySystem
+public sealed partial class DialogSystem : EntitySystem
 {
     [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly CharacterSystem _characterSystem = default!;
     [Dependency] private readonly IInputManager _input = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     
     private DialogUIController _dialogUiController = default!;
     
@@ -50,6 +51,7 @@ public sealed class DialogSystem : EntitySystem
         CommandBinds.Builder.Bind(ContentKeyFunctions.SkipDialog, cmdhandler).Register<DialogSystem>();
         
         SubscribeLocalEvent<DialogEndedEvent>(OnDialogEnd);
+        InitializeDialog();
     }
 
     private void OnDialogEnd(DialogEndedEvent ev)
@@ -65,6 +67,21 @@ public sealed class DialogSystem : EntitySystem
         {
             _dialogUiController.AddButton(choise);
         }
+    }
+    
+    public void LoadDialog(string proto)
+    {
+        if(!_prototypeManager.TryIndex<DialogPrototype>(proto,out var dialogPrototype)) return;
+
+        foreach (var characterPrototype in dialogPrototype.Characters)
+        {
+            if(!_characterSystem.TryGetCharacter(characterPrototype,out var characterComponent,out var uid)) continue;
+            characterComponent.IsVisible = true;
+            EnsureComp<OnDialogComponent>(uid);
+        }
+        foreach (var dialog in dialogPrototype.Dialogs) AddDialog(dialog);
+        
+        ContinueDialog();
     }
 
     public void AddDialog(Dialog.Data.Dialog dialog)
@@ -119,7 +136,7 @@ public sealed class DialogSystem : EntitySystem
     {
         if (_dialogQueue.Count == 0)
         {
-            _dialogUiController.Hide();
+            Hide();
             return;
         }
         
@@ -173,6 +190,18 @@ public sealed class DialogSystem : EntitySystem
         }
     }
 
+    private void Hide()
+    {
+        var query = EntityQueryEnumerator<OnDialogComponent,CharacterComponent>();
+        while (query.MoveNext(out var uid, out var dialogComponent,out var characterComponent))
+        {
+            RemComp(uid, dialogComponent);
+            characterComponent.IsVisible = false;
+        }
+            
+        _dialogUiController.Hide();
+    }
+
     public bool IsVisible()
     {
         return _dialogUiController.IsVisible();
@@ -210,5 +239,4 @@ public sealed class DialogSystem : EntitySystem
     {
         return string.IsNullOrEmpty(text) || text == " ";
     }
-
 }

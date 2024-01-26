@@ -1,21 +1,4 @@
 - type: entity
-  id: charbase
-  abstract: true
-  components:
-    - type: Physics
-      bodyType: KinematicController
-    - type: Fixtures
-      fixtures:
-        fix1:
-          shape:
-            !type:PhysShapeCircle
-            radius: 0.35
-          density: 50
-    - type: Input
-      context: "human"
-    - type: InputMover
-
-- type: entity
   id: cat
   parent: 
     - charbase
@@ -30,42 +13,17 @@
       sprite: Characters/cat.rsi
       
 - type: entity
-  id: raveel
+  id: cat2
   parent:
     - charbase
-  name: Фембойчик
-  components:
-    - type: Character
-      sprite: Characters/raveel.rsi
-    - type: Voice
-      voice: voiceMeow
-    - type: Emote
-      sprite: Emotes/raveel.rsi
-  
-- type: entity
-  id: igor
-  parent:
-    - charbase
-  name: Игорь
-  components:
-    - type: Character
-      sprite: Characters/igor.rsi
-    - type: Voice
-      voice: voiceAugh
-    - type: Emote
-      sprite: Emotes/igor.rsi
-      
-- type: entity
-  id: kids
-  parent:
-    - charbase
-  name: ДЕТИ!!!
+  name: cat2
+  description: just a cat2
   components:
     - type: Sprite
       layers:
         - state: bingus
           sprite: Characters/bingus.rsi
     - type: Character
-      sprite: Characters/kids.rsi
-    - type: Voice
-      voice: voiceAugh
+      sprite: Characters/cat.rsi
+    - type: Dialog
+      dialog: coolMeow

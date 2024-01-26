@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using Cinka.Game.Camera;
+using Cinka.Game.Dialog.Systems;
 using Cinka.Game.MoverController.Components;
 using Robust.Client.Audio;
 using Robust.Client.GameObjects;
@@ -21,6 +22,7 @@ using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Robust.Shared.ViewVariables;
 
 namespace Cinka.Game.MoverController;
 
@@ -38,14 +40,16 @@ public sealed partial class MoverController : VirtualController
     [Dependency] private readonly MapSystem _mapSystem = default!;
     [Dependency] private readonly PhysicsSystem Physics = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
+    [Dependency] private readonly DialogSystem _dialog = default!;
 
     private EntityQuery<InputMoverComponent> MoverQuery;
-    private EntityQuery<MobMoverComponent> MobMoverQuery;
     private EntityQuery<PhysicsComponent> PhysicsQuery;
     private EntityQuery<TransformComponent> XformQuery;
     private EntityQuery<CameraControlledComponent> cameraQuery;
     
     private float _stopSpeed = 0.1f;
+
+    [ViewVariables] private float _speed = 2;
 
     public override void Initialize()
     {
@@ -55,7 +59,6 @@ public sealed partial class MoverController : VirtualController
         SubscribeLocalEvent<InputMoverComponent, LocalPlayerDetachedEvent>(OnPlayerDetached);
         
         MoverQuery = GetEntityQuery<InputMoverComponent>();
-        MobMoverQuery = GetEntityQuery<MobMoverComponent>();
         PhysicsQuery = GetEntityQuery<PhysicsComponent>();
         XformQuery = GetEntityQuery<TransformComponent>();
         cameraQuery = GetEntityQuery<CameraControlledComponent>();
@@ -135,11 +138,10 @@ public sealed partial class MoverController : VirtualController
         TransformComponent xform,
         float frameTime)
     {
-        //LerpRotation(uid, mover, frameTime);
-        
-        var (walkDir, sprintDir) = GetVelocityInput(mover);
+        var (walkDir, sprintDir) = (Vector2.Zero,Vector2.Zero);
+        if (!_dialog.IsVisible()) (walkDir, sprintDir) = GetVelocityInput(mover);
 
-        var worldTotal = walkDir * 1 + sprintDir * 2;
+        var worldTotal = walkDir * _speed + sprintDir * _speed * 2;
         var worldRot = _transform.GetWorldRotation(xform);
         var velocity = physicsComponent.LinearVelocity;
         //Logger.Debug(velocity.ToString() + " " + physicsUid + " " + uid);
@@ -154,7 +156,6 @@ public sealed partial class MoverController : VirtualController
         Accelerate(ref velocity,worldTotal,10,frameTime);
 
         PhysicsSystem.SetLinearVelocity(physicsUid, velocity, body: physicsComponent);
-        //TransformSystem.SetCoordinates(physicsUid,Transform(physicsUid).Coordinates.Offset(walkDir));
         
         PhysicsSystem.SetAngularVelocity(physicsUid, 0, body: physicsComponent);
     }
@@ -174,39 +175,6 @@ public sealed partial class MoverController : VirtualController
         accelSpeed = MathF.Min(accelSpeed, addSpeed);
 
         currentVelocity += wishDir * accelSpeed;
-    }
-    
-    public void LerpRotation(EntityUid uid, InputMoverComponent mover, float frameTime)
-    {
-        var angleDiff = Angle.ShortestDistance(mover.RelativeRotation, mover.TargetRelativeRotation);
-
-        // if we've just traversed then lerp to our target rotation.
-        if (!angleDiff.EqualsApprox(Angle.Zero, 0.001))
-        {
-            var adjustment = angleDiff * 5f * frameTime;
-            var minAdjustment = 0.01 * frameTime;
-
-            if (angleDiff < 0)
-            {
-                adjustment = Math.Min(adjustment, -minAdjustment);
-                adjustment = Math.Clamp(adjustment, angleDiff, -angleDiff);
-            }
-            else
-            {
-                adjustment = Math.Max(adjustment, minAdjustment);
-                adjustment = Math.Clamp(adjustment, -angleDiff, angleDiff);
-            }
-
-            mover.RelativeRotation += adjustment;
-            mover.RelativeRotation.FlipPositive();
-            Dirty(uid, mover);
-        }
-        else if (!angleDiff.Equals(Angle.Zero))
-        {
-            mover.TargetRelativeRotation.FlipPositive();
-            mover.RelativeRotation = mover.TargetRelativeRotation;
-            Dirty(uid, mover);
-        }
     }
     
     private void Friction(float minimumFrictionSpeed, float frameTime, float friction, ref Vector2 velocity)

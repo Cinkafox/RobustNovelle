@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using Cinka.Game.Dialog.Systems;
 using Cinka.Game.Input;
 using Cinka.Game.MoverController.Components;
 using Cinka.Game.MoverController.Events;

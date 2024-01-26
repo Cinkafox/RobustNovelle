@@ -48,7 +48,7 @@ public sealed class CharacterRenderingOverlay : Overlay
         var handle = args.WorldHandle;
         _characterRendering = 0;
 
-        var characters = _characterSystem.EnumerateCharacters().ToList();
+        var characters = _characterSystem.EnumerateVisibleCharacters().ToList();
 
         foreach (var character in characters)
             DrawCharacter(character, handle, args.WorldBounds, characters.Count);
@@ -62,7 +62,7 @@ public sealed class CharacterRenderingOverlay : Overlay
         var delay = sprite.GetDelay(_frames % frames.Length);
         var texture = frames[(int)(_frames * _lastDelta / delay) % frames.Length];
 
-        var viewSize = bounds.TopRight * 2;
+        var viewSize = (bounds.TopRight - bounds.Center) * 2;
 
         var charCountChet = _characterRendering % 2;
         var shift = (1 - charCountChet * 2) * charactersCount * Shift - Shift * (1 - charCountChet);
@@ -75,7 +75,7 @@ public sealed class CharacterRenderingOverlay : Overlay
         var centerX = texture.Width * ratio / 2 + shift;
 
         handle.DrawTextureRect(texture,
-            Box2.FromDimensions(-new Vector2(centerX, viewSize.Y / 2), texture.Size * ratio));
+            Box2.FromDimensions(bounds.Center-new Vector2(centerX, viewSize.Y / 2), texture.Size * ratio));
 
         _characterRendering++;
     }

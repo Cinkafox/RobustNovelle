@@ -3,7 +3,7 @@
   layers:
     - texture:
         !type:ImageParallaxTextureSource
-        path: "/Textures/Backgrounds/basement.rsi/default.png"
+        path: "/Textures/Parallaxes/test_obl.png"
       tiled: true
       slowness: 0.5
       scrolling: 0.25,0.1

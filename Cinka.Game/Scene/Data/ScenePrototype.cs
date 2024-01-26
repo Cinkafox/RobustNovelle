@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cinka.Game.Dialog.Data;
 using Cinka.Game.Location.Data;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager.Attributes;
@@ -10,18 +11,10 @@ public sealed class ScenePrototype : IPrototype
 {
     [IdDataField] public string ID { get; private set; } = default!;
     
-    [DataField] public HashSet<Character> Characters = new();
-
-    [DataField] public List<Dialog.Data.Dialog> Dialogs = new();
+    [DataField] public HashSet<Character.Data.Character> Characters = new();
 
     [DataField] public ProtoId<LocationPrototype> Location = "default";
-    
-}
 
-[DataDefinition]
-public sealed partial class Character
-{
-    [DataField] public EntProtoId Entity = new();
-    [DataField] public bool Visible = true;
-    [DataField] public bool IsPlayer = false;
-} 
+    [DataField] public ProtoId<DialogPrototype>? Dialog;
+
+}

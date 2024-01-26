@@ -16,7 +16,7 @@ public sealed partial class CharacterComponent : Component
 
     [DataField] public string State = "default";
     
-    [DataField] public bool Visible = true;
+    [DataField] public bool IsVisible;
     
     [DataField("scale")] public Vector2 Scale = Vector2.One;
 

@@ -62,7 +62,7 @@ public sealed class EntryPoint : GameClient
             _resource.TryGetResource<AudioResource>(audio.Audio.GetSound(), out _);
         }
 
-        _stateManager.RequestStateChange<GameplayStateBase>();
+        _stateManager.RequestStateChange<GameplayState>();
         _uiManager.MainViewport.Visible = false;
         _client.StartSinglePlayer();
         

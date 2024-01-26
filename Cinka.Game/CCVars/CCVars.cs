@@ -42,4 +42,6 @@ public sealed class CCVars : CVars
         CVarDef.Create("game.last_scene", "default");
 
     public static readonly CVarDef<bool> ParallaxDebug = CVarDef.Create("paralax.deb", false);
+
+    public static readonly CVarDef<bool> OutlineEnabled = CVarDef.Create("outline.enabled",true);
 }

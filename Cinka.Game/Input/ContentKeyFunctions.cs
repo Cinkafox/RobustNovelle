@@ -6,4 +6,5 @@ namespace Cinka.Game.Input;
 public static class ContentKeyFunctions
 {
     public static readonly BoundKeyFunction SkipDialog = "SkipDialog";
+    public static readonly BoundKeyFunction ActivateItemInWorld = "ActivateItemInWorld";
 }
