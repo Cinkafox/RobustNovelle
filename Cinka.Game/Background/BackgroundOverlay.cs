@@ -28,10 +28,9 @@ public sealed class BackgroundOverlay : Overlay
         if (_backgroundManager.TryGetFadingBackground(out var layers))
         {
             var currTime = _gameTiming.CurTime - _backgroundManager.GetLastFadingBackgroundUpdateCurTime();
-            var aa = (byte)(255-currTime.Milliseconds / 700f * 255);
-            Logger.Debug((aa) + " <");
-            DrawBackground(layers,args,aa);
-            if (aa < 10)
+            var fade = (byte)(255-currTime.Milliseconds / 700f * 255);
+            DrawBackground(layers,args,fade);
+            if (fade < 10)
             {
                 _backgroundManager.ClearFadingBackground();
             }
