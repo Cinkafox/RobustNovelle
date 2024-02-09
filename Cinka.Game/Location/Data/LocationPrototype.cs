@@ -10,5 +10,5 @@ public sealed class LocationPrototype : IPrototype
 {
     [IdDataField] public string ID { get; private set; } = default!;
     
-    [DataField] public ProtoId<BackgroundPrototype> Background = string.Empty;
+    [DataField] public EntProtoId Background = string.Empty;
 }

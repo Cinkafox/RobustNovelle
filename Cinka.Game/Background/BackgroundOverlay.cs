@@ -1,6 +1,8 @@
-using Cinka.Game.Background.Manager;
+using System.Linq;
+using Cinka.Game.Background.Data;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
+using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Maths;
@@ -10,9 +12,7 @@ namespace Cinka.Game.Background;
 
 public sealed class BackgroundOverlay : Overlay
 {
-    [Dependency] private readonly IBackgroundManager _backgroundManager = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-
+    [Dependency] private readonly IEntityManager _entityManager = default!;
     public BackgroundOverlay()
     {
         ZIndex = BackgroundSystem.BackgroundZIndex;
@@ -23,24 +23,19 @@ public sealed class BackgroundOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        DrawBackground(_backgroundManager.GetCurrentBackground(),args);
+        //Почему не EntityQueryEnumerator? Потому что порядок рисовки сбивается. И потому что иди нахуй да
+        var list = _entityManager.EntityQuery<BackgroundComponent>().ToList();
+        list.Reverse();
         
-        if (_backgroundManager.TryGetFadingBackground(out var layers))
+        foreach (var component in list)
         {
-            var currTime = _gameTiming.CurTime - _backgroundManager.GetLastFadingBackgroundUpdateCurTime();
-            var fade = (byte)(255-currTime.Milliseconds / 700f * 255);
-            DrawBackground(layers,args,fade);
-            if (fade < 10)
-            {
-                _backgroundManager.ClearFadingBackground();
-            }
+            DrawBackground(component._layer,args,(byte)component.Visibility);
         }
     }
 
-    public void DrawBackground(Texture[] layers, OverlayDrawArgs args,byte alpha = 255)
+    public void DrawBackground(Texture layer, OverlayDrawArgs args,byte alpha = 255)
     {
         var handle = args.WorldHandle;
-        
-        foreach (var layer in layers) handle.DrawTextureRect(layer, args.WorldBounds.Box,new Color(255,255,255,alpha));
+        handle.DrawTextureRect(layer, args.WorldBounds.Box,new Color(255,255,255,alpha));
     }
 }

@@ -23,6 +23,9 @@
         <ProjectReference Include="..\RobustToolbox\Robust.Shared\Robust.Shared.csproj" />
         <ProjectReference Include="..\RobustToolbox\Robust.Client\Robust.Client.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Background\Manager\" />
+    </ItemGroup>
     <Import Project="..\RobustToolbox\MSBuild\Robust.Engine.targets" />
     <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />
 </Project>

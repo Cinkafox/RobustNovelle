@@ -1,17 +1,29 @@
-- type: background
-  id: default
-  sprite: Backgrounds/pole.rsi
-  
-- type: background
+- type: entity
+  id: back_default
+  components:
+    - type: Background
+      layer:
+        sprite: Backgrounds/pole.rsi
+        
+- type: entity
   id: gym
-  sprite: Backgrounds/gym.rsi
-  state: gym
-
-- type: background
+  components:
+    - type: Background
+      layer:
+        sprite: Backgrounds/gym.rsi
+        state: gym
+        
+- type: entity
   id: gym_outside
-  sprite: Backgrounds/gym.rsi
-  state: gym_outside
-
-- type: background
+  components:
+    - type: Background
+      layer:
+        sprite: Backgrounds/gym.rsi
+        state: gym_outside
+        
+- type: entity
   id: basement
-  sprite: Backgrounds/basement.rsi
+  components:
+    - type: Background
+      layer:
+        sprite: Backgrounds/basement.rsi

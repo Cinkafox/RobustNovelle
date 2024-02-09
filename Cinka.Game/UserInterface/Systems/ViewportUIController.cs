@@ -17,7 +17,7 @@ namespace Cinka.Game.UserInterface.Systems;
 
 public sealed class ViewportUIController : UIController
 {
-    public const int ViewportHeight = 15;
+    public const int ViewportHeight = 9;
 
     public static readonly Vector2i ViewportSize = (EyeManager.PixelsPerMeter * 21, EyeManager.PixelsPerMeter * 15);
     [Dependency] private readonly IConfigurationManager _configurationManager = default!;
@@ -28,8 +28,6 @@ public sealed class ViewportUIController : UIController
 
     public override void Initialize()
     {
-        _configurationManager.OnValueChanged(CCVars.CCVars.ViewportMinimumWidth, _ => UpdateViewportRatio());
-        _configurationManager.OnValueChanged(CCVars.CCVars.ViewportMaximumWidth, _ => UpdateViewportRatio());
         _configurationManager.OnValueChanged(CCVars.CCVars.ViewportWidth, _ => UpdateViewportRatio());
 
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
@@ -44,12 +42,8 @@ public sealed class ViewportUIController : UIController
     private void UpdateViewportRatio()
     {
         if (Viewport == null) return;
-
-        var min = _configurationManager.GetCVar(CCVars.CCVars.ViewportMinimumWidth);
-        var max = _configurationManager.GetCVar(CCVars.CCVars.ViewportMaximumWidth);
+        
         var width = _configurationManager.GetCVar(CCVars.CCVars.ViewportWidth);
-
-        if (width < min || width > max) width = CCVars.CCVars.ViewportWidth.DefaultValue;
 
         Viewport.Viewport.ViewportSize =
             (EyeManager.PixelsPerMeter * width, EyeManager.PixelsPerMeter * ViewportHeight);
@@ -75,13 +69,11 @@ public sealed class ViewportUIController : UIController
 
         // verify that the current eye is not "null". Fuck IEyeManager.
 
-        var ent = _playerMan.LocalPlayer?.ControlledEntity;
+        var ent = _playerMan.LocalEntity;
         if (_eyeManager.CurrentEye.Position != default || ent == null)
             return;
-
-        _entMan.TryGetComponent(ent, out EyeComponent? eye);
-
-        if (eye?.Eye == _eyeManager.CurrentEye
+        
+        if (_entMan.TryGetComponent(ent, out EyeComponent? eye) && eye.Eye == _eyeManager.CurrentEye
             && _entMan.GetComponent<TransformComponent>(ent.Value).WorldPosition == default)
             return; // nothing to worry about, the player is just in null space... actually that is probably a problem?
 
