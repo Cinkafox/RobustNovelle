@@ -1,5 +1,5 @@
 using System;
-using Cinka.Game.Character.Managers;
+using Cinka.Game.Character.Systems;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Dialog.Systems;
 using Cinka.Game.Location.Managers;

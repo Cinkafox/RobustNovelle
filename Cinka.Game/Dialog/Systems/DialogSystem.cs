@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cinka.Game.Character.Managers;
+using Cinka.Game.Character.Systems;
 using Cinka.Game.Dialog.Data;
 using Cinka.Game.Dialog.DialogActions;
 using Cinka.Game.Input;
 using Cinka.Game.Location.Managers;
+using Cinka.Game.Menu;
 using Cinka.Game.UserInterface.Systems.Dialog;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
+using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
@@ -26,6 +28,7 @@ namespace Cinka.Game.Dialog.Systems;
 public sealed class DialogSystem : EntitySystem
 {
     [Dependency] private readonly IGameController _gameController = default!;
+    [Dependency] private readonly IStateManager _stateManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly CharacterSystem _characterSystem = default!;
     [Dependency] private readonly IInputManager _input = default!;
@@ -120,7 +123,7 @@ public sealed class DialogSystem : EntitySystem
     {
         if (_dialogQueue.Count == 0)
         {
-            _gameController.Shutdown("Конец");
+            _stateManager.RequestStateChange<MenuState>();
             return;
         }
         

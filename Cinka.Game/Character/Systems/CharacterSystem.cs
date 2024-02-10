@@ -3,24 +3,28 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Cinka.Game.Character.Components;
 using Cinka.Game.Location.Managers;
+using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 
-namespace Cinka.Game.Character.Managers;
+namespace Cinka.Game.Character.Systems;
 
 public sealed class CharacterSystem : EntitySystem
 {
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IResourceCache _cache = default!;
+    [Dependency] private readonly IOverlayManager _overlay = default!;
     
     private Dictionary<string, EntityUid> _characters = new();
+    
+    public const int CharacterRenderingZIndex = 0;
 
     public override void Initialize()
     {
-        base.Initialize();
+        _overlay.AddOverlay(new CharacterRenderingOverlay());
         SubscribeLocalEvent<CharacterComponent,ComponentInit>(OnComponentInit);
     }
 
@@ -64,13 +68,6 @@ public sealed class CharacterSystem : EntitySystem
         if (prototype != null && !_characters.TryGetValue(prototype, out uid)) return false;
         
         return TryComp(uid, out component);
-    }
-    
-    public string GetCharacterState(string prototype)
-    {
-        if (TryGetCharacter(prototype, out var data, out _))
-            return data.State;
-        return "default";
     }
 
     public void SetCharacterState(string prototype, string state)

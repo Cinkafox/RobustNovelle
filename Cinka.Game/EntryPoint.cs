@@ -4,6 +4,7 @@ using Cinka.Game.Camera.Manager;
 using Cinka.Game.Gameplay;
 using Cinka.Game.Input;
 using Cinka.Game.Location.Managers;
+using Cinka.Game.Menu;
 using Cinka.Game.Scene.Manager;
 using Cinka.Game.StyleSheet;
 using Robust.Client;
@@ -12,10 +13,14 @@ using Robust.Client.Input;
 using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
+using Robust.Shared.Log;
+using Robust.Shared.Network.Messages;
 using Robust.Shared.Prototypes;
 
 namespace Cinka.Game;
@@ -23,6 +28,7 @@ namespace Cinka.Game;
 public sealed class EntryPoint : GameClient
 {
     private const string Culture = "ru-RU";
+    [Dependency] private readonly IConfigurationManager _configurationManager = default!;
     [Dependency] private readonly ICameraManager _cameraManager = default!;
     [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
@@ -55,21 +61,19 @@ public sealed class EntryPoint : GameClient
 
         //Нахуя нам свет в новелле да?
         IoCManager.Resolve<ILightManager>().Enabled = false;
+        
+        _uiManager.MainViewport.Visible = false;
+        _client.StartSinglePlayer();
+        _stylesheetManager.Initialize();
 
+        _stateManager.RequestStateChange<MenuState>();
+        
         //Some cache shit
         foreach (var audio in _prototype.EnumeratePrototypes<AudioPrototype>())
         {
             _resource.TryGetResource<AudioResource>(audio.Audio.GetSound(), out _);
         }
-
-        _stateManager.RequestStateChange<GameplayStateBase>();
-        _uiManager.MainViewport.Visible = false;
-        _client.StartSinglePlayer();
-        
-        _locationManager.Initialize();
-        _cameraManager.Initialize();
-        _stylesheetManager.Initialize();
-        _sceneManager.Initialize();
+        Logger.Debug("Cached some audio shit!");
     }
 
     public override void Shutdown()

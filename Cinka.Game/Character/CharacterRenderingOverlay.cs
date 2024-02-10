@@ -1,8 +1,7 @@
 using System.Linq;
 using System.Numerics;
-using Cinka.Game.Character;
 using Cinka.Game.Character.Components;
-using Cinka.Game.Character.Managers;
+using Cinka.Game.Character.Systems;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
@@ -10,7 +9,7 @@ using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
 
-namespace Cinka.Game.CharacterRendering;
+namespace Cinka.Game.Character;
 
 public sealed class CharacterRenderingOverlay : Overlay
 {

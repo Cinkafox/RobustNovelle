@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Cinka.Game.Background.Data;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -8,10 +7,9 @@ using Robust.Client.ResourceManagement;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
-using Robust.Shared.Timing;
 using Robust.Shared.ViewVariables;
+using BackgroundComponent = Cinka.Game.Background.Components.BackgroundComponent;
 
 namespace Cinka.Game.Background;
 
@@ -22,10 +20,8 @@ public sealed class BackgroundSystem : EntitySystem
     public const string FadeAnimationKey = "fade";
     
     [Dependency] private readonly IOverlayManager _overlay = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly AnimationPlayerSystem _animationPlayer = default!;
     [Dependency] private readonly IResourceCache _cache = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
 
     [ViewVariables] private Entity<BackgroundComponent>? _backgroundUid;
     [ViewVariables] private Entity<BackgroundComponent>? _fadingUid;
@@ -38,20 +34,23 @@ public sealed class BackgroundSystem : EntitySystem
         SubscribeLocalEvent<BackgroundComponent,AnimationCompletedEvent>(OnAnimationComplete);
     }
 
+    
     private void OnAnimationComplete(EntityUid uid, BackgroundComponent component, AnimationCompletedEvent args)
     {
         if(args.Key != FadeAnimationKey)
             return;
         
-        Logger.Debug("VSE " + component.Layer.RsiPath);
+        Log.Debug("End fading and deleting" + component.Layer.RsiPath);
+        
         QueueDel(uid);
     }
 
+    
     private void OnInitialize(EntityUid uid, BackgroundComponent component, ComponentInit args)
     {
         if (!TryGetRSI(uid, out var rsi, component))
         {
-            Logger.Error("Error loading background " + component.Layer.RsiPath);
+            Log.Error("Error loading background " + component.Layer.RsiPath);
             QueueDel(uid);
             return;
         }
@@ -60,16 +59,17 @@ public sealed class BackgroundSystem : EntitySystem
 
         if (!rsi.TryGetState(state, out var text))
         {
-            Logger.Error("Error loading background state " + component.Layer.RsiPath + " " + state);
+            Log.Error("Error loading background state " + component.Layer.RsiPath + " " + state);
             QueueDel(uid);
             return;
         }
+        
+        Log.Debug("Success loading " + component.Layer.RsiPath);
         
         component._layer = text.Frame0;
     }
     
     
-
     public void LoadBackground(string name)
     {
         _fadingUid = _backgroundUid;
@@ -81,8 +81,11 @@ public sealed class BackgroundSystem : EntitySystem
             Fade(_fadingUid.Value);
     }
 
+    
     private void Fade(Entity<BackgroundComponent> entity,int fadeTime = 1)
     {
+        Log.Debug("starting fading " + entity.Comp.Layer.RsiPath);
+        
         var animationPlayer = EnsureComp<AnimationPlayerComponent>(entity);
         _animationPlayer.Play(new Entity<AnimationPlayerComponent>(entity,animationPlayer),new Animation
         {
@@ -102,6 +105,7 @@ public sealed class BackgroundSystem : EntitySystem
             }
         },FadeAnimationKey);
     }
+    
     
     private bool TryGetRSI(EntityUid uid,[NotNullWhen(true)] out RSI? rsi,BackgroundComponent? component = null)
     {

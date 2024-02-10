@@ -1,7 +1,5 @@
-using Cinka.Game.Background.Data;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager.Attributes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Cinka.Game.Location.Data;
 

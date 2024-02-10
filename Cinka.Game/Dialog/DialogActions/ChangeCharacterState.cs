@@ -1,4 +1,4 @@
-using Cinka.Game.Character.Managers;
+using Cinka.Game.Character.Systems;
 using Cinka.Game.Dialog.Data;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;

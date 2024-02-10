@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using Cinka.Game.Audio.Data;
-using Cinka.Game.Character.Managers;
+using Cinka.Game.Gameplay;
 using Cinka.Game.UserInterface.Systems.Dialog;
 using Robust.Client.Audio;
+using Robust.Client.State;
+using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.GameObjects;
@@ -17,10 +19,22 @@ public sealed class SceneAudioSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly AudioSystem _audioSystem = default!;
+    [Dependency] private readonly IStateManager _stateManager = default!;
     
     public static EntityUid? Background;
 
     public static Dictionary<string, EntityUid> EffectBank = new();
+
+    public override void Initialize()
+    {
+        _stateManager.OnStateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(StateChangedEventArgs ev)
+    {
+        if(ev.OldState is not GameplayStateBase) return;
+        _audioSystem.Stop(Background);
+    }
 
     public void Play(string prototypeName,string effect = "")
     {

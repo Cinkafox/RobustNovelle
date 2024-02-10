@@ -24,16 +24,10 @@ public sealed class LocationManager : ILocationManager
         IoCManager.InjectDependencies(this);
         LoadLocation("default");
     }
-
-
+    
     public MapId GetCurrentLocationId()
     {
         return _currentLocationId;
-    }
-
-    public void LoadLocation(string prototype)
-    {
-        LoadLocation(prototype, true);
     }
 
     private bool TryInitializeLocation(string prototype)
@@ -49,13 +43,12 @@ public sealed class LocationManager : ILocationManager
         return true;
     }
 
-    public void LoadLocation(string prototype, bool init)
+    public void LoadLocation(string prototype)
     {
         if (!_locationsId.TryGetValue(prototype, out var mapId))
         {
-            if (!init) return;
             TryInitializeLocation(prototype);
-            LoadLocation(prototype, false);
+            LoadLocation(prototype);
             return;
         }
 

@@ -27,4 +27,14 @@ public sealed class CCVars : CVars
      */
     public static readonly CVarDef<string> LastScenePrototype =
         CVarDef.Create("game.last_scene", "default");
+
+    /*
+     * Ui shit
+     */
+    public static readonly CVarDef<string> UIClickSound = CVarDef.Create("ui.clicksSound","/Audio/UserInterface/hover.ogg");
+    public static readonly CVarDef<string> UIHoverSound = CVarDef.Create("ui.hoverSound","/Audio/UserInterface/hover.ogg");
+    
+    public static readonly CVarDef<string> BackroundMenu = CVarDef.Create("ui.backgroundMenu","/Textures/Backgrounds/basement.rsi/default.png");
+    public static readonly CVarDef<float> InterfaceVolume = CVarDef.Create("ui.interface_volume", 0.50f);
+
 }

@@ -1,12 +1,10 @@
 using System.Linq;
-using Cinka.Game.Background.Data;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
-using Robust.Shared.Log;
 using Robust.Shared.Maths;
-using Robust.Shared.Timing;
+using BackgroundComponent = Cinka.Game.Background.Components.BackgroundComponent;
 
 namespace Cinka.Game.Background;
 

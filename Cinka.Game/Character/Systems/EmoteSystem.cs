@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Cinka.Game.Character.Components;
-using Cinka.Game.Character.Managers;
 using Cinka.Game.Dialog;
 using Cinka.Game.Dialog.Systems;
 using Robust.Client.ResourceManagement;
@@ -19,17 +18,17 @@ public sealed class EmoteSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<EmoteComponent,DialogStartedEvent>(OnDialogStarted);
-        SubscribeLocalEvent<DialogStartedEvent>(OnDialogStartedWt);
+        SubscribeLocalEvent<EmoteComponent,DialogStartedEvent>(OnEmoteStarted);
+        SubscribeLocalEvent<DialogStartedEvent>(OnDialogStarted);
     }
 
-    private void OnDialogStartedWt(DialogStartedEvent ev)
+    private void OnDialogStarted(DialogStartedEvent ev)
     {
         if(ev.Dialog is { IsDialog: true, Character: null })
             _dialog.SetEmote(null);
     }
     
-    private void OnDialogStarted(EntityUid uid, EmoteComponent component, DialogStartedEvent args)
+    private void OnEmoteStarted(EntityUid uid, EmoteComponent component, DialogStartedEvent args)
     {
         if (TryGetEmotesSprite(uid, out var resource) && resource.RSI.TryGetState(args.Dialog.Emote, out var state))
             _dialog.SetEmote(state.Frame0);
