@@ -1,0 +1,8 @@
+﻿- type: audio
+  id: voiceAugh
+  audio:
+    collection: Augh
+
+- type: audio
+  id: augh
+  audio: "/Audio/Augh/AUGH.wav"

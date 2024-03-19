@@ -6,6 +6,7 @@ public static class IgnoredComponents
     {
         "Character",
         "Voice",
-        "Emote"
+        "Emote",
+        "Background"
     };
 }

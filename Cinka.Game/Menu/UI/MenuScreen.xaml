@@ -6,12 +6,12 @@
     <BoxContainer Name="MainContainer">
         <BoxContainer Orientation="Horizontal" Margin="15 200 15 15">
             <BoxContainer Orientation="Vertical">
-                <Button Text="{Loc 'menu-play'}"        Margin="0 15 0 0" Name="PlayButton"/>
-                <Button Text="{Loc 'menu-config'}"      Margin="0 15 0 0"/>
-                <Button Text="{Loc 'menu-exit'}"        Margin="0 15 0 0" Name="Exit"/>
-            </BoxContainer>
-            <BoxContainer Orientation="Vertical" Margin="300 160 15 15">
-                <RichTextLabel Name="MenuLabel" />
+                <RichTextLabel Name="MenuLabel" Margin="0 15 0 30" />
+                <BoxContainer Orientation="Vertical" SetWidth="200" HorizontalAlignment="Left">
+                    <Button Text="{Loc 'menu-play'}"        Margin="0 15 0 0" Name="PlayButton"/>
+                    <Button Text="{Loc 'menu-config'}"      Margin="0 15 0 0"/>
+                    <Button Text="{Loc 'menu-exit'}"        Margin="0 15 0 0" Name="Exit"/>
+                </BoxContainer>
             </BoxContainer>
         </BoxContainer>
     </BoxContainer>

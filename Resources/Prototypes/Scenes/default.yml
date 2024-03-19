@@ -9,5 +9,5 @@
           prototype: test
     - name: Кот
       text: Тест эффектов да
-    - actions:
+      actions:
         - !type:LoadEffectButtonAction

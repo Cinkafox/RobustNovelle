@@ -1,4 +1,4 @@
 - type: audio
   id: test
-  audio: "/Audio/val.ogg"
+  audio: "/Audio/Gym/val.ogg"
   isBackground: true

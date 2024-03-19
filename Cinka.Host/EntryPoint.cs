@@ -22,8 +22,7 @@ public sealed class EntryPoint : GameServer
         factory.DoAutoRegistrations();
 
         foreach (var ignoreName in IgnoredComponents.List) factory.RegisterIgnore(ignoreName);
-
-        prototypes.RegisterIgnore("background");
+        
         prototypes.RegisterIgnore("scene");
         prototypes.RegisterIgnore("location");
         prototypes.RegisterIgnore("scene");

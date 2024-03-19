@@ -1,44 +1,15 @@
 - type: audio
-  id: backCity
-  audio: "/Audio/back_city.ogg"
-  isBackground: true
-  
-- type: audio
-  id: gymEnter
-  audio: "/Audio/gym_enter.ogg"
-  
-- type: audio
-  id: backGym
-  audio: "/Audio/back_gym.ogg"
-  isBackground: true
-  
-- type: audio
-  id: backBasement
-  audio: "/Audio/back_basement.ogg"
-  isBackground: true
-  
-- type: audio
   id: anotherVictim
-  audio: "/Audio/another_victim.wav"
+  audio: "/Audio/Gym/another_victim.wav"
   
 - type: audio
   id: anikiGrunt
-  audio: "/Audio/aniki_grunt.wav"
+  audio: "/Audio/Gym/aniki_grunt.wav"
   
 - type: audio
   id: fpra
-  audio: "/Audio/fpra.wav"
-  
+  audio: "/Audio/Gym/fpra.wav"
+
 - type: audio
-  id: voiceMeow
-  audio:
-    collection: Meow
-    
-- type: audio
-  id: voiceAugh
-  audio:
-    collection: Augh
-    
-- type: audio
-  id: augh
-  audio: "/Audio/Augh/AUGH.wav"
+  id: gymEnter
+  audio: "/Audio/Gym/gym_enter.ogg"

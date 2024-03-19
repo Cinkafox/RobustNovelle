@@ -25,6 +25,13 @@ public abstract class StyleBase
 
     protected StyleBase(IResourceCache resCache)
     {
+        var minecraft = resCache.GetFont(
+            new[]
+            {
+                "/Fonts/Minecraft/minecraft.ttf"
+            }, 16
+        );
+        
         var notoSans12 = resCache.GetFont
         (
             new[]
