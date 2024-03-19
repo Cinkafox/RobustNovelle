@@ -3,10 +3,12 @@
     xmlns:ui="clr-namespace:Cinka.Game.Gameplay.UI"
     xmlns:controls="clr-namespace:Cinka.Game.UserInterface.Controls"
     xmlns:dialog="clr-namespace:Cinka.Game.UserInterface.Systems.Dialog.Widgets"
+    xmlns:back="clr-namespace:Cinka.Game.UserInterface.Systems.Background"
     Name="DefaultHud"
     VerticalExpand="False"
     VerticalAlignment="Bottom"
     HorizontalAlignment="Center">
+    <back:BackgroundControl Name="Background" Access="Public" HorizontalExpand="True" VerticalExpand="True"/>
     <LayoutContainer Name="ViewportContainer" HorizontalExpand="True" VerticalExpand="True">
         <controls:MainViewport Name="MainViewport" />
     </LayoutContainer>
