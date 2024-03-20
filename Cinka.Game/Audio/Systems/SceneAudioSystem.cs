@@ -33,7 +33,11 @@ public sealed class SceneAudioSystem : EntitySystem
     private void OnStateChanged(StateChangedEventArgs ev)
     {
         if(ev.OldState is not GameplayStateBase) return;
-        _audioSystem.Stop(Background);
+        var query = EntityQueryEnumerator<AudioComponent>();
+        while (query.MoveNext(out var uid, out _))
+        {
+            _audioSystem.Stop(uid);
+        }
     }
 
     public void Play(string prototypeName,string effect = "")
