@@ -13,7 +13,6 @@ using Robust.Shared.Animations;
 using Robust.Shared.Configuration;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
-using Robust.Shared.Log;
 using Robust.Shared.Utility;
 
 namespace Cinka.Game.Menu.UI;
@@ -24,10 +23,58 @@ public sealed partial class MenuScreen : UIScreen
     [Dependency] private readonly IStateManager _stateManager = default!;
     [Dependency] private readonly IGameController _gameController = default!;
     
+    [Animatable]
+    public Vector2 MenuLabelPos
+    {
+        get => MenuLabel.Position;
+        set => SetPosition(MenuLabel, value);
+    }
+    
+    [Animatable]
+    public Vector2 ButtonsPos
+    {
+        get => ButtonContainer.Position;
+        set => SetPosition(ButtonContainer, value);
+    }
+    
+    private Animation _cullAnim = new()
+    {
+        Length = TimeSpan.FromSeconds(1),
+        AnimationTracks =
+        {
+            new AnimationTrackControlProperty()
+            {
+                Property = nameof(MenuLabelPos),
+                InterpolationMode = AnimationInterpolationMode.Cubic,
+                KeyFrames =
+                {
+                    new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 0),0.1f),
+                    new AnimationTrackProperty.KeyFrame(new Vector2(55, 0),0.3f),
+                    new AnimationTrackProperty.KeyFrame(new Vector2(0, 0),0.4f),
+                }
+            },
+            new AnimationTrackControlProperty()
+            {
+                Property = nameof(ButtonsPos),
+                InterpolationMode = AnimationInterpolationMode.Cubic,
+                KeyFrames =
+                {
+                    new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 70),0.3f),
+                    new AnimationTrackProperty.KeyFrame(new Vector2(55, 70),0.3f),
+                    new AnimationTrackProperty.KeyFrame(new Vector2(0, 70),0.4f),
+                }
+            }
+        }
+    };
+
+    private readonly string _cullAnimKey = "fuck";
+    private bool _resizeFirstTime = true;
+    
     public MenuScreen()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
+        
         SetAnchorPreset(MainContainer, LayoutPreset.Wide);
         SetAnchorPreset(Background, LayoutPreset.Wide);
         
@@ -36,7 +83,16 @@ public sealed partial class MenuScreen : UIScreen
         PlayButton.OnPressed += PlayButtonOnOnPressed;
         Exit.OnPressed += OnExitPressed;
         
+        Config.OnPressed += _ => PlayAnimation(_cullAnim,_cullAnimKey);
         MenuLabel.SetMessage(FormattedMessage.FromMarkup(Loc.GetString("menu-label")));
+    }
+    protected override void Resized()
+    {
+        base.Resized();
+        if (HasRunningAnimation(_cullAnimKey) || !_resizeFirstTime) return;
+        
+        PlayAnimation(_cullAnim, _cullAnimKey);
+        _resizeFirstTime = false;
     }
 
     private void OnExitPressed(BaseButton.ButtonEventArgs obj)
