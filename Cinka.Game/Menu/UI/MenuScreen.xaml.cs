@@ -23,51 +23,9 @@ public sealed partial class MenuScreen : UIScreen
     [Dependency] private readonly IStateManager _stateManager = default!;
     [Dependency] private readonly IGameController _gameController = default!;
     
-    [Animatable]
-    public Vector2 MenuLabelPos
-    {
-        get => MenuLabel.Position;
-        set => SetPosition(MenuLabel, value);
-    }
+    public AnimationExtend<Vector2> MenuLabelAnim;
+    public AnimationExtend<Vector2> ButtonAnim;
     
-    [Animatable]
-    public Vector2 ButtonsPos
-    {
-        get => ButtonContainer.Position;
-        set => SetPosition(ButtonContainer, value);
-    }
-    
-    private Animation _cullAnim = new()
-    {
-        Length = TimeSpan.FromSeconds(1),
-        AnimationTracks =
-        {
-            new AnimationTrackControlProperty()
-            {
-                Property = nameof(MenuLabelPos),
-                InterpolationMode = AnimationInterpolationMode.Cubic,
-                KeyFrames =
-                {
-                    new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 0),0.1f),
-                    new AnimationTrackProperty.KeyFrame(new Vector2(55, 0),0.3f),
-                    new AnimationTrackProperty.KeyFrame(new Vector2(0, 0),0.4f),
-                }
-            },
-            new AnimationTrackControlProperty()
-            {
-                Property = nameof(ButtonsPos),
-                InterpolationMode = AnimationInterpolationMode.Cubic,
-                KeyFrames =
-                {
-                    new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 70),0.3f),
-                    new AnimationTrackProperty.KeyFrame(new Vector2(55, 70),0.3f),
-                    new AnimationTrackProperty.KeyFrame(new Vector2(0, 70),0.4f),
-                }
-            }
-        }
-    };
-
-    private readonly string _cullAnimKey = "fuck";
     private bool _resizeFirstTime = true;
     
     public MenuScreen()
@@ -77,22 +35,60 @@ public sealed partial class MenuScreen : UIScreen
         
         SetAnchorPreset(MainContainer, LayoutPreset.Wide);
         SetAnchorPreset(Background, LayoutPreset.Wide);
+
+        MenuLabelAnim = new AnimationExtend<Vector2>(o =>
+        {
+            SetPosition(ButtonContainer, o);
+        }, this);
+        MenuLabelAnim.Track = new AnimationTrackControlProperty()
+        {
+            InterpolationMode = AnimationInterpolationMode.Cubic,
+            KeyFrames =
+            {
+                new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 70),0.1f),
+                new AnimationTrackProperty.KeyFrame(new Vector2(55, 70),0.3f),
+                new AnimationTrackProperty.KeyFrame(new Vector2(0, 70),0.4f),
+            }
+        };
+
+        ButtonAnim = new AnimationExtend<Vector2>(o =>
+        {
+            SetPosition(MenuLabel, o);
+        }, this);
+        ButtonAnim.Track = new AnimationTrackControlProperty()
+        {
+            InterpolationMode = AnimationInterpolationMode.Cubic,
+            KeyFrames =
+            {
+                new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 0), 0.3f),
+                new AnimationTrackProperty.KeyFrame(new Vector2(55, 0), 0.3f),
+                new AnimationTrackProperty.KeyFrame(new Vector2(0, 00), 0.4f),
+            }
+        };
         
         IoCManager.Resolve<IConfigurationManager>().OnValueChanged(CCVars.CCVars.BackroundMenu,OnBackroundChanged,true);
         
         PlayButton.OnPressed += PlayButtonOnOnPressed;
         Exit.OnPressed += OnExitPressed;
         
-        Config.OnPressed += _ => PlayAnimation(_cullAnim,_cullAnimKey);
+        Config.OnPressed += _ => PlayAnimations();;
         MenuLabel.SetMessage(FormattedMessage.FromMarkup(Loc.GetString("menu-label")));
     }
     protected override void Resized()
     {
         base.Resized();
-        if (HasRunningAnimation(_cullAnimKey) || !_resizeFirstTime) return;
+        if (!_resizeFirstTime) return;
         
-        PlayAnimation(_cullAnim, _cullAnimKey);
+        PlayAnimations();
         _resizeFirstTime = false;
+    }
+
+    private void PlayAnimations()
+    {
+        if(!MenuLabelAnim.HasRunningAnimation())
+            MenuLabelAnim.PlayAnimation();
+        if(!ButtonAnim.HasRunningAnimation())
+            ButtonAnim.PlayAnimation();
     }
 
     private void OnExitPressed(BaseButton.ButtonEventArgs obj)
