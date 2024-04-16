@@ -5,7 +5,7 @@ using Robust.Shared.IoC;
 
 namespace Cinka.Game.Scene;
 
-public class SceneCommand : IConsoleCommand
+public sealed class SceneCommand : IConsoleCommand
 {
     public string Command => "setscene";
     public string Description => "set current scene";

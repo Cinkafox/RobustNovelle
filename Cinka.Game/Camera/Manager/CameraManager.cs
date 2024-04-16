@@ -11,7 +11,7 @@ namespace Cinka.Game.Camera.Manager;
 public sealed class CameraManager : ICameraManager
 {
     public static string CameraProtoName = "Camera";
-    [Dependency] private readonly IBaseClient _client = default!;
+    
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -22,7 +22,6 @@ public sealed class CameraManager : ICameraManager
 
         var entity = _entityManager.SpawnEntity(CameraProtoName,
             new MapCoordinates(0, 0, _locationManager.GetCurrentLocationId()));
-        if (_playerManager.LocalPlayer == null) throw new Exception("PUK SRINK PLAYER IS NULL!");
 
         _playerManager.SetAttachedEntity(_playerManager.LocalSession, entity);
     }

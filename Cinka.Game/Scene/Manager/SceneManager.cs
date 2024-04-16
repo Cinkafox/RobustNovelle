@@ -19,10 +19,8 @@ namespace Cinka.Game.Scene.Manager;
 public sealed class SceneManager : ISceneManager
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly ISerializationManager _serializationManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
 
