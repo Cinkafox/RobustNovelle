@@ -1,11 +1,7 @@
 using System.Globalization;
 using Cinka.Game.Audio.Data;
-using Cinka.Game.Camera.Manager;
-using Cinka.Game.Gameplay;
 using Cinka.Game.Input;
-using Cinka.Game.Location.Managers;
 using Cinka.Game.Menu;
-using Cinka.Game.Scene.Manager;
 using Cinka.Game.StyleSheet;
 using Robust.Client;
 using Robust.Client.Graphics;
@@ -13,15 +9,12 @@ using Robust.Client.Input;
 using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.Controls;
-using Robust.Shared;
-using Robust.Shared.Configuration;
+using Robust.Shared.Audio;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Log;
-using Robust.Shared.Network.Messages;
 using Robust.Shared.Prototypes;
 
 namespace Cinka.Game;
@@ -69,8 +62,22 @@ public sealed class EntryPoint : GameClient
         //Some cache shit
         foreach (var audio in _prototype.EnumeratePrototypes<AudioPrototype>())
         {
-            _resource.TryGetResource<AudioResource>(audio.Audio.GetSound(), out _);
+            var specifier = audio.Audio;
+            if (specifier is SoundPathSpecifier pathSpecifier)
+            {
+                _resource.TryGetResource<AudioResource>(pathSpecifier.Path, out _);
+            }
+
+            if (specifier is SoundCollectionSpecifier collectionSpecifier
+                && _prototype.TryIndex<SoundCollectionPrototype>(collectionSpecifier.Collection!, out var collectionPrototype))
+            {
+                foreach (var resPath in collectionPrototype.PickFiles)
+                {
+                    _resource.TryGetResource<AudioResource>(resPath, out _);
+                }
+            }
         }
+        
         Logger.Debug("Cached some audio shit!");
     }
 }

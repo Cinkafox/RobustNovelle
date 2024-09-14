@@ -25,23 +25,19 @@ public sealed class ScalingViewport : Control, IViewportControl
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
 
-    private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
-    private IEye? _eye;
-    private int _fixedRenderScale = 1;
-    private ScalingViewportRenderScaleMode _renderScaleMode = ScalingViewportRenderScaleMode.Fixed;
-    private ScalingViewportStretchMode _stretchMode = ScalingViewportStretchMode.Bilinear;
-
     // Internal viewport creation is deferred.
     private IClydeViewport? _viewport;
+    private IEye? _eye;
     private Vector2i _viewportSize;
+    private int _curRenderScale;
+    private ScalingViewportStretchMode _stretchMode = ScalingViewportStretchMode.Bilinear;
+    private ScalingViewportRenderScaleMode _renderScaleMode = ScalingViewportRenderScaleMode.Fixed;
+    private ScalingViewportIgnoreDimension _ignoreDimension = ScalingViewportIgnoreDimension.None;
+    private int _fixedRenderScale = 1;
 
-    public ScalingViewport()
-    {
-        IoCManager.InjectDependencies(this);
-        RectClipContent = true;
-    }
+    private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
 
-    public int CurrentRenderScale { get; private set; }
+    public int CurrentRenderScale => _curRenderScale;
 
     /// <summary>
     ///     The eye to render.
@@ -111,66 +107,21 @@ public sealed class ScalingViewport : Control, IViewportControl
         }
     }
 
-    public MapCoordinates ScreenToMap(Vector2 coords)
+    [ViewVariables(VVAccess.ReadWrite)]
+    public ScalingViewportIgnoreDimension IgnoreDimension
     {
-        if (_eye == null)
-            return default;
-
-        EnsureViewportCreated();
-
-        var matrix = Matrix3.Invert(GetLocalToScreenMatrix());
-
-        return _viewport!.LocalToWorld(matrix.Transform(coords));
+        get => _ignoreDimension;
+        set
+        {
+            _ignoreDimension = value;
+            InvalidateViewport();
+        }
     }
 
-    public MapCoordinates PixelToMap(Vector2 coords)
+    public ScalingViewport()
     {
-        if (_eye == null)
-            return default;
-
-        EnsureViewportCreated();
-
-        var matrix = Matrix3.Invert(GetLocalToScreenMatrix());
-        coords = matrix.Transform(coords);
-
-        var ev = new PixelToMapEvent(coords, this, _viewport!);
-        _entityManager.EventBus.RaiseEvent(EventSource.Local, ref ev);
-
-        return _viewport!.LocalToWorld(ev.VisiblePosition);
-    }
-
-    public Vector2 WorldToScreen(Vector2 map)
-    {
-        if (_eye == null)
-            return default;
-
-        EnsureViewportCreated();
-
-        var vpLocal = _viewport!.WorldToLocal(map);
-
-        var matrix = GetLocalToScreenMatrix();
-
-        return matrix.Transform(vpLocal);
-    }
-
-    public Matrix3 GetWorldToScreenMatrix()
-    {
-        EnsureViewportCreated();
-        return _viewport!.GetWorldToLocalMatrix() * GetLocalToScreenMatrix();
-    }
-
-    public Matrix3 GetLocalToScreenMatrix()
-    {
-        EnsureViewportCreated();
-
-        var drawBox = GetDrawBox();
-        var scaleFactor = drawBox.Size / (Vector2)_viewport!.Size;
-
-        if (scaleFactor.X == 0 || scaleFactor.Y == 0)
-            // Basically a nonsense scenario, at least make sure to return something that can be inverted.
-            return Matrix3.Identity;
-
-        return Matrix3.CreateTransform(GlobalPixelPosition + drawBox.TopLeft, 0, scaleFactor);
+        IoCManager.InjectDependencies(this);
+        RectClipContent = true;
     }
 
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
@@ -207,7 +158,10 @@ public sealed class ScalingViewport : Control, IViewportControl
 
             _viewport.RenderTarget.CopyPixelsToMemory<Rgba32>(image =>
             {
-                foreach (var callback in callbacks) callback(image);
+                foreach (var callback in callbacks)
+                {
+                    callback(image);
+                }
             });
 
             _queuedScreenshots.Clear();
@@ -231,24 +185,36 @@ public sealed class ScalingViewport : Control, IViewportControl
         DebugTools.AssertNotNull(_viewport);
 
         var vpSize = _viewport!.Size;
-        var ourSize = (Vector2)PixelSize;
+        var ourSize = (Vector2) PixelSize;
 
         if (FixedStretchSize == null)
         {
             var (ratioX, ratioY) = ourSize / vpSize;
-            var ratio = Math.Min(ratioX, ratioY);
+            var ratio = 1f;
+            switch (_ignoreDimension)
+            {
+                case ScalingViewportIgnoreDimension.None:
+                    ratio = Math.Min(ratioX, ratioY);
+                    break;
+                case ScalingViewportIgnoreDimension.Vertical:
+                    ratio = ratioX;
+                    break;
+                case ScalingViewportIgnoreDimension.Horizontal:
+                    ratio = ratioY;
+                    break;
+            }
 
             var size = vpSize * ratio;
             // Size
             var pos = (ourSize - size) / 2;
 
-            return (UIBox2i)UIBox2.FromDimensions(pos, size);
+            return (UIBox2i) UIBox2.FromDimensions(pos, size);
         }
         else
         {
             // Center only, no scaling.
             var pos = (ourSize - FixedStretchSize.Value) / 2;
-            return (UIBox2i)UIBox2.FromDimensions(pos, FixedStretchSize.Value);
+            return (UIBox2i) UIBox2.FromDimensions(pos, FixedStretchSize.Value);
         }
     }
 
@@ -258,16 +224,16 @@ public sealed class ScalingViewport : Control, IViewportControl
 
         var vpSizeBase = ViewportSize;
         var ourSize = PixelSize;
-        var (ratioX, ratioY) = ourSize / (Vector2)vpSizeBase;
+        var (ratioX, ratioY) = ourSize / (Vector2) vpSizeBase;
         var ratio = Math.Min(ratioX, ratioY);
         var renderScale = 1;
         switch (_renderScaleMode)
         {
             case ScalingViewportRenderScaleMode.CeilInt:
-                renderScale = (int)Math.Ceiling(ratio);
+                renderScale = (int) Math.Ceiling(ratio);
                 break;
             case ScalingViewportRenderScaleMode.FloorInt:
-                renderScale = (int)Math.Floor(ratio);
+                renderScale = (int) Math.Floor(ratio);
                 break;
             case ScalingViewportRenderScaleMode.Fixed:
                 renderScale = _fixedRenderScale;
@@ -277,12 +243,13 @@ public sealed class ScalingViewport : Control, IViewportControl
         // Always has to be at least one to avoid passing 0,0 to the viewport constructor
         renderScale = Math.Max(1, renderScale);
 
-        CurrentRenderScale = renderScale;
+        _curRenderScale = renderScale;
+
         _viewport = _clyde.CreateViewport(
             ViewportSize * renderScale,
             new TextureSampleParameters
             {
-                Filter = StretchMode == ScalingViewportStretchMode.Bilinear
+                Filter = StretchMode == ScalingViewportStretchMode.Bilinear,
             });
 
         _viewport.RenderScale = new Vector2(renderScale, renderScale);
@@ -303,9 +270,76 @@ public sealed class ScalingViewport : Control, IViewportControl
         _viewport = null;
     }
 
+    public MapCoordinates ScreenToMap(Vector2 coords)
+    {
+        if (_eye == null)
+            return default;
+
+        EnsureViewportCreated();
+
+        Matrix3x2.Invert(GetLocalToScreenMatrix(), out var matrix);
+        coords = Vector2.Transform(coords, matrix);
+
+        return _viewport!.LocalToWorld(coords);
+    }
+
+    /// <inheritdoc/>
+    public MapCoordinates PixelToMap(Vector2 coords)
+    {
+        if (_eye == null)
+            return default;
+
+        EnsureViewportCreated();
+
+        Matrix3x2.Invert(GetLocalToScreenMatrix(), out var matrix);
+        coords = Vector2.Transform(coords, matrix);
+
+        var ev = new PixelToMapEvent(coords, this, _viewport!);
+        _entityManager.EventBus.RaiseEvent(EventSource.Local, ref ev);
+
+        return _viewport!.LocalToWorld(ev.VisiblePosition);
+    }
+
+    public Vector2 WorldToScreen(Vector2 map)
+    {
+        if (_eye == null)
+            return default;
+
+        EnsureViewportCreated();
+
+        var vpLocal = _viewport!.WorldToLocal(map);
+
+        var matrix = GetLocalToScreenMatrix();
+
+        return Vector2.Transform(vpLocal, matrix);
+    }
+
+    public Matrix3x2 GetWorldToScreenMatrix()
+    {
+        EnsureViewportCreated();
+        return _viewport!.GetWorldToLocalMatrix() * GetLocalToScreenMatrix();
+    }
+
+    public Matrix3x2 GetLocalToScreenMatrix()
+    {
+        EnsureViewportCreated();
+
+        var drawBox = GetDrawBox();
+        var scaleFactor = drawBox.Size / (Vector2) _viewport!.Size;
+
+        if (scaleFactor.X == 0 || scaleFactor.Y == 0)
+            // Basically a nonsense scenario, at least make sure to return something that can be inverted.
+            return Matrix3x2.Identity;
+
+        return Matrix3Helpers.CreateTransform(GlobalPixelPosition + drawBox.TopLeft, 0, scaleFactor);
+    }
+
     private void EnsureViewportCreated()
     {
-        if (_viewport == null) RegenerateViewport();
+        if (_viewport == null)
+        {
+            RegenerateViewport();
+        }
 
         DebugTools.AssertNotNull(_viewport);
     }
@@ -324,7 +358,7 @@ public enum ScalingViewportStretchMode
     /// <summary>
     ///     Nearest neighbor sampling is used.
     /// </summary>
-    Nearest
+    Nearest,
 }
 
 /// <summary>
@@ -333,7 +367,7 @@ public enum ScalingViewportStretchMode
 public enum ScalingViewportRenderScaleMode
 {
     /// <summary>
-    ///     <see cref="ScalingViewport.FixedRenderScale" /> is used.
+    ///     <see cref="ScalingViewport.FixedRenderScale"/> is used.
     /// </summary>
     Fixed = 0,
 
@@ -346,4 +380,25 @@ public enum ScalingViewportRenderScaleMode
     ///     Ceiling to the closest integer scale possible.
     /// </summary>
     CeilInt
+}
+
+/// <summary>
+///     If the viewport is allowed to freely scale, this determines which dimensions should be ignored while fitting the viewport
+/// </summary>
+public enum ScalingViewportIgnoreDimension
+{
+    /// <summary>
+    ///     The viewport won't ignore any dimension.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    ///     The viewport will ignore the horizontal dimension, and will exclusively consider the vertical dimension for scaling.
+    /// </summary>
+    Horizontal,
+
+    /// <summary>
+    ///     The viewport will ignore the vertical dimension, and will exclusively consider the horizontal dimension for scaling.
+    /// </summary>
+    Vertical
 }
