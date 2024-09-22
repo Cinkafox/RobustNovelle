@@ -80,7 +80,7 @@ public sealed class DialogSystem : EntitySystem
     public void SpeedupDialog()
     {
         if(!HasDialog || CurrentDialog.DontLetSkip) return;
-        CurrentDialog.Delay = 10;
+        CurrentDialog.Delay = 2;
     }
     
     public void SkipMessage()
@@ -182,16 +182,18 @@ public sealed class DialogSystem : EntitySystem
         
         if(_dialogQueue.Count == 0 || _textQueue == null) return;
         
-        if (IsEmptyString(_textQueue))
+        if (string.IsNullOrEmpty(_textQueue))
         {
             _textQueue = null;
             RaiseLocalEvent(new DialogEndedEvent(CurrentDialog));
             return;
         }
-        
-        CurrentDialog.PassedTime += frameTime * 1000;
 
-        if (!(CurrentDialog.PassedTime >= CurrentDialog.Delay)) return;
+        if (CurrentDialog.PassedTime < CurrentDialog.Delay)
+        {
+            CurrentDialog.PassedTime += frameTime * 1000;
+            return;
+        }
         
         CurrentDialog.PassedTime = 0;
 

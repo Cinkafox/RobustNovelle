@@ -1,4 +1,0 @@
-- type: audio
-  id: test
-  audio: "/Audio/Gym/val.ogg"
-  isBackground: true

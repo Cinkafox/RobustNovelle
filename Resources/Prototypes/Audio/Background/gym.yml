@@ -1,9 +1,0 @@
-﻿- type: audio
-  id: backGym
-  audio: "/Audio/Background/back_gym.ogg"
-  isBackground: true
-
-- type: audio
-  id: backBasement
-  audio: "/Audio/Background/back_basement.ogg"
-  isBackground: true

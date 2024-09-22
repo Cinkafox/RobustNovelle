@@ -1,4 +1,0 @@
-﻿- type: audio
-  id: backCity
-  audio: "/Audio/Background/back_city.ogg"
-  isBackground: true

@@ -16,7 +16,16 @@ public sealed class VoiceSystem : EntitySystem
 
     private void OnDialogAppend(EntityUid uid, VoiceComponent component, DialogAppendEvent args)
     {
-        if(args.Dialog.Delay > 30)
+        if (args.Dialog is not { Delay: > 10, SayLetters: true }) return;
+        
+        if (args.Dialog.SkipCounter == args.Dialog.SkipSayCount)
+        {
             _audioSystem.Play(component.Voice);
+            args.Dialog.SkipCounter = 0;
+        }
+        else
+        {
+            args.Dialog.SkipCounter += 1;
+        }
     }
 }
