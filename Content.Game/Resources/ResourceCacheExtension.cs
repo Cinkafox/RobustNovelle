@@ -18,26 +18,26 @@ public static class ResourceCacheExtensions
         return GetTexture(cache, new ResPath(path));
     }
 
-    public static Font GetFont(this IResourceCache cache, ResPath path, int size)
+    public static Robust.Client.Graphics.Font GetFont(this IResourceCache cache, ResPath path, int size)
     {
         return new VectorFont(cache.GetResource<FontResource>(path), size);
     }
 
-    public static Font GetFont(this IResourceCache cache, string path, int size)
+    public static Robust.Client.Graphics.Font GetFont(this IResourceCache cache, string path, int size)
     {
         return cache.GetFont(new ResPath(path), size);
     }
 
-    public static Font GetFont(this IResourceCache cache, ResPath[] path, int size)
+    public static Robust.Client.Graphics.Font GetFont(this IResourceCache cache, ResPath[] path, int size)
     {
-        var fs = new Font[path.Length];
+        var fs = new Robust.Client.Graphics.Font[path.Length];
         for (var i = 0; i < path.Length; i++)
             fs[i] = new VectorFont(cache.GetResource<FontResource>(path[i]), size);
 
         return new StackedFont(fs);
     }
 
-    public static Font GetFont(this IResourceCache cache, string[] path, int size)
+    public static Robust.Client.Graphics.Font GetFont(this IResourceCache cache, string[] path, int size)
     {
         var rp = new ResPath[path.Length];
         for (var i = 0; i < path.Length; i++)

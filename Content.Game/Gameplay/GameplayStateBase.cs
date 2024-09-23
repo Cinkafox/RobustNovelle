@@ -23,7 +23,6 @@ public class GameplayStateBase : State
     [Dependency] private readonly ICameraManager _cameraManager = default!;
     [Dependency] private readonly ILocationManager _locationManager = default!;
     [Dependency] private readonly ISceneManager _sceneManager = default!;
-    [Dependency] private readonly IStylesheetManager _stylesheetManager = default!;
 
     public GameplayStateBase()
     {

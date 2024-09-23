@@ -1,0 +1,126 @@
+﻿- type: dynamicValue
+  id: notoSansFont12
+  value:
+    valueType: Content.Game.Font.FontSpecifier
+    value:
+      font: "/Fonts/Minecraft/minecraft.ttf"
+      size: 12
+
+- type: dynamicValue
+  id: notoSansMono12
+  value:
+    valueType: Content.Game.Font.FontSpecifier
+    value:
+      font: "/Fonts/Minecraft/minecraft.ttf"
+      size: 12
+
+- type: dynamicValue
+  id: scrollBarNormal
+  value:
+    valueType: Content.Game.StyleSheet.StyleBox.StyleBoxFlatData
+    value:
+      backgroundColor: "#DDDDDD88"
+      contentMarginLeftOverride: 8
+      contentMarginTopOverride: 8
+
+- type: dynamicValue
+  id: scrollBarHovered
+  value:
+    valueType: Content.Game.StyleSheet.StyleBox.StyleBoxFlatData
+    value:
+      backgroundColor: "#CCCCCCAA"
+      contentMarginLeftOverride: 8
+      contentMarginTopOverride: 8
+
+- type: dynamicValue
+  id: scrollBarGrabbed
+  value:
+    valueType: Content.Game.StyleSheet.StyleBox.StyleBoxFlatData
+    value:
+      backgroundColor: "#AAAAAAFF"
+      contentMarginLeftOverride: 8
+      contentMarginTopOverride: 8
+
+- type: styleSheet
+  id: default
+  typeDefinition:
+    ContainerButton: "Robust.Client.UserInterface.Controls.ContainerButton"
+  styles:
+    ".monospace":
+      font: notoSansMono12
+    "":
+      font: notoSansFont12
+      font-color: "#333333"
+    ".windowPanel":
+      panel:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#F4F4F4"
+          borderColor: "#DDDDDD"
+          borderThickness: 2,2,2,2
+      header:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#EEEEEE"
+          borderColor: "#CCCCCC"
+          padding: 12,12,12,12
+    ContainerButton.button#normal:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#FFFFFF"
+          borderColor: "#AAAAAA"
+          borderThickness: 2,2,2,2
+          contentMarginBottomOverride: 10
+          contentMarginLeftOverride: 12
+          contentMarginRightOverride: 12
+          contentMarginTopOverride: 10
+    ContainerButton.button#hover:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#FFFFFF"
+          borderColor: "#777777"
+          borderThickness: 5,2,5,2
+          contentMarginBottomOverride: 10
+          contentMarginLeftOverride: 12
+          contentMarginRightOverride: 12
+          contentMarginTopOverride: 10
+    ContainerButton.button#pressed:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#EFEFEF"
+          borderColor: "#777777"
+          borderThickness: 5,5,5,5
+          contentMarginBottomOverride: 10
+          contentMarginLeftOverride: 12
+          contentMarginRightOverride: 12
+          contentMarginTopOverride: 10
+    ContainerButton.button#disabled:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#EEEEEE"
+          borderColor: "#DDDDDD"
+          borderThickness: 5,5,5,5
+          contentMarginBottomOverride: 10
+          contentMarginLeftOverride: 12
+          contentMarginRightOverride: 12
+          contentMarginTopOverride: 10
+    .windowCloseButton:
+      texture:
+        isLazy: true
+        valueType: Robust.Client.Graphics.Texture
+        value: "/Textures/Interface/Novelle/cross.svg.png"
+      modulate-self: "#FF6666"
+    .DialogWindow:
+      panel:
+        valueType: Robust.Client.Graphics.StyleBoxTexture
+        value:
+          texture: "/Textures/Interface/Novelle/paper_background_book.svg.96dpi.png"
+          mode: stretch
+          patchMarginLeft: 25.0
+          patchMarginBottom: 18.0
+          patchMarginRight: 16.0
+          patchMarginTop: 18.0

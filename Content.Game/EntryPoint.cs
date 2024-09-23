@@ -27,7 +27,7 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
-    [Dependency] private readonly IStylesheetManager _stylesheetManager = default!;
+    [Dependency] private readonly StyleSheetManager _styleSheetManager = default!;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
     [Dependency] private readonly IResourceCache _resource = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
@@ -55,7 +55,8 @@ public sealed class EntryPoint : GameClient
         
         _uiManager.MainViewport.Visible = false;
         _client.StartSinglePlayer();
-        _stylesheetManager.Initialize();
+        _uiManager.SetDefaultTheme("DefaultTheme");
+        _styleSheetManager.ApplyStyleSheet("default");
 
         _stateManager.RequestStateChange<MenuState>();
         

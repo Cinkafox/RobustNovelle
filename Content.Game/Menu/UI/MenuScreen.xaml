@@ -3,15 +3,19 @@
     xmlns:ui="clr-namespace:Content.Game.Menu.UI">
     <TextureRect Access="Public" VerticalExpand="True" HorizontalExpand="True" Name="Background"
                  Stretch="KeepAspectCovered" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-    <BoxContainer Name="MainContainer">
-        <BoxContainer Orientation="Horizontal" Margin="15 200 15 15">
-            <BoxContainer Orientation="Vertical">
-                <RichTextLabel Name="MenuLabel" Margin="0 15 0 30" />
-                <BoxContainer Orientation="Vertical" SetWidth="200" HorizontalAlignment="Left" Name="ButtonContainer">
-                    <Button Text="{Loc 'menu-play'}"        Margin="0 15 0 0" Name="PlayButton"/>
-                    <Button Text="{Loc 'menu-config'}"      Margin="0 15 0 0" Name="Config"/>
-                    <Button Text="{Loc 'menu-exit'}"        Margin="0 15 0 0" Name="Exit"/>
-                </BoxContainer>
+    <BoxContainer Name="MainContainer" VerticalExpand="True" HorizontalExpand="True">
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" HorizontalExpand="True">
+            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Center">
+                <PanelContainer VerticalExpand="True" HorizontalExpand="True" VerticalAlignment="Center" StyleClasses="windowPanel">
+                    <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" VerticalAlignment="Center" Margin="5 45 0 45">
+                        <RichTextLabel Name="MenuLabel" Margin="15"/>
+                        <BoxContainer Orientation="Vertical" Name="ButtonContainer" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                            <Button Text="{Loc 'menu-play'}"        Margin="0 15 0 0" Name="PlayButton" HorizontalExpand="True"/>
+                            <Button Text="{Loc 'menu-config'}"      Margin="0 15 0 0" Name="Config" HorizontalExpand="True"/>
+                            <Button Text="{Loc 'menu-exit'}"        Margin="0 15 0 0" Name="Exit" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                </PanelContainer>
             </BoxContainer>
         </BoxContainer>
     </BoxContainer>
