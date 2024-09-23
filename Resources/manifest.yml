@@ -1,5 +1,5 @@
 modules: [] # Any needed RobustToolbox modules here.
-assemblyPrefix: Cinka
+assemblyPrefix: Content
 defaultWindowTitle: Femboy adventure
 windowIconSet: /Textures/Interface/meo.png
 splashLogo: /Textures/Interface/loading.png
