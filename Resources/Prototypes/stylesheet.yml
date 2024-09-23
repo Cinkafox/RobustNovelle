@@ -41,17 +41,43 @@
       contentMarginLeftOverride: 8
       contentMarginTopOverride: 8
 
+- type: dynamicValue
+  id: novelPanel
+  value:
+    valueType: Robust.Client.Graphics.StyleBoxTexture
+    value:
+      texture: "/Textures/Interface/Novelle/paper_background_book.svg.96dpi.png"
+      mode: stretch
+      patchMarginLeft: 25.0
+      patchMarginBottom: 18.0
+      patchMarginRight: 16.0
+      patchMarginTop: 18.0
+
+- type: dynamicValue
+  id: novelPanelHover
+  value:
+    parent: novelPanel
+    value:
+      modulate: "#AAAAAA"
+      
+- type: dynamicValue
+  id: novelPanelPush
+  value:
+    parent: novelPanel
+    value:
+      modulate: "#999999"
+
 - type: styleSheet
   id: default
   typeDefinition:
     ContainerButton: "Robust.Client.UserInterface.Controls.ContainerButton"
   styles:
-    ".monospace":
+    .monospace:
       font: notoSansMono12
     "":
       font: notoSansFont12
       font-color: "#333333"
-    ".windowPanel":
+    .windowPanel:
       panel:
         valueType: Robust.Client.Graphics.StyleBoxFlat
         value:
@@ -65,49 +91,16 @@
           borderColor: "#CCCCCC"
           padding: 12,12,12,12
     ContainerButton.button#normal:
-      stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
-        value:
-          backgroundColor: "#FFFFFF"
-          borderColor: "#AAAAAA"
-          borderThickness: 2,2,2,2
-          contentMarginBottomOverride: 10
-          contentMarginLeftOverride: 12
-          contentMarginRightOverride: 12
-          contentMarginTopOverride: 10
+      stylebox: novelPanel
     ContainerButton.button#hover:
-      stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
-        value:
-          backgroundColor: "#FFFFFF"
-          borderColor: "#777777"
-          borderThickness: 5,2,5,2
-          contentMarginBottomOverride: 10
-          contentMarginLeftOverride: 12
-          contentMarginRightOverride: 12
-          contentMarginTopOverride: 10
+      stylebox: novelPanelHover
     ContainerButton.button#pressed:
-      stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
-        value:
-          backgroundColor: "#EFEFEF"
-          borderColor: "#777777"
-          borderThickness: 5,5,5,5
-          contentMarginBottomOverride: 10
-          contentMarginLeftOverride: 12
-          contentMarginRightOverride: 12
-          contentMarginTopOverride: 10
+      stylebox: novelPanelPush
     ContainerButton.button#disabled:
       stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
+        parent: novelPanel
         value:
-          backgroundColor: "#EEEEEE"
-          borderColor: "#DDDDDD"
-          borderThickness: 5,5,5,5
-          contentMarginBottomOverride: 10
-          contentMarginLeftOverride: 12
-          contentMarginRightOverride: 12
-          contentMarginTopOverride: 10
+          modulate: "#555555"
     .windowCloseButton:
       texture:
         isLazy: true
@@ -115,12 +108,6 @@
         value: "/Textures/Interface/Novelle/cross.svg.png"
       modulate-self: "#FF6666"
     .DialogWindow:
-      panel:
-        valueType: Robust.Client.Graphics.StyleBoxTexture
-        value:
-          texture: "/Textures/Interface/Novelle/paper_background_book.svg.96dpi.png"
-          mode: stretch
-          patchMarginLeft: 25.0
-          patchMarginBottom: 18.0
-          patchMarginRight: 16.0
-          patchMarginTop: 18.0
+      panel: novelPanel
+    .menuPanel:
+      panel: novelPanel

@@ -5,8 +5,8 @@
                  Stretch="KeepAspectCovered" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
     <BoxContainer Name="MainContainer" VerticalExpand="True" HorizontalExpand="True">
         <BoxContainer Orientation="Horizontal" VerticalExpand="True" HorizontalExpand="True">
-            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Center">
-                <PanelContainer VerticalExpand="True" HorizontalExpand="True" VerticalAlignment="Center" StyleClasses="windowPanel">
+            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Left">
+                <PanelContainer VerticalExpand="True" HorizontalExpand="True" VerticalAlignment="Center" StyleClasses="menuPanel">
                     <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" VerticalAlignment="Center" Margin="5 45 0 45">
                         <RichTextLabel Name="MenuLabel" Margin="15"/>
                         <BoxContainer Orientation="Vertical" Name="ButtonContainer" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Left" VerticalAlignment="Bottom">
