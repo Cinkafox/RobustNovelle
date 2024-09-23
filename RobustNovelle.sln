@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinka.Game", "Cinka.Game\Cinka.Game.csproj", "{F2524BEF-CD40-4F05-8BB8-87102E573D03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content.Game", "Content.Game\Content.Game.csproj", "{F2524BEF-CD40-4F05-8BB8-87102E573D03}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RobustToolbox", "RobustToolbox", "{F5F87A9D-C304-4833-B107-D666317F6931}"
 	ProjectSection(SolutionItems) = preProject
@@ -255,11 +255,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.Base", "RobustTool
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robust.Shared.CompNetworkGenerator", "RobustToolbox\Robust.Shared.CompNetworkGenerator\Robust.Shared.CompNetworkGenerator.csproj", "{83FB6E90-85D6-442E-B5A6-C5D303FCF737}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinka.Packaging", "Cinka.Packaging\Cinka.Packaging.csproj", "{C8487BCF-0E69-4DE8-8C65-8A2288263964}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content.Packaging", "Content.Packaging\Content.Packaging.csproj", "{C8487BCF-0E69-4DE8-8C65-8A2288263964}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robust.Packaging", "RobustToolbox\Robust.Packaging\Robust.Packaging.csproj", "{952AAF2A-DF63-4A7D-8094-3453893EBA80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinka.Host", "Cinka.Host\Cinka.Host.csproj", "{B51A3C04-6691-4680-A832-BBA5467D60AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content.Host", "Content.Host\Content.Host.csproj", "{B51A3C04-6691-4680-A832-BBA5467D60AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robust.Server", "RobustToolbox\Robust.Server\Robust.Server.csproj", "{B04AAE71-0000-0000-0000-000000000000}"
 EndProject
