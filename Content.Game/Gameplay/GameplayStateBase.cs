@@ -2,16 +2,10 @@ using Content.Game.Camera.Manager;
 using Content.Game.Gameplay.UI;
 using Content.Game.Location.Managers;
 using Content.Game.Scene.Manager;
-using Content.Game.StyleSheet;
 using Content.Game.UserInterface.Controls;
 using Content.Game.UserInterface.Systems;
-using Robust.Client;
-using Robust.Client.Input;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
-using Robust.Shared.Analyzers;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
 
 namespace Content.Game.Gameplay;
 

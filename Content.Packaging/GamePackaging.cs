@@ -69,7 +69,7 @@ public sealed class GamePackaging
             inputPass,
             contentDir,
             "Content.Game",
-            new[] { "Content.Game" },
+            new[] { "Content.Game", "Content.StyleSheetify.Client", "Content.StyleSheetify.Shared" },
             cancel: cancel);
 
         await RobustClientPackaging.WriteClientResources(contentDir, pass, cancel);

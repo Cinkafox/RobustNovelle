@@ -2,7 +2,6 @@ using System.Globalization;
 using Content.Game.Audio.Data;
 using Content.Game.Input;
 using Content.Game.Menu;
-using Content.Game.StyleSheet;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -11,11 +10,8 @@ using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Shared.Audio;
 using Robust.Shared.ContentPack;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
-using Robust.Shared.Localization;
-using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
+using Content.StyleSheetify.Client.StyleSheet;
 
 namespace Content.Game;
 
@@ -27,29 +23,34 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
-    [Dependency] private readonly StyleSheetManager _styleSheetManager = default!;
+    [Dependency] private readonly IStyleSheetManager _styleSheetManager = default!;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
     [Dependency] private readonly IResourceCache _resource = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly IClyde _clyde = default!;
 
     public override void PreInit()
     {
         IoCManager.Resolve<ILocalizationManager>().LoadCulture(new CultureInfo(Culture));
-        CiIoC.Register();
+        CiIoC.Register(); ;
+        StyleSheetify.Client.DependencyRegistration.Register(IoCManager.Instance!);
         IoCManager.BuildGraph();
         IoCManager.InjectDependencies(this);
+        _clyde.SetWindowTitle("LOADING: [------]");
     }
 
     public override void Init()
     {
+        _clyde.SetWindowTitle("LOADING: [#-----]");
         _componentFactory.DoAutoRegistrations();
+        _clyde.SetWindowTitle("LOADING: [##----]");
         _componentFactory.GenerateNetIds();
     }
 
     public override void PostInit()
     {
         ContentContexts.SetupContexts(_inputManager.Contexts);
-
+        _clyde.SetWindowTitle("LOADING: [###---]");
         //Нахуя нам свет в новелле да?
         IoCManager.Resolve<ILightManager>().Enabled = false;
         
@@ -60,6 +61,7 @@ public sealed class EntryPoint : GameClient
 
         _stateManager.RequestStateChange<MenuState>();
         
+        _clyde.SetWindowTitle("LOADING: [####--]");
         //Some cache shit
         foreach (var audio in _prototype.EnumeratePrototypes<AudioPrototype>())
         {
@@ -78,7 +80,9 @@ public sealed class EntryPoint : GameClient
                 }
             }
         }
-        
+        _clyde.SetWindowTitle("LOADING: [#####-]");
         Logger.Debug("Cached some audio shit!");
+        
+        _clyde.SetWindowTitle("Femboy adventure");
     }
 }

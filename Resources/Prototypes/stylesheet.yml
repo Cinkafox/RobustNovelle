@@ -17,7 +17,7 @@
 - type: dynamicValue
   id: scrollBarNormal
   value:
-    valueType: Content.Game.StyleSheet.StyleBox.StyleBoxFlatData
+    valueType: Robust.Client.Graphics.StyleBoxFlat
     value:
       backgroundColor: "#DDDDDD88"
       contentMarginLeftOverride: 8
@@ -26,7 +26,7 @@
 - type: dynamicValue
   id: scrollBarHovered
   value:
-    valueType: Content.Game.StyleSheet.StyleBox.StyleBoxFlatData
+    valueType: Robust.Client.Graphics.StyleBoxFlat
     value:
       backgroundColor: "#CCCCCCAA"
       contentMarginLeftOverride: 8
@@ -35,7 +35,7 @@
 - type: dynamicValue
   id: scrollBarGrabbed
   value:
-    valueType: Content.Game.StyleSheet.StyleBox.StyleBoxFlatData
+    valueType: Robust.Client.Graphics.StyleBoxFlat
     value:
       backgroundColor: "#AAAAAAFF"
       contentMarginLeftOverride: 8

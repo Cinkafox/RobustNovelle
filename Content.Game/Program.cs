@@ -9,7 +9,7 @@ internal static class Program
     {
         ContentStart.StartLibrary(args, new GameControllerOptions
         {
-            Sandboxing = false,
+            Sandboxing = true,
 
             ContentModulePrefix = "Content.",
 
