@@ -60,10 +60,13 @@ public sealed class SceneAudioSystem : EntitySystem
         
     }
     
-    private EntityUid PlayAudio(SoundSpecifier specifier, AudioParams audioParams,string effect = "")
+    private EntityUid? PlayAudio(SoundSpecifier specifier, AudioParams audioParams,string effect = "")
     {
-        var (uid,comp) =  _audioSystem
-            .PlayGlobal(specifier, Filter.Local(), false, audioParams).Value;
+        var audio = _audioSystem
+            .PlayGlobal(specifier, Filter.Local(), false, audioParams);
+        if (audio is null) return null;
+        
+        var (uid,comp) = audio.Value;
         
         SwitchEffect(uid,comp,effect);
         
