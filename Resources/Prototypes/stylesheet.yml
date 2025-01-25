@@ -1,7 +1,7 @@
 ﻿- type: dynamicValue
   id: notoSansFont12
   value:
-    valueType: Content.Game.Font.FontSpecifier
+    valueType: Content.StyleSheetify.Client.Font.FontSpecifier
     value:
       font: "/Fonts/Minecraft/minecraft.ttf"
       size: 12
@@ -9,7 +9,7 @@
 - type: dynamicValue
   id: notoSansMono12
   value:
-    valueType: Content.Game.Font.FontSpecifier
+    valueType: Content.StyleSheetify.Client.Font.FontSpecifier
     value:
       font: "/Fonts/Minecraft/minecraft.ttf"
       size: 12
