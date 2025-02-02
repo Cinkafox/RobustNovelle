@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using Content.Game.Camera.Systems;
 using Content.Game.Character.Systems;
 using Content.Game.Dialog.Data;
 using Content.Game.Dialog.DialogActions;
 using Content.Game.Input;
-using Content.Game.Location.Managers;
+using Content.Game.Location.Systems;
 using Content.Game.Menu;
 using Content.Game.UserInterface.Systems.Dialog;
 using Robust.Client;
@@ -13,15 +12,8 @@ using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
-using Robust.Shared.Configuration;
-using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
-using Robust.Shared.IoC;
-using Robust.Shared.Log;
-using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager;
-using Robust.Shared.Timing;
 
 namespace Content.Game.Dialog.Systems;
 
@@ -32,6 +24,9 @@ public sealed class DialogSystem : EntitySystem
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly CharacterSystem _characterSystem = default!;
     [Dependency] private readonly IInputManager _input = default!;
+    [Dependency] private readonly IClyde _clyde = default!;
+    [Dependency] private readonly LocationSystem _location = default!;
+    [Dependency] private readonly CameraSystem _cameraSystem = default!;
     
     private DialogUIController _dialogUiController = default!;
     
@@ -73,7 +68,6 @@ public sealed class DialogSystem : EntitySystem
 
     public void AddDialog(Dialog.Data.Dialog dialog)
     {
-        Logger.Debug($"Added {dialog.Text}");
         _dialogQueue.Add(dialog);
     }
 
@@ -126,6 +120,30 @@ public sealed class DialogSystem : EntitySystem
             _stateManager.RequestStateChange<MenuState>();
             return;
         }
+
+        if (CurrentDialog.Location is not null)
+        {
+            _location.LoadLocation(CurrentDialog.Location);
+        }
+
+        if (CurrentDialog.Characters is not null)
+        {
+            _characterSystem.ClearCharacters();
+            foreach (var characterPrototype in CurrentDialog.Characters)
+            {
+                _characterSystem.AddCharacter(characterPrototype);
+            };
+        }
+        
+        if (CurrentDialog.CameraOn is not null && _characterSystem.TryGetCharacter(CurrentDialog.CameraOn, out _, out var camFol))
+            _cameraSystem.FollowTo(camFol);
+        else if (_location.GetCurrentLocationId().IsValid())
+            _cameraSystem.FollowTo(_location.GetCurrentLocationId());
+        
+        if (CurrentDialog.Title is not null)
+        {
+            _clyde.SetWindowTitle(CurrentDialog.Title);
+        } 
         
         SetDialogText(CurrentDialog.Text);
         
@@ -153,9 +171,9 @@ public sealed class DialogSystem : EntitySystem
 
         _characterSystem.TryGetCharacter(CurrentDialog.Character, out _, out var characterUid);
         
-        if (CurrentDialog.Name == null && CurrentDialog.Character != null && TryComp<MetaDataComponent>(characterUid, out var metadata))
+        if (CurrentDialog.Name == null && CurrentDialog.Character != null)
         {
-            CurrentDialog.Name = metadata.EntityName;
+            CurrentDialog.Name = MetaData(characterUid).EntityName;
         }
 
         if (CurrentDialog.Name != null && _dialogUiController.IsEmpty())

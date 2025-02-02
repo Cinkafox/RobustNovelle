@@ -1,12 +1,9 @@
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using Content.Game.Character.Components;
-using Content.Game.Location.Managers;
+using Content.Game.Dialog.Data;
+using Content.Game.Location.Systems;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 
@@ -14,7 +11,7 @@ namespace Content.Game.Character.Systems;
 
 public sealed class CharacterSystem : EntitySystem
 {
-    [Dependency] private readonly ILocationManager _locationManager = default!;
+    [Dependency] private readonly LocationSystem _locationManager = default!;
     [Dependency] private readonly IResourceCache _cache = default!;
     [Dependency] private readonly IOverlayManager _overlay = default!;
     
@@ -36,10 +33,10 @@ public sealed class CharacterSystem : EntitySystem
         component.Sprite = rs.RSI;
     }
 
-    public void AddCharacter(Scene.Data.Character character)
+    public void AddCharacter(CharacterDefinition character)
     {
         var uid = Spawn(character.Entity,
-            new MapCoordinates(Vector2.Zero, _locationManager.GetCurrentLocationId()));
+            new EntityCoordinates(_locationManager.GetCurrentLocationId(),0,0));
 
         if (!TryComp<CharacterComponent>(uid, out var component))
         {
@@ -47,7 +44,8 @@ public sealed class CharacterSystem : EntitySystem
             return;
         }
 
-        component.Visible = character.Visible;
+        if(character.Visible is not null)
+            component.Visible = character.Visible.Value;
         
         _characters.Add(character.Entity,uid);
         

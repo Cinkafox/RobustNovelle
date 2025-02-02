@@ -128,10 +128,11 @@
 
 - type: scene
   id: default
-  location: gym_outside
-  characters:
-    - entity: raveel
   dialogs:
+    - title: "Femboy adventures ;з"
+    - location: gym_outside
+    - characters:
+      - entity: raveel
     - actions:
         - !type:AudioAction
           prototype: backCity
@@ -160,10 +161,9 @@
 
 - type: scene
   id: gymstart
-  location: gym_outside
-  characters:
-    - entity: raveel
   dialogs:
+    - characters:
+        - entity: raveel 
     - character: raveel
       text: Нус, тогда захожу!
       emote: hehe
@@ -173,12 +173,12 @@
 
 - type: scene
   id: gymstartinside
-  location: gym
-  characters:
-    - entity: raveel
-    - entity: igor
-      visible: false
   dialogs:
+    - characters:
+        - entity: raveel
+        - entity: igor
+          visible: false
+    - location: gym
     - actions:
         - !type:AudioAction
           prototype: backGym
@@ -207,11 +207,10 @@
 
 - type: scene
   id: gymigorstart
-  location: gym
-  characters:
-    - entity: raveel
-    - entity: igor
   dialogs:
+    - characters:
+        - entity: raveel
+        - entity: igor
     - actions:
         - !type:ChangeCharacterState
           prototype: raveel
@@ -231,13 +230,13 @@
 
 - type: scene
   id: basement
-  location: basement
-  characters:
-    - entity: igor
-      visible: false
-    - entity: raveel
-      visible: false
   dialogs:
+    - characters:
+        - entity: igor
+          visible: false
+        - entity: raveel
+          visible: false
+    - location: basement
     - actions:
         - !type:AudioAction
           prototype: backBasement
@@ -306,10 +305,9 @@
           
 - type: scene
   id: basement_exc
-  location: basement
-  characters:
-    - entity: raveel
   dialogs:
+    - characters:
+        - entity: raveel
     - text: "*Игорь помирает от рук фембойчика*"
     - character: raveel
       text: О ужас...
@@ -322,10 +320,10 @@
 
 - type: scene
   id: gym_outside_bad
-  location: gym_outside
-  characters:
-    - entity: raveel
   dialogs:
+    - characters:
+        - entity: raveel
+    - location: gym_outside
     - actions:
         - !type:AudioAction
           prototype: backCity

@@ -8,5 +8,5 @@ public sealed class LocationPrototype : IPrototype
 {
     [IdDataField] public string ID { get; private set; } = default!;
     
-    [DataField] public EntProtoId Background = string.Empty;
+    [DataField] public EntProtoId? Background;
 }

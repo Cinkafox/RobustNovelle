@@ -1,4 +1,5 @@
 using Content.Game.Dialog.Data;
+using Content.Game.Dialog.Systems;
 using Content.Game.Scene.Manager;
 using Robust.Shared.Audio;
 using Robust.Shared.GameObjects;
@@ -13,6 +14,7 @@ public sealed partial class LoadEffectButtonAction : IDialogAction
     {
         var entMan = IoCManager.Resolve<IEntityManager>();
         var sceneMan = IoCManager.Resolve<ISceneManager>();
+        var e = IoCManager.Resolve<IEntityManager>().System<DialogSystem>();
 
         var dial = new Data.Dialog()
         {
@@ -41,7 +43,8 @@ public sealed partial class LoadEffectButtonAction : IDialogAction
                     DialogAction = new DefaultDialogAction()
                 });
                 
-                sceneMan.GetCurrentScene()?.Dialogs.Add(dial);
+                e.AddDialog(dial);
+                
                 dial = new Data.Dialog()
                 {
                     Text = "Выберите эффект"

@@ -26,7 +26,7 @@ namespace Content.Game.Viewport
         private int _curRenderScale;
         private ScalingViewportStretchMode _stretchMode = ScalingViewportStretchMode.Bilinear;
         private ScalingViewportRenderScaleMode _renderScaleMode = ScalingViewportRenderScaleMode.Fixed;
-        private ScalingViewportIgnoreDimension _ignoreDimension = ScalingViewportIgnoreDimension.None;
+        private ScalingViewportIgnoreDimension _ignoreDimension = ScalingViewportIgnoreDimension.Horizontal;
         private int _fixedRenderScale = 1;
 
         private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
@@ -166,7 +166,6 @@ namespace Content.Game.Viewport
             _viewport.RenderScreenOverlaysBelow(handle, this, drawBoxGlobal);
             handle.DrawTextureRect(_viewport.RenderTarget.Texture, drawBox);
             _viewport.RenderScreenOverlaysAbove(handle, this, drawBoxGlobal);
-            _viewport.AutomaticRender = false;
         }
 
         public void Screenshot(CopyPixelsDelegate<Rgba32> callback)
@@ -182,13 +181,35 @@ namespace Content.Game.Viewport
             var vpSize = _viewport!.Size;
             var ourSize = (Vector2) PixelSize;
 
-            var (ratioX, ratioY) = ourSize / vpSize;
-            var ratio = ratioX;
+            if (FixedStretchSize == null)
+            {
+                var (ratioX, ratioY) = ourSize / vpSize;
+                var ratio = 1f;
+                switch (_ignoreDimension)
+                {
+                    case ScalingViewportIgnoreDimension.None:
+                        ratio = Math.Min(ratioX, ratioY);
+                        break;
+                    case ScalingViewportIgnoreDimension.Vertical:
+                        ratio = ratioX;
+                        break;
+                    case ScalingViewportIgnoreDimension.Horizontal:
+                        ratio = ratioY;
+                        break;
+                }
 
-            var size = vpSize * ratio;
-            var pos = (ourSize - size) / 2;
+                var size = vpSize * ratio;
+                // Size
+                var pos = (ourSize - size) / 2;
 
-            return (UIBox2i) UIBox2.FromDimensions(pos, size);
+                return (UIBox2i) UIBox2.FromDimensions(pos, size);
+            }
+            else
+            {
+                // Center only, no scaling.
+                var pos = (ourSize - FixedStretchSize.Value) / 2;
+                return (UIBox2i) UIBox2.FromDimensions(pos, FixedStretchSize.Value);
+            }
         }
 
         private void RegenerateViewport()

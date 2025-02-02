@@ -17,6 +17,7 @@ namespace Content.Game.UserInterface.Systems;
 
 public sealed class ViewportUIController : UIController
 {
+    public const int ViewportWidth = 16;
     public const int ViewportHeight = 9;
 
     public static readonly Vector2i ViewportSize = (EyeManager.PixelsPerMeter * 21, EyeManager.PixelsPerMeter * 15);
@@ -28,7 +29,7 @@ public sealed class ViewportUIController : UIController
 
     public override void Initialize()
     {
-        _configurationManager.OnValueChanged(CCVars.CCVars.ViewportWidth, _ => UpdateViewportRatio());
+        //_configurationManager.OnValueChanged(CCVars.CCVars.ViewportWidth, _ => UpdateViewportRatio());
 
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;
@@ -42,11 +43,9 @@ public sealed class ViewportUIController : UIController
     private void UpdateViewportRatio()
     {
         if (Viewport == null) return;
-        
-        var width = _configurationManager.GetCVar(CCVars.CCVars.ViewportWidth);
 
         Viewport.Viewport.ViewportSize =
-            (EyeManager.PixelsPerMeter * width, EyeManager.PixelsPerMeter * ViewportHeight);
+            (EyeManager.PixelsPerMeter * ViewportWidth , EyeManager.PixelsPerMeter * ViewportHeight);
     }
 
     public void ReloadViewport()

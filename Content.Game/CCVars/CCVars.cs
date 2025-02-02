@@ -19,9 +19,6 @@ public sealed class CCVars : CVars
     public static readonly CVarDef<bool> ViewportScaleRender =
         CVarDef.Create("viewport.scale_render", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
-    public static readonly CVarDef<int> ViewportWidth =
-        CVarDef.Create("viewport.width", 16, CVar.CLIENTONLY | CVar.ARCHIVE);
-
     /*
      * Save?
      */
