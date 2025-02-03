@@ -17,6 +17,8 @@ public sealed class CharacterRenderingOverlay : Overlay
     private readonly CharacterSystem _characterSystem;
     [Dependency] private readonly EntityManager _entityManager = default!;
 
+    public static bool IsVisible = true;
+
     private int _characterRendering;
     private float _elapsedTime;
     private int _frames;
@@ -28,7 +30,7 @@ public sealed class CharacterRenderingOverlay : Overlay
         _characterSystem = _entityManager.System<CharacterSystem>();
     }
 
-    public override OverlaySpace Space => OverlaySpace.WorldSpaceEntities;
+    public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
     protected override void FrameUpdate(FrameEventArgs args)
     {
@@ -39,6 +41,8 @@ public sealed class CharacterRenderingOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
+        if(!IsVisible) return;
+        
         var handle = args.WorldHandle;
         _characterRendering = 0;
 

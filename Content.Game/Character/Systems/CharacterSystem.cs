@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Content.Game.Character.Components;
 using Content.Game.Dialog.Data;
 using Content.Game.Location.Systems;
@@ -35,8 +36,10 @@ public sealed class CharacterSystem : EntitySystem
 
     public void AddCharacter(CharacterDefinition character)
     {
+
+        var spawnPos = character.Goto ?? Vector2.Zero;
         var uid = Spawn(character.Entity,
-            new EntityCoordinates(_locationManager.GetCurrentLocationId(),0,0));
+            new EntityCoordinates(_locationManager.GetCurrentLocationId(),spawnPos.X,spawnPos.Y));
 
         if (!TryComp<CharacterComponent>(uid, out var component))
         {

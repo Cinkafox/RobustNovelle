@@ -4,3 +4,5 @@
     - type: Input
       context: "human"
     - type: Eye
+    - type: InputMover
+    - type: Camera

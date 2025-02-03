@@ -6,7 +6,9 @@
 
 - type: location
   id: gym_outside
-  background: gym_outside
+  # background: gym_outside
+  location:
+    path: /Textures/Locations/sportik.png
 
 - type: location
   id: basement
@@ -106,6 +108,10 @@
   id: raveel
   name: Фембойчик
   components:
+    - type: Sprite
+      sprite: Entities/raveel.rsi
+      layers:
+        - state: fox
     - type: Character
       sprite: Characters/raveel.rsi # File in Textures/Characters/raveel.rsi
     - type: Voice
@@ -133,6 +139,8 @@
     - location: gym_outside
     - characters:
       - entity: raveel
+        goto: 8,3.2
+    - cameraOn: raveel
     - actions:
         - !type:AudioAction
           prototype: backCity
@@ -162,8 +170,6 @@
 - type: scene
   id: gymstart
   dialogs:
-    - characters:
-        - entity: raveel 
     - character: raveel
       text: Нус, тогда захожу!
       emote: hehe

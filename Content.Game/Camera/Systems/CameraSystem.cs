@@ -1,3 +1,5 @@
+using System.Numerics;
+using Content.Game.Camera.Components;
 using Content.Game.Location.Systems;
 using Robust.Client.GameObjects;
 using Robust.Client.Player;
@@ -12,9 +14,9 @@ public sealed class CameraSystem : EntitySystem
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
+    [Dependency] private readonly EyeSystem _eyeSystem = default!;
 
-    private Entity<TransformComponent>? _cameraUid;
-    private Entity<TransformComponent>? _followUid;
+    private Entity<TransformComponent,CameraComponent>? _cameraUid;
     
     public void FollowTo(EntityUid entityUid)
     {
@@ -24,30 +26,38 @@ public sealed class CameraSystem : EntitySystem
         {
             var uid = _entityManager.SpawnEntity(CameraProtoName,
                 MapCoordinates.Nullspace);
-            _cameraUid = new Entity<TransformComponent>(uid, Transform(uid));
+            var camComp = EnsureComp<CameraComponent>(uid);
+            _cameraUid = new Entity<TransformComponent,CameraComponent>(uid, Transform(uid),camComp);
 
             _playerManager.SetAttachedEntity(_playerManager.LocalSession, _cameraUid);
         }
 
-        _followUid = new Entity<TransformComponent>(entityUid, entTransform);
+        _cameraUid.Value.Comp2.FollowUid = new Entity<TransformComponent>(entityUid, entTransform);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-        
-        if(_cameraUid is null || _followUid is null) return;
 
-        if (!_cameraUid.Value.Comp.ParentUid.IsValid())
+        var query = EntityQueryEnumerator<TransformComponent, CameraComponent, EyeComponent>();
+        while (query.MoveNext(out var camUid,out var transformComponent, out var cameraComponent, out var eyeComponent))
         {
-            _transformSystem.SetParent(_cameraUid.Value, _followUid.Value);
+            _eyeSystem.SetZoom(camUid, new Vector2(0.5f),eyeComponent);
+            
+            var followUid = cameraComponent.FollowUid;
+            if(followUid is null) continue;
+            
+            if (!transformComponent.ParentUid.IsValid())
+            {
+                _transformSystem.SetParent(camUid, followUid.Value);
+            }
+            else if (transformComponent.ParentUid != followUid.Value.Comp.ParentUid)
+            {
+                _transformSystem.SetParent(camUid, followUid.Value.Comp.ParentUid);
+            }
+            
+            var delta = transformComponent.LocalPosition - followUid.Value.Comp.LocalPosition;
+            transformComponent.LocalPosition -= delta / 2;
         }
-        else if (_cameraUid.Value.Comp.ParentUid != _followUid.Value.Comp.ParentUid)
-        {
-            _transformSystem.SetParent(_cameraUid.Value, _followUid.Value.Comp.ParentUid);
-        }
-
-        var delta = _cameraUid.Value.Comp.LocalPosition - _followUid.Value.Comp.LocalPosition;
-        _cameraUid.Value.Comp.LocalPosition += delta / 2;
     }
 }

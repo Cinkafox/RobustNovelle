@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Content.Game.Character;
 using Content.Game.Dialog.Data;
 using Content.Game.UserInterface.Systems.Dialog.Widgets;
 using Robust.Client.Graphics;
@@ -54,5 +55,17 @@ public sealed class DialogUIController : UIController
     public List<DialogButton> GetDialogButtons()
     {
         return _dialogGui?.Buttons != null ? _dialogGui.Buttons : [];
+    }
+
+    public void Hide()
+    {
+        if (_dialogGui != null) _dialogGui.Visible = false;
+        CharacterRenderingOverlay.IsVisible = false;
+    }
+    
+    public void Show()
+    {
+        if (_dialogGui != null) _dialogGui.Visible = true;
+        CharacterRenderingOverlay.IsVisible = true;
     }
 }

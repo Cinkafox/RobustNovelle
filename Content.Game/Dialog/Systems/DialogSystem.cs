@@ -68,6 +68,7 @@ public sealed class DialogSystem : EntitySystem
 
     public void AddDialog(Dialog.Data.Dialog dialog)
     {
+        if(_dialogQueue.Count == 0) _dialogUiController.Show();
         _dialogQueue.Add(dialog);
     }
 
@@ -117,13 +118,15 @@ public sealed class DialogSystem : EntitySystem
     {
         if (_dialogQueue.Count == 0)
         {
-            _stateManager.RequestStateChange<MenuState>();
+            _dialogUiController.Hide();
             return;
         }
 
         if (CurrentDialog.Location is not null)
         {
-            _location.LoadLocation(CurrentDialog.Location);
+            var location = _location.LoadLocation(CurrentDialog.Location);
+            if (location.IsValid())
+                _cameraSystem.FollowTo(location);
         }
 
         if (CurrentDialog.Characters is not null)
@@ -137,8 +140,6 @@ public sealed class DialogSystem : EntitySystem
         
         if (CurrentDialog.CameraOn is not null && _characterSystem.TryGetCharacter(CurrentDialog.CameraOn, out _, out var camFol))
             _cameraSystem.FollowTo(camFol);
-        else if (_location.GetCurrentLocationId().IsValid())
-            _cameraSystem.FollowTo(_location.GetCurrentLocationId());
         
         if (CurrentDialog.Title is not null)
         {

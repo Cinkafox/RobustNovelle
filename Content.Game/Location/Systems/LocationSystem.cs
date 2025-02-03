@@ -1,4 +1,5 @@
 using Content.Game.Background;
+using Content.Game.Location.Components;
 using Content.Game.Location.Data;
 using Robust.Shared.Prototypes;
 
@@ -50,6 +51,12 @@ public sealed class LocationSystem : EntitySystem
         if (proto.Background is not null)
         {
             _entityManager.System<BackgroundSystem>().LoadBackground(proto.Background);
+        }
+        
+        else if (proto.Location is not null)
+        {
+            var loc = AddComp<LocationComponent>(mapId);
+            loc.CurrentLocation = proto.Location;
         }
         
         _currentLocationId = mapId;
