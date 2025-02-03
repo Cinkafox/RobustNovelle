@@ -9,6 +9,7 @@
   # background: gym_outside
   location:
     path: /Textures/Locations/sportik.png
+    map: /ColliderMaps/sportik.map
 
 - type: location
   id: basement
@@ -106,6 +107,7 @@
 
 - type: entity
   id: raveel
+  parent: chartBase
   name: Фембойчик
   components:
     - type: Sprite
@@ -121,6 +123,7 @@
 
 - type: entity
   id: igor
+  parent: chartBase
   name: Игорь
   components:
     - type: Character
@@ -173,9 +176,8 @@
     - character: raveel
       text: Нус, тогда захожу!
       emote: hehe
-    - actions:
-        - !type:LoadSceneAction
-          prototype: gymstartinside
+    - character: raveel
+      text: Вроде бы спортзал передо мной..
 
 - type: scene
   id: gymstartinside

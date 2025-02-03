@@ -1,0 +1,18 @@
+- type: entity
+  id: chartBase
+  name: Фембойчик
+  components:
+    - type: Sprite
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape:
+            !type:PhysShapeCircle
+            radius: 0.35
+          density: 50
+          mask:
+            - MobMask
+          layer:
+            - MobLayer
+    - type: Physics
+      bodyType: KinematicController

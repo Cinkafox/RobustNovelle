@@ -17,4 +17,5 @@ public sealed class LocationPrototype : IPrototype
 public sealed partial class LocationDefinition
 {
     [DataField] public ResPath Path;
+    [DataField] public ResPath? Map;
 }

@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 using Content.Game.Camera.Components;
+using Robust.Client.GameStates;
+using Robust.Client.Timing;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Physics.Components;
@@ -11,6 +13,9 @@ namespace Content.Game.Movement;
 
 public sealed class InputMoverController : VirtualController
 {
+    [Dependency] private readonly IClientGameTiming _gameTiming = default!;
+    [Dependency] private readonly IClientGameStateManager _gameStateManager = default!;
+    
     private EntityQuery<InputMoverComponent> _inputMoverQuery;
     
     public override void Initialize()
@@ -54,6 +59,7 @@ public sealed class InputMoverController : VirtualController
     public override void UpdateBeforeSolve(bool prediction, float frameTime)
     {
         base.UpdateBeforeSolve(prediction, frameTime);
+        _gameStateManager.ResetPredictedEntities();
         
         if (!IoCManager.Resolve<IGameTiming>().IsFirstTimePredicted) return;
         
@@ -73,7 +79,7 @@ public sealed class InputMoverController : VirtualController
             inputMoverComponent.Speed = float.Clamp(inputMoverComponent.Speed, 0, 3);
             
             if(cameraComponent.FollowUid is null ) continue;
-            cameraComponent.FollowUid.Value.Comp.LocalPosition += inputMoverComponent.Direction.ToVec() * inputMoverComponent.Speed * frameTime;
+            PhysicsSystem.SetLinearVelocity(cameraComponent.FollowUid.Value,inputMoverComponent.Direction.ToVec() * inputMoverComponent.Speed );
             cameraComponent.FollowUid.Value.Comp.LocalRotation = inputMoverComponent.Direction.ToAngle();
         }
     }

@@ -1,0 +1,4 @@
+size: 32,32
+height: 32
+states:
+  - wall
