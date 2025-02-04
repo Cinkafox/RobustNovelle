@@ -37,5 +37,5 @@ public sealed partial class CharacterDefinition
 {
     [DataField] public EntProtoId Entity;
     [DataField] public bool? Visible;
-    [DataField] public Vector2? Goto;
+    [DataField] public Vector2? Position;
 }

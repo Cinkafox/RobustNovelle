@@ -16,23 +16,24 @@ public sealed class CameraSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly EyeSystem _eyeSystem = default!;
 
-    private Entity<TransformComponent,CameraComponent>? _cameraUid;
+    public Entity<TransformComponent,CameraComponent>? CameraUid { get; private set; }
+    
     
     public void FollowTo(EntityUid entityUid)
     {
         var entTransform = Transform(entityUid);
 
-        if (_cameraUid is null)
+        if (CameraUid is null)
         {
             var uid = _entityManager.SpawnEntity(CameraProtoName,
                 MapCoordinates.Nullspace);
             var camComp = EnsureComp<CameraComponent>(uid);
-            _cameraUid = new Entity<TransformComponent,CameraComponent>(uid, Transform(uid),camComp);
+            CameraUid = new Entity<TransformComponent,CameraComponent>(uid, Transform(uid),camComp);
 
-            _playerManager.SetAttachedEntity(_playerManager.LocalSession, _cameraUid);
+            _playerManager.SetAttachedEntity(_playerManager.LocalSession, CameraUid);
         }
 
-        _cameraUid.Value.Comp2.FollowUid = new Entity<TransformComponent>(entityUid, entTransform);
+        CameraUid.Value.Comp2.FollowUid = new Entity<TransformComponent>(entityUid, entTransform);
     }
 
     public override void Update(float frameTime)

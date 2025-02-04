@@ -30,7 +30,7 @@ public sealed class CharacterRenderingOverlay : Overlay
         _characterSystem = _entityManager.System<CharacterSystem>();
     }
 
-    public override OverlaySpace Space => OverlaySpace.WorldSpace;
+    public override OverlaySpace Space => OverlaySpace.ScreenSpace;
 
     protected override void FrameUpdate(FrameEventArgs args)
     {
@@ -43,16 +43,16 @@ public sealed class CharacterRenderingOverlay : Overlay
     {
         if(!IsVisible) return;
         
-        var handle = args.WorldHandle;
+        var handle = args.ScreenHandle;
         _characterRendering = 0;
 
         var characters = _characterSystem.EnumerateCharacters().ToList();
 
         foreach (var character in characters)
-            DrawCharacter(character, handle, args.WorldBounds, characters.Count);
+            DrawCharacter(character, handle, args.ViewportBounds, characters.Count);
     }
 
-    private void DrawCharacter(CharacterComponent character, DrawingHandleWorld handle, Box2Rotated bounds,
+    private void DrawCharacter(CharacterComponent character, DrawingHandleScreen handle, UIBox2 bounds,
         int charactersCount)
     {
         var sprite = character.Sprite[character.State];
@@ -73,7 +73,7 @@ public sealed class CharacterRenderingOverlay : Overlay
         var centerX = texture.Width * ratio / 2 + shift;
 
         handle.DrawTextureRect(texture,
-            Box2.FromDimensions(-new Vector2(centerX, viewSize.Y / 2), texture.Size * ratio));
+            UIBox2.FromDimensions(-new Vector2(centerX, viewSize.Y / 2), texture.Size * ratio));
 
         _characterRendering++;
     }

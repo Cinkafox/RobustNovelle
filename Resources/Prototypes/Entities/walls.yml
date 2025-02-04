@@ -58,9 +58,6 @@
   name: just wall
   description: wall
   components:
-    - type: Sprite
-      sprite: Walls/test.rsi
-      state: wall
     - type: Icon
       sprite: Walls/test.rsi
       state: wall

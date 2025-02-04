@@ -106,6 +106,15 @@
 #CHARACTERS
 
 - type: entity
+  id: doorInteractible
+  name: Door
+  components:
+    - type: Interactible
+      actions:
+        - !type:LoadSceneAction
+          prototype: gymstartinside
+
+- type: entity
   id: raveel
   parent: chartBase
   name: Фембойчик
@@ -120,6 +129,26 @@
       voice: voiceMeow
     - type: Emote
       sprite: Emotes/raveel.rsi # File in Emotes/Characters/raveel.rsi
+
+- type: entity
+  id: raveel2
+  parent: chartBase
+  name: Прихуевший челик
+  components:
+    - type: Sprite
+      sprite: Entities/raveel.rsi
+      layers:
+        - state: fox
+    - type: Character
+      sprite: Characters/raveel.rsi # File in Textures/Characters/raveel.rsi
+    - type: Voice
+      voice: voiceMeow
+    - type: Emote
+      sprite: Emotes/raveel.rsi # File in Emotes/Characters/raveel.rsi
+    - type: Interactible
+      actions:
+        - !type:LoadSceneAction
+          prototype: chelik
 
 - type: entity
   id: igor
@@ -142,7 +171,11 @@
     - location: gym_outside
     - characters:
       - entity: raveel
-        goto: 8,3.2
+        position: 8,3.2
+      - entity: doorInteractible
+        position: 8,4
+      - entity: raveel2
+        position: 6,3.2
     - cameraOn: raveel
     - actions:
         - !type:AudioAction
@@ -178,6 +211,22 @@
       emote: hehe
     - character: raveel
       text: Вроде бы спортзал передо мной..
+      
+- type: scene
+  id: chelik
+  dialogs:
+    - character: raveel2
+      text: СУКА! Я ВИДЕЛ НЕКОТОРОЕ ДЕРЬМО!
+    - character: raveel2
+      text: БЛЯЯЯТЬ! УДАЛИТЕ КАНАЛ ХУДОЖЕСТВ В КОРВУХЕ! ТАМ ОДНИ ФУРЕНКИ!
+    - character: raveel2
+      text: АААААААААААААААААААААААА!!
+    - character: raveel2
+      text: И ТЫ ФУРРИ! ИДИ НАХУЙ БЛЯЯЯЯТЬ!
+    - character: raveel2
+      text: И... и я тоже..
+    - character: raveel2
+      text: Боже... я хочу умереть!
 
 - type: scene
   id: gymstartinside

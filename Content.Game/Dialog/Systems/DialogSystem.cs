@@ -4,8 +4,10 @@ using Content.Game.Character.Systems;
 using Content.Game.Dialog.Data;
 using Content.Game.Dialog.DialogActions;
 using Content.Game.Input;
+using Content.Game.Interaction.Components;
 using Content.Game.Location.Systems;
 using Content.Game.Menu;
+using Content.Game.Movement;
 using Content.Game.UserInterface.Systems.Dialog;
 using Robust.Client;
 using Robust.Client.Graphics;
@@ -19,8 +21,6 @@ namespace Content.Game.Dialog.Systems;
 
 public sealed class DialogSystem : EntitySystem
 {
-    [Dependency] private readonly IGameController _gameController = default!;
-    [Dependency] private readonly IStateManager _stateManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly CharacterSystem _characterSystem = default!;
     [Dependency] private readonly IInputManager _input = default!;
@@ -49,6 +49,8 @@ public sealed class DialogSystem : EntitySystem
         _input.SetInputCommand(EngineKeyFunctions.UIClick,cmdhandler);
         
         SubscribeLocalEvent<DialogEndedEvent>(OnDialogEnd);
+
+        Show();
     }
 
     private void OnDialogEnd(DialogEndedEvent ev)
@@ -68,7 +70,7 @@ public sealed class DialogSystem : EntitySystem
 
     public void AddDialog(Dialog.Data.Dialog dialog)
     {
-        if(_dialogQueue.Count == 0) _dialogUiController.Show();
+        if(_dialogQueue.Count == 0) Show();
         _dialogQueue.Add(dialog);
     }
 
@@ -85,6 +87,37 @@ public sealed class DialogSystem : EntitySystem
         {
             var btns = _dialogUiController.GetDialogButtons();
             if(btns.Count == 1) btns[0].DialogAction.Act();
+        }
+    }
+
+    private EntityUid? GetControlledUid()
+    {
+        return _cameraSystem.CameraUid?.Owner;
+    }
+    
+    private void Show()
+    {
+        _dialogUiController.Show();
+        if (TryComp<InteractionComponent>(GetControlledUid(), out var interactionComponent))
+        {
+            interactionComponent.IsEnabled = false;
+        }
+        if (TryComp<InputMoverComponent>(GetControlledUid(), out var inputMoverComponent))
+        {
+            inputMoverComponent.IsEnabled = false;
+        }
+    }
+
+    private void Hide()
+    {
+        _dialogUiController.Hide();
+        if (TryComp<InteractionComponent>(GetControlledUid(), out var interactionComponent))
+        {
+            interactionComponent.IsEnabled = true;
+        }
+        if (TryComp<InputMoverComponent>(GetControlledUid(), out var inputMoverComponent))
+        {
+            inputMoverComponent.IsEnabled = true;
         }
     }
 
@@ -118,7 +151,7 @@ public sealed class DialogSystem : EntitySystem
     {
         if (_dialogQueue.Count == 0)
         {
-            _dialogUiController.Hide();
+            Hide();
             return;
         }
 

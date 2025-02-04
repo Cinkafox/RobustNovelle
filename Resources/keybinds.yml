@@ -15,7 +15,7 @@ binds: # These are all the current engine keybinds.
   priority: 10
 - function: Use
   type: State
-  key: MouseLeft
+  key: E
   canFocus: true
 - function: ShowDebugMonitors
   type: Toggle

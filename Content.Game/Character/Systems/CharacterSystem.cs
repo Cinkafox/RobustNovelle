@@ -17,6 +17,7 @@ public sealed class CharacterSystem : EntitySystem
     [Dependency] private readonly IOverlayManager _overlay = default!;
     
     private Dictionary<string, EntityUid> _characters = new();
+    private HashSet<EntityUid> _entities = new();
     
     public const int CharacterRenderingZIndex = 0;
 
@@ -37,13 +38,13 @@ public sealed class CharacterSystem : EntitySystem
     public void AddCharacter(CharacterDefinition character)
     {
 
-        var spawnPos = character.Goto ?? Vector2.Zero;
+        var spawnPos = character.Position ?? Vector2.Zero;
         var uid = Spawn(character.Entity,
             new EntityCoordinates(_locationManager.GetCurrentLocationId(),spawnPos.X,spawnPos.Y));
 
         if (!TryComp<CharacterComponent>(uid, out var component))
         {
-            QueueDel(uid);
+            _entities.Add(uid);
             return;
         }
 
@@ -88,6 +89,10 @@ public sealed class CharacterSystem : EntitySystem
     
     public void ClearCharacters()
     {
+        foreach (var entityUid in _entities)
+        {
+            QueueDel(entityUid);
+        }
         foreach (var (proto,_) in _characters)
         {
            RemoveCharacter(proto);

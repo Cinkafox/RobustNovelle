@@ -6,3 +6,4 @@
     - type: Eye
     - type: InputMover
     - type: Camera
+    - type: Interaction
