@@ -186,6 +186,8 @@
       text: Пойду нажрусь а! Пятница же ебана в рот!
       newDialog: false
     - text: Фембойчик медленно уходит в закат
+    - actions:
+        - !type:EndGameAction
 
 - type: scene
   id: gymstart
