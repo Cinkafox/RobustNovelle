@@ -9,9 +9,7 @@ namespace Content.Game.Background.Components;
 [RegisterComponent]
 public sealed partial class BackgroundComponent : Component
 {
-    public Texture _layer;
-    
-    [DataField] public PrototypeLayerData Layer;
+    public Texture Layer;
     
     //Some visibility shit. 0 - Not visible and 255 is visible
     [Animatable]

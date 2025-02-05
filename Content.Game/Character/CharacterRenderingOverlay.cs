@@ -18,8 +18,7 @@ public sealed class CharacterRenderingOverlay : Overlay
     [Dependency] private readonly EntityManager _entityManager = default!;
 
     public static bool IsVisible = true;
-
-    private int _characterRendering;
+    
     private float _elapsedTime;
     private int _frames;
     private float _lastDelta = 0.01f;
@@ -44,37 +43,27 @@ public sealed class CharacterRenderingOverlay : Overlay
         if(!IsVisible) return;
         
         var handle = args.ScreenHandle;
-        _characterRendering = 0;
 
         var characters = _characterSystem.EnumerateCharacters().ToList();
 
         foreach (var character in characters)
-            DrawCharacter(character, handle, args.ViewportBounds, characters.Count);
+            DrawCharacter(character, handle, args);
     }
 
-    private void DrawCharacter(CharacterComponent character, DrawingHandleScreen handle, UIBox2 bounds,
-        int charactersCount)
+    private void DrawCharacter(CharacterComponent character, DrawingHandleScreen handle, OverlayDrawArgs args)
     {
         var sprite = character.Sprite[character.State];
         var frames = sprite.GetFrames(0);
         var delay = sprite.GetDelay(_frames % frames.Length);
         var texture = frames[(int)(_frames * _lastDelta / delay) % frames.Length];
 
-        var viewSize = bounds.TopRight * 2;
+        var bounds = args.ViewportBounds;
+        
+        var width = texture.Width * (bounds.Height / (float)texture.Height);
+        var xPos = character.XPosition;
 
-        var charCountChet = _characterRendering % 2;
-        var shift = (1 - charCountChet * 2) * charactersCount * Shift - Shift * (1 - charCountChet);
-
-        var hRatio = viewSize.Y / texture.Height;
-        var wRatio = viewSize.X / texture.Width;
-
-        var ratio = float.Min(hRatio, wRatio);
-
-        var centerX = texture.Width * ratio / 2 + shift;
-
-        handle.DrawTextureRect(texture,
-            UIBox2.FromDimensions(-new Vector2(centerX, viewSize.Y / 2), texture.Size * ratio));
-
-        _characterRendering++;
+        handle.DrawTextureRect(texture, UIBox2.FromDimensions(
+            new Vector2((float)(args.ViewportControl!.Window!.Size.X * xPos - width / 2f),0), 
+            new Vector2(width, bounds.Height)));
     }
 }

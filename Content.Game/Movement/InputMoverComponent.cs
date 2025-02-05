@@ -6,7 +6,7 @@ namespace Content.Game.Movement;
 public sealed partial class InputMoverComponent : Component
 {
     [DataField] public bool IsRunning;
-    [DataField] public bool IsEnabled = true;
+    [DataField] public bool IsEnabled;
     [DataField] public Direction Direction;
     [DataField] public float Speed;
     public int ButtonPressed;

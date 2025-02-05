@@ -1,5 +1,5 @@
+using Content.Game.Dialog.Data;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Utility;
 
 namespace Content.Game.Location.Data;
@@ -9,8 +9,9 @@ public sealed class LocationPrototype : IPrototype
 {
     [IdDataField] public string ID { get; private set; } = default!;
     
-    [DataField] public EntProtoId? Background;
+    [DataField] public ResPath? Background;
     [DataField] public LocationDefinition? Location;
+    [DataField] public HashSet<EntityDefinition>? Entities;
 }
 
 [DataDefinition]

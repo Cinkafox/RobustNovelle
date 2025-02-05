@@ -7,7 +7,7 @@ namespace Content.Game.Interaction.Components;
 public sealed partial class InteractionComponent : Component
 {
     [DataField] public float MaxDistance = 1f;
-    [DataField] public bool IsEnabled = true;
+    [DataField] public bool IsEnabled;
     [DataField] public ResPath InteractionIconPath = new("/Textures/Interface/interaction.png");
 
     [ViewVariables] public Texture IconTexture;

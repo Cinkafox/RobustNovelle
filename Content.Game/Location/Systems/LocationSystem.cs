@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using Content.Game.Background;
 using Content.Game.Location.Components;
@@ -24,6 +25,7 @@ public sealed class LocationSystem : EntitySystem
     private readonly Dictionary<string, LocationPrototype> _locationPrototypes = new();
 
     private readonly Dictionary<string, EntityUid> _locationsId = new();
+    private readonly Dictionary<EntityUid, Dictionary<EntProtoId,EntityUid>> _entities = new();
 
     private EntProtoId WallsId = "Wall";
 
@@ -35,7 +37,7 @@ public sealed class LocationSystem : EntitySystem
     private bool TryInitializeLocation(string prototype, out EntityUid mapUid)
     {
         mapUid = EntityUid.Invalid;
-        if (!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var prot))
+        if (!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var proto))
         {
             Logger.Error($"PROTO LOCATION {prototype} NOT EXIST!!!");
             return false;
@@ -44,8 +46,36 @@ public sealed class LocationSystem : EntitySystem
         mapUid = _mapSystem.CreateMap();
         Logger.Debug($"Current location ID: {mapUid}");
         _locationsId.TryAdd(prototype, mapUid);
-        _locationPrototypes.TryAdd(prototype, prot);
+        _locationPrototypes.TryAdd(prototype, proto);
+        var hashEnt = new Dictionary<EntProtoId, EntityUid>();
+        _entities.Add(mapUid,hashEnt);
+        
+        if (proto.Location is not null)
+        {
+            var loc = AddComp<LocationComponent>(mapUid);
+            loc.CurrentLocation = proto.Location;
 
+            if (proto.Location.Map is not null)
+            {
+                using var sr =  _resourceManager.ContentFileReadText(proto.Location.Map.Value);
+                var map = new ColliderMap(sr);
+                foreach (var pos in map)
+                {
+                    Spawn(WallsId, new EntityCoordinates(mapUid, pos));
+                }
+            }
+        }
+        
+        if (proto.Entities is { } entities)
+        {
+            foreach (var entity in entities)
+            {
+                var uid = Spawn(entity.Entity, new EntityCoordinates(mapUid, entity.Position));
+                Logger.Debug("SPAWN " + uid + " " + entity.Entity);
+                hashEnt.Add(entity.Entity, uid);
+            }
+        }
+        
         return true;
     }
 
@@ -61,27 +91,25 @@ public sealed class LocationSystem : EntitySystem
 
         if (proto.Background is not null)
         {
-            _entityManager.System<BackgroundSystem>().LoadBackground(proto.Background);
-        }
-        
-        else if (proto.Location is not null)
-        {
-            var loc = AddComp<LocationComponent>(mapId);
-            loc.CurrentLocation = proto.Location;
-
-            if (proto.Location.Map is not null)
-            {
-               using var sr =  _resourceManager.ContentFileReadText(proto.Location.Map.Value);
-               var map = new ColliderMap(sr);
-               foreach (var pos in map)
-               {
-                   Spawn(WallsId, new EntityCoordinates(mapId, pos));
-               }
-            }
+            _entityManager.System<BackgroundSystem>().LoadBackground(proto.Background.Value);
         }
         
         _currentLocationId = mapId;
         return _currentLocationId;
+    }
+
+    public bool TryGetLocationEntity(EntProtoId? ent, out EntityUid uid)
+    {
+        uid = EntityUid.Invalid;
+        return ent is not null &&
+               _entities.TryGetValue(_currentLocationId, out var dictionary) && 
+               dictionary.TryGetValue(ent.Value, out uid);
+    }
+
+    public IEnumerable<EntityUid> GetLocationEnumerator()
+    {
+        if(!_entities.TryGetValue(_currentLocationId, out var entityUids)) return [];
+        return entityUids.Values.Select(a => a);
     }
 }
 

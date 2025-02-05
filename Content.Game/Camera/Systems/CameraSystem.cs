@@ -4,6 +4,7 @@ using Content.Game.Location.Systems;
 using Robust.Client.GameObjects;
 using Robust.Client.Player;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.Game.Camera.Systems;
 
@@ -15,9 +16,28 @@ public sealed class CameraSystem : EntitySystem
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly EyeSystem _eyeSystem = default!;
+    [Dependency] private readonly LocationSystem _location = default!;
 
     public Entity<TransformComponent,CameraComponent>? CameraUid { get; private set; }
+    public EntProtoId? CurrentFollowEnt;
     
+    public bool ResetFollowing()
+    {
+        if(CurrentFollowEnt is not null)
+        {
+            FollowTo(CurrentFollowEnt.Value);
+            return true;
+        }
+
+        return false;
+    }
+    public void FollowTo(EntProtoId id)
+    {
+        if (_location.TryGetLocationEntity(id, out var camFol))
+            FollowTo(camFol);
+        
+        CurrentFollowEnt = id;
+    }
     
     public void FollowTo(EntityUid entityUid)
     {

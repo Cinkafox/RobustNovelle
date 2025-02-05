@@ -16,9 +16,6 @@ public sealed class CharacterSystem : EntitySystem
     [Dependency] private readonly IResourceCache _cache = default!;
     [Dependency] private readonly IOverlayManager _overlay = default!;
     
-    private Dictionary<string, EntityUid> _characters = new();
-    private HashSet<EntityUid> _entities = new();
-    
     public const int CharacterRenderingZIndex = 0;
 
     public override void Initialize()
@@ -34,40 +31,13 @@ public sealed class CharacterSystem : EntitySystem
 
         component.Sprite = rs.RSI;
     }
-
-    public void AddCharacter(CharacterDefinition character)
-    {
-
-        var spawnPos = character.Position ?? Vector2.Zero;
-        var uid = Spawn(character.Entity,
-            new EntityCoordinates(_locationManager.GetCurrentLocationId(),spawnPos.X,spawnPos.Y));
-
-        if (!TryComp<CharacterComponent>(uid, out var component))
-        {
-            _entities.Add(uid);
-            return;
-        }
-
-        if(character.Visible is not null)
-            component.Visible = character.Visible.Value;
-        
-        _characters.Add(character.Entity,uid);
-        
-        SetCharacterState(character.Entity, component.State);
-    }
-
-    public void RemoveCharacter(string prototype)
-    {
-        _characters.Remove(prototype, out var uid);
-        QueueDel(uid);
-    }
     
     public bool TryGetCharacter(string? prototype,[NotNullWhen(true)] out CharacterComponent? component,out EntityUid uid)
     {
         uid = EntityUid.Invalid;
         component = null;
         
-        if (prototype != null && !_characters.TryGetValue(prototype, out uid)) return false;
+        if (prototype != null && !_locationManager.TryGetLocationEntity(prototype, out uid)) return false;
         
         return TryComp(uid, out component);
     }
@@ -80,22 +50,10 @@ public sealed class CharacterSystem : EntitySystem
     
     public IEnumerable<CharacterComponent> EnumerateCharacters()
     {
-        foreach (var (_, uid) in _characters)
+        foreach (var uid in _locationManager.GetLocationEnumerator())
         {
             if (TryComp<CharacterComponent>(uid, out var characterComponent) && characterComponent.Visible)
                 yield return characterComponent;
-        }
-    }
-    
-    public void ClearCharacters()
-    {
-        foreach (var entityUid in _entities)
-        {
-            QueueDel(entityUid);
-        }
-        foreach (var (proto,_) in _characters)
-        {
-           RemoveCharacter(proto);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Game.Camera.Systems;
+using Content.Game.Character.Components;
 using Content.Game.Character.Systems;
 using Content.Game.Dialog.Data;
 using Content.Game.Dialog.DialogActions;
@@ -10,16 +11,19 @@ using Content.Game.Menu;
 using Content.Game.Movement;
 using Content.Game.UserInterface.Systems.Dialog;
 using Robust.Client;
+using Robust.Client.Animations;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
+using Robust.Shared.Animations;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
 
 namespace Content.Game.Dialog.Systems;
 
-public sealed class DialogSystem : EntitySystem
+public sealed partial class DialogSystem : EntitySystem
 {
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly CharacterSystem _characterSystem = default!;
@@ -27,6 +31,7 @@ public sealed class DialogSystem : EntitySystem
     [Dependency] private readonly IClyde _clyde = default!;
     [Dependency] private readonly LocationSystem _location = default!;
     [Dependency] private readonly CameraSystem _cameraSystem = default!;
+    [Dependency] private readonly AnimationPlayerSystem _animationPlayerSystem = default!;
     
     private DialogUIController _dialogUiController = default!;
     
@@ -49,8 +54,6 @@ public sealed class DialogSystem : EntitySystem
         _input.SetInputCommand(EngineKeyFunctions.UIClick,cmdhandler);
         
         SubscribeLocalEvent<DialogEndedEvent>(OnDialogEnd);
-
-        Show();
     }
 
     private void OnDialogEnd(DialogEndedEvent ev)
@@ -155,54 +158,14 @@ public sealed class DialogSystem : EntitySystem
             return;
         }
 
-        if (CurrentDialog.Location is not null)
-        {
-            var location = _location.LoadLocation(CurrentDialog.Location);
-            if (location.IsValid())
-                _cameraSystem.FollowTo(location);
-        }
-
-        if (CurrentDialog.Characters is not null)
-        {
-            _characterSystem.ClearCharacters();
-            foreach (var characterPrototype in CurrentDialog.Characters)
-            {
-                _characterSystem.AddCharacter(characterPrototype);
-            };
-        }
-        
-        if (CurrentDialog.CameraOn is not null && _characterSystem.TryGetCharacter(CurrentDialog.CameraOn, out _, out var camFol))
-            _cameraSystem.FollowTo(camFol);
-        
-        if (CurrentDialog.Title is not null)
-        {
-            _clyde.SetWindowTitle(CurrentDialog.Title);
-        } 
-        
+        LoadLocation();
+        SetTitle();
         SetDialogText(CurrentDialog.Text);
+        EnsureDialogs();
+        EnsureChoices();
+        ShowCharacters();
+        HideCharacters();
         
-        if (CurrentDialog.NewDialog) _dialogUiController.ClearDialogs();
-        
-        if (IsEmptyString(CurrentDialog.Text))
-        {
-            CurrentDialog.IsDialog = false;
-            if (CurrentDialog.Choices.Count == 0)
-                CurrentDialog.SkipDialog = true;
-            
-            else if (CurrentDialog.Actions.Count != 0)
-                throw new Exception($"Долбоеб блять какие действие с текстом? {CurrentDialog.Text}");
-        }
-        
-        if (CurrentDialog.Choices.Count == 0)
-        {
-            if (CurrentDialog.SkipDialog)
-            {
-                CurrentDialog.Actions.Add(new DefaultDialogAction());
-            }
-            else
-                CurrentDialog.Choices.Add(new DialogButton() { Name = Loc.GetString("dialog-continue") });
-        }
-
         _characterSystem.TryGetCharacter(CurrentDialog.Character, out _, out var characterUid);
         
         if (CurrentDialog.Name == null && CurrentDialog.Character != null)
@@ -218,13 +181,9 @@ public sealed class DialogSystem : EntitySystem
         var startedEv = new DialogStartedEvent(CurrentDialog);
 
         if (characterUid.IsValid())
-        {
             RaiseLocalEvent(characterUid, startedEv);
-        }
         else
-        {
             RaiseLocalEvent(startedEv);
-        }
     }
     
 

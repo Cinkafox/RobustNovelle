@@ -1,9 +1,6 @@
-using System.Collections.Generic;
 using System.Numerics;
 using Content.Game.Location.Data;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager.Attributes;
-using Robust.Shared.ViewVariables;
 
 namespace Content.Game.Dialog.Data;
 
@@ -23,9 +20,10 @@ public sealed partial class Dialog
     [DataField] public bool SayLetters = true;
     [DataField] public int SkipSayCount = 1;
     [DataField] public ProtoId<LocationPrototype>? Location;
-    [DataField] public string? Title = null;
+    [DataField] public string? Title;
     [DataField] public string? CameraOn;
-    [DataField] public HashSet<CharacterDefinition>? Characters;
+    [DataField] public string? Show;
+    [DataField] public string? Hide;
     
     [DataField] public HashSet<DialogButton> Choices = new();
     [ViewVariables(VVAccess.ReadOnly)] public float PassedTime;
@@ -33,9 +31,9 @@ public sealed partial class Dialog
 }
 
 [DataDefinition]
-public sealed partial class CharacterDefinition
+public sealed partial class EntityDefinition
 {
     [DataField] public EntProtoId Entity;
-    [DataField] public bool? Visible;
-    [DataField] public Vector2? Position;
+    [DataField] public Vector2 Position = Vector2.Zero;
+    [DataField] public Angle Rotation = Angle.Zero;
 }

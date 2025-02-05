@@ -17,7 +17,7 @@ public sealed class BackgroundOverlay : Overlay
         IoCManager.InjectDependencies(this);
     }
 
-    public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowWorld;
+    public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
     protected override void Draw(in OverlayDrawArgs args)
     {
@@ -27,7 +27,7 @@ public sealed class BackgroundOverlay : Overlay
         
         foreach (var component in list)
         {
-            DrawBackground(component._layer,args,(byte)component.Visibility);
+            DrawBackground(component.Layer,args,(byte)component.Visibility);
         }
     }
 

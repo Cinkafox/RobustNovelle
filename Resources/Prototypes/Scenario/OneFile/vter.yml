@@ -2,18 +2,31 @@
 
 - type: location
   id: gym
-  background: gym
+  background: /Textures/Backgrounds/gym.rsi/gym.png
+  entities:
+    - entity: raveel
+    - entity: igor
 
 - type: location
   id: gym_outside
-  # background: gym_outside
+  # background: /Textures/Backgrounds/gym.rsi/gym_outside.png
   location:
     path: /Textures/Locations/sportik.png
     map: /ColliderMaps/sportik.map
+  entities:
+   - entity: raveel
+     position: 8,3.2
+   - entity: doorInteractible
+     position: 8,4
+   - entity: raveel2
+     position: 6,3.2
 
 - type: location
   id: basement
-  background: basement
+  background: Backgrounds/basement.rsi/default.png
+  entities:
+    - entity: raveel
+    - entity: igor
   
 
 # Audio
@@ -77,31 +90,6 @@
     - /Audio/Augh/auuughh1.wav
     - /Audio/Augh/auuughh2.wav
     - /Audio/Augh/auuughh3.wav
-
-# BACKGROUNDS
-
-- type: entity
-  id: gym
-  components:
-    - type: Background
-      layer:
-        sprite: Backgrounds/gym.rsi
-        state: gym
-
-- type: entity
-  id: gym_outside
-  components:
-    - type: Background
-      layer:
-        sprite: Backgrounds/gym.rsi
-        state: gym_outside
-
-- type: entity
-  id: basement
-  components:
-    - type: Background
-      layer:
-        sprite: Backgrounds/basement.rsi
 
 #CHARACTERS
 
@@ -169,23 +157,19 @@
   dialogs:
     - title: "Femboy adventures ;з"
     - location: gym_outside
-    - characters:
-      - entity: raveel
-        position: 8,3.2
-      - entity: doorInteractible
-        position: 8,4
-      - entity: raveel2
-        position: 6,3.2
     - cameraOn: raveel
     - actions:
         - !type:AudioAction
           prototype: backCity
+    - show: raveel 0,5
     - character: raveel
       text: Ох.. вот и спортзал
+    - show: raveel 0,2
     - character: raveel
       text: Давно я не качался..
     - character: raveel
       text: Да и давненько я не был в баре...
+    - show: raveel 0,7
     - character: raveel
       text: Хм.. куда бы мне пойти?
       choices:
@@ -231,17 +215,14 @@
 - type: scene
   id: gymstartinside
   dialogs:
-    - characters:
-        - entity: raveel
-        - entity: igor
-          visible: false
     - location: gym
-    - actions:
+      actions:
         - !type:AudioAction
           prototype: backGym
         - !type:AudioAction
           prototype: gymEnter
           effect: LivingRoom
+      show: raveel 0,5
     - character: raveel
       text: ...
     - character: raveel
@@ -258,156 +239,11 @@
       delay: 50
       skipDialog: true
       emote: insane
-    - actions:
-        - !type:LoadSceneAction
-          prototype: gymigorstart
-
-- type: scene
-  id: gymigorstart
-  dialogs:
-    - characters:
-        - entity: raveel
-        - entity: igor
-    - actions:
-        - !type:ChangeCharacterState
-          prototype: raveel
-          state: anim
+    - show: igor 0,2
+    - show: raveel 0,7
     - character: igor
-      text: Привет, мой сладенький дру...
-      skipDialog: true
+      text: Дорогой, ну не трясись так.
     - character: igor
-      text: Кхэм! Я имел в виду приветствую!
-    - character: raveel
-      text: З..здравствуйте.. а какое упражнение посоветуете?
-    - character: igor
-      text: Не боись! Для тебя у нас есть отдельная комната! Пройдём со мной!
-    - actions:
-        - !type:LoadSceneAction
-          prototype: basement
-
-- type: scene
-  id: basement
-  dialogs:
-    - characters:
-        - entity: igor
-          visible: false
-        - entity: raveel
-          visible: false
-    - location: basement
-    - actions:
-        - !type:AudioAction
-          prototype: backBasement
-        - !type:AudioAction
-          prototype: gymEnter
-          effect: Bathroom
-    - character: igor
-      text: Вот мы на месте, распологайся поудобнее
-    - character: raveel
-      text: а.. зачем тут.. намордник
-      emote: hehe
-    - character: igor
-      text: Скоро узнаете, мой сладенький
-      emote: insane
-    - actions:
-        - !type:AudioAction
-          prototype: augh
-          effect: Bathroom
-    - character: raveel
-      text: стоп.. зачем вы его взяли? И.. почему вы идёте в мою сторону?
-      emote: insane
-    - character: raveel
-      text: СТОП! СТОП!
-      emote: insane
-    - character: raveel
-      sayLetters: false
-      text: "*резко достает нож*"
-    - character: raveel
-      text: ПОЛУЧАЙ ТУПОЙ ТЫ НИГГЕР!
-      emote: insane
-    - actions:
-        - !type:AudioAction
-          prototype: anikiGrunt
-          effect: Bathroom
-    - character: igor
-      text: Ай
-      skipDialog: true
-    - character: igor
-      delay: 250
-      skipDialog: true
-      newDialog: false
-    - character: igor
-      text: Ой
-      skipDialog: true
-    - character: igor
-      delay: 250
-      skipDialog: true
-      newDialog: false
-    - character: igor
-      text: Ух
-      skipDialog: true
-    - character: igor
-      delay: 250
-      skipDialog: true
-      newDialog: false
-    - character: igor
-      text: Ебать! Я ОТПРАВЛЯЮСЬ В НИГГЕР ПАРАДАЙС!
-      skipDialog: true
-    - character: igor
-      delay: 250
-      skipDialog: true
-      newDialog: false
-    - actions:
-        - !type:LoadSceneAction
-          prototype: basement_exc
-          
-- type: scene
-  id: basement_exc
-  dialogs:
-    - characters:
-        - entity: raveel
-    - text: "*Игорь помирает от рук фембойчика*"
-    - character: raveel
-      text: О ужас...
-    - character: raveel
-      sayLetters: false
-      text: "*поспешно отступает от Игоря к стороне выхода*"
-    - actions:
-        - !type:LoadSceneAction
-          prototype: gym_outside_bad
-
-- type: scene
-  id: gym_outside_bad
-  dialogs:
-    - characters:
-        - entity: raveel
-    - location: gym_outside
-    - actions:
-        - !type:AudioAction
-          prototype: backCity
-    - character: raveel
-      text: Ух..
-      skipDialog: true
-    - character: raveel
-      delay: 250
-      skipDialog: true
-      newDialog: false
-    - character: raveel
-      text: Боже...
-      skipDialog: true
-    - character: raveel
-      delay: 250
-      skipDialog: true
-      newDialog: false
-    - character: raveel
-      text: Мой
-      skipDialog: true
-    - character: raveel
-      delay: 250
-      skipDialog: true
-      newDialog: false
-    - character: raveel
-      text: "..."
-    - character: raveel
-      text: Да.. Да ну в жопу этот ваш спортзал!
-    - character: raveel
-      text: Я в бар нахой!
+      text: Это очень вредно для твоих ляжек
+    - actions: 
+        - !type:EndGameAction
