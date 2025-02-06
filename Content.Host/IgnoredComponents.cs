@@ -7,6 +7,6 @@ public static class IgnoredComponents
         "Character",
         "Voice",
         "Emote",
-        "Background"
+        "Background","Interactible","MoveSprite","Icon"
     };
 }

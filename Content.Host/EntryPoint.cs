@@ -27,6 +27,7 @@ public sealed class EntryPoint : GameServer
         prototypes.RegisterIgnore("location");
         prototypes.RegisterIgnore("scene");
         prototypes.RegisterIgnore("audio");
+        prototypes.RegisterIgnore("dynamicValue");
 
         ServerContentIoC.Register();
 
