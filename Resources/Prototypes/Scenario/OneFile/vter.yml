@@ -20,6 +20,8 @@
      position: 8,4
    - entity: raveel2
      position: 6,3.2
+   - entity: fuckingPig
+     position: 10,3.2
 
 - type: location
   id: basement
@@ -75,6 +77,11 @@
   id: voiceMeow
   audio:
     collection: Meow
+    
+- type: audio
+  id: voiceHru
+  audio:
+    collection: Hru
 
 - type: soundCollection
   id: Meow
@@ -91,6 +98,13 @@
     - /Audio/Augh/auuughh2.wav
     - /Audio/Augh/auuughh3.wav
 
+- type: soundCollection
+  id: Hru
+  files:
+    - /Audio/Nahruk/hru1.wav
+    - /Audio/Nahruk/hru2.wav
+    - /Audio/Nahruk/hru3.wav
+    
 #CHARACTERS
 
 - type: entity
@@ -141,7 +155,21 @@
       actions:
         - !type:LoadSceneAction
           prototype: chelik
-
+          
+- type: entity
+  id: fuckingPig
+  parent: chartBase
+  name: Мистер нахрюк
+  components:
+    - type: Sprite
+      sprite: Entities/fucking_pig.rsi
+      layers:
+        - state: default
+    - type: Interactible
+      actions:
+        - !type:AudioAction
+          prototype: voiceHru
+          
 - type: entity
   id: igor
   parent: chartBase
