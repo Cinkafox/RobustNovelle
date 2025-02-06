@@ -1,0 +1,22 @@
+﻿<ui:MenuScreen 
+    xmlns="https://spacestation14.io"
+    xmlns:ui="clr-namespace:Content.Client.Menu.UI">
+    <TextureRect Access="Public" VerticalExpand="True" HorizontalExpand="True" Name="Background"
+                 Stretch="KeepAspectCovered" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+    <BoxContainer Name="MainContainer" VerticalExpand="True" HorizontalExpand="True">
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" HorizontalExpand="True">
+            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Left">
+                <PanelContainer VerticalExpand="True" HorizontalExpand="True" VerticalAlignment="Center" StyleClasses="menuPanel">
+                    <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" VerticalAlignment="Center" Margin="5 45 0 45">
+                        <RichTextLabel Name="MenuLabel" Margin="15"/>
+                        <BoxContainer Orientation="Vertical" Name="ButtonContainer" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                            <Button Text="{Loc 'menu-play'}"        Margin="0 15 0 0" Name="PlayButton" HorizontalExpand="True"/>
+                            <Button Text="{Loc 'menu-config'}"      Margin="0 15 0 0" Name="Config" HorizontalExpand="True"/>
+                            <Button Text="{Loc 'menu-exit'}"        Margin="0 15 0 0" Name="Exit" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                </PanelContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</ui:MenuScreen>

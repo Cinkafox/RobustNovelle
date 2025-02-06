@@ -25,7 +25,7 @@ public sealed class GamePackaging
                 ArgumentList =
                 {
                     "build",
-                    Path.Combine("Content.Game", "Content.Game.csproj"),
+                    Path.Combine("Content.Client", "Content.Client.csproj"),
                     "-c", "Release",
                     "--nologo",
                     "/v:m",
@@ -41,7 +41,7 @@ public sealed class GamePackaging
         var sw = RStopwatch.StartNew();
         {
             await using var zipFile =
-                File.Open(Path.Combine("release", "Content.Game.zip"), FileMode.Create, FileAccess.ReadWrite);
+                File.Open(Path.Combine("release", "Content.Client.zip"), FileMode.Create, FileAccess.ReadWrite);
             using var zip = new ZipArchive(zipFile, ZipArchiveMode.Update);
             var writer = new AssetPassZipWriter(zip);
 
@@ -68,8 +68,8 @@ public sealed class GamePackaging
         await RobustSharedPackaging.WriteContentAssemblies(
             inputPass,
             contentDir,
-            "Content.Game",
-            new[] { "Content.Game", "Content.StyleSheetify.Client", "Content.StyleSheetify.Shared" },
+            "Content.Client",
+            new[] { "Content.Client", "Content.StyleSheetify.Client", "Content.StyleSheetify.Shared" },
             cancel: cancel);
 
         await RobustClientPackaging.WriteClientResources(contentDir, pass, cancel);

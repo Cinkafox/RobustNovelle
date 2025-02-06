@@ -280,5 +280,7 @@
       text: Дорогой, ну не трясись так.
     - character: igor
       text: Это очень вредно для твоих ляжек
+    - character: raveel
+      text: ОЙ БЛЯТЬ ИДИ НАХУЙ НЕГР Я ЛИВАЮ С ИГРЫ НАХУЙ!!
     - actions: 
         - !type:EndGameAction

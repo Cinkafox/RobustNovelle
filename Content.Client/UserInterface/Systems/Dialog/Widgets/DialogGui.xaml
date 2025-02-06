@@ -1,0 +1,24 @@
+<widgets:DialogGui
+    xmlns="https://spacestation14.io"
+    xmlns:widgets="clr-namespace:Content.Client.UserInterface.Systems.Dialog.Widgets"
+    Name="Dialog"
+    Orientation="Vertical"
+    HorizontalAlignment="Stretch"
+    VerticalExpand="True"
+    HorizontalExpand="True"
+    VerticalAlignment="Bottom">
+    
+    <PanelContainer Name="SkipContainer" StyleClasses="DialogWindow" SetHeight="200">
+        <BoxContainer Orientation="Horizontal">
+            <TextureRect Name="PersRect" SetSize="128 128" MinSize="128 128" Stretch="KeepAspectCentered" Margin="26 0 26 0"/>
+            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalAlignment="Stretch"
+                          Margin="0 36 36 16">
+                <RichTextLabel Name="Text"/>
+                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Left" Name="ButtonContainer"
+                              Margin="0 36 0 0" MinHeight="64">
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+    
+</widgets:DialogGui>
