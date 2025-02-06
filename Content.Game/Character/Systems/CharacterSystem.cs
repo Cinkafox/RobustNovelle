@@ -47,6 +47,14 @@ public sealed class CharacterSystem : EntitySystem
         if (TryGetCharacter(prototype, out var data, out _))
             data.State = state;
     }
+
+    public void HideAll()
+    {
+        foreach (var character in EnumerateCharacters())
+        {
+            character.Visible = false;
+        }
+    }
     
     public IEnumerable<CharacterComponent> EnumerateCharacters()
     {

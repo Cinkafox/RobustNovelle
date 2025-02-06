@@ -40,23 +40,6 @@
 		  0.2
 	    ]
 	  ]
-    },
-    {
-      "name": "fox_dead"
-    },
-    {
-      "name": "fox_deadcollar"
-    },
-    {
-      "name": "fox_deadtag"
-    },
-    {
-      "name": "foxcollar",
-      "directions": 4
-    },
-    {
-      "name": "foxtag",
-      "directions": 4
     }
   ]
 }

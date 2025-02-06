@@ -111,6 +111,10 @@
       sprite: Entities/raveel.rsi
       layers:
         - state: fox
+          map: [enum.MoveAnimationVisual.Stay]
+        - state: fox-moving
+          map: [enum.MoveAnimationVisual.Walk]
+    - type: MoveSprite
     - type: Character
       sprite: Characters/raveel.rsi # File in Textures/Characters/raveel.rsi
     - type: Voice
@@ -192,6 +196,7 @@
 - type: scene
   id: gymstart
   dialogs:
+    - show: raveel 0,5
     - character: raveel
       text: Нус, тогда захожу!
       emote: hehe

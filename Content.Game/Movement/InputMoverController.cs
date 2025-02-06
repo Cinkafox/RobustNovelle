@@ -67,6 +67,8 @@ public sealed class InputMoverController : VirtualController
 
         while (query.MoveNext(out var uid, out var inputMoverComponent, out var cameraComponent))
         {
+            var oldSpeed = inputMoverComponent.Speed;
+            
             if (inputMoverComponent.IsMoving)
             {
                 inputMoverComponent.Speed += 0.25f;
@@ -79,11 +81,18 @@ public sealed class InputMoverController : VirtualController
             inputMoverComponent.Speed = float.Clamp(inputMoverComponent.Speed, 0, 2);
             
             if(cameraComponent.FollowUid is null || !TryComp<PhysicsComponent>(cameraComponent.FollowUid.Value, out var physicsComponent)) continue;
+            
+            if(oldSpeed == 0 && inputMoverComponent.Speed != 0) RaiseLocalEvent(cameraComponent.FollowUid.Value, new OnEntityMoving());
+            if(oldSpeed != 0 && inputMoverComponent.Speed == 0) RaiseLocalEvent(cameraComponent.FollowUid.Value, new OnEntityStopMoving());
+            
             PhysicsSystem.SetLinearVelocity(cameraComponent.FollowUid.Value,inputMoverComponent.Direction.ToVec() * inputMoverComponent.Speed , body: physicsComponent);
             cameraComponent.FollowUid.Value.Comp.LocalRotation = inputMoverComponent.Direction.ToAngle();
         }
     }
 }
+
+public sealed class OnEntityMoving : EntityEventArgs{}
+public sealed class OnEntityStopMoving : EntityEventArgs{}
 
 public sealed class RunInputCmdHandler : InputCmdHandler
 {

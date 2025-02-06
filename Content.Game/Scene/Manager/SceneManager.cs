@@ -61,6 +61,7 @@ public sealed class SceneManager : ISceneManager
     public void CleanupScene()
     {
         _dialogSystem.CleanupDialog();
+        _characterSystem.HideAll();
         _currentScene = null;
     }
 }
