@@ -36,11 +36,11 @@ public sealed class InputMoverController : VirtualController
     {
         if(!_inputMoverQuery.TryComp(sessionAttachedEntity, out var inputMoverComponent))
             return;
-
-        if (isDown && inputMoverComponent.IsEnabled)
+        
+        if (isDown)
         {
-            inputMoverComponent.Direction = direction;
             inputMoverComponent.ButtonPressed += 1;
+            inputMoverComponent.Direction = direction;
         }
         else
         {
@@ -69,16 +69,12 @@ public sealed class InputMoverController : VirtualController
         {
             var oldSpeed = inputMoverComponent.Speed;
             
-            if (inputMoverComponent.IsMoving)
-            {
+            if (inputMoverComponent.IsMoving && inputMoverComponent.IsEnabled)
                 inputMoverComponent.Speed += 0.25f;
-            }
             else
-            {
                 inputMoverComponent.Speed -= 0.5f;
-            }
 
-            inputMoverComponent.Speed = float.Clamp(inputMoverComponent.Speed, 0, 2);
+            inputMoverComponent.Speed = float.Clamp(inputMoverComponent.Speed, 0, 3);
             
             if(cameraComponent.FollowUid is null || !TryComp<PhysicsComponent>(cameraComponent.FollowUid.Value, out var physicsComponent)) continue;
             
@@ -86,7 +82,9 @@ public sealed class InputMoverController : VirtualController
             if(oldSpeed != 0 && inputMoverComponent.Speed == 0) RaiseLocalEvent(cameraComponent.FollowUid.Value, new OnEntityStopMoving());
             
             PhysicsSystem.SetLinearVelocity(cameraComponent.FollowUid.Value,inputMoverComponent.Direction.ToVec() * inputMoverComponent.Speed , body: physicsComponent);
-            cameraComponent.FollowUid.Value.Comp.LocalRotation = inputMoverComponent.Direction.ToAngle();
+            
+            if(inputMoverComponent.IsEnabled)
+                cameraComponent.FollowUid.Value.Comp.LocalRotation = inputMoverComponent.Direction.ToAngle();
         }
     }
 }

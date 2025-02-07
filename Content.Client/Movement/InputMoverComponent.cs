@@ -9,6 +9,6 @@ public sealed partial class InputMoverComponent : Component
     [DataField] public bool IsEnabled;
     [DataField] public Direction Direction;
     [DataField] public float Speed;
-    public int ButtonPressed;
-    public bool IsMoving => ButtonPressed > 0;
+    [ViewVariables] public int ButtonPressed;
+    [ViewVariables(VVAccess.ReadOnly)] public bool IsMoving => ButtonPressed > 0;
 }

@@ -53,12 +53,14 @@ public sealed class CameraSystem : EntitySystem
             _playerManager.SetAttachedEntity(_playerManager.LocalSession, CameraUid);
         }
 
+        CameraUid.Value.Comp1.LocalPosition = entTransform.LocalPosition;
+
         CameraUid.Value.Comp2.FollowUid = new Entity<TransformComponent>(entityUid, entTransform);
     }
 
-    public override void Update(float frameTime)
+    public override void FrameUpdate(float frameTime)
     {
-        base.Update(frameTime);
+        base.FrameUpdate(frameTime);
 
         var query = EntityQueryEnumerator<TransformComponent, CameraComponent, EyeComponent>();
         while (query.MoveNext(out var camUid,out var transformComponent, out var cameraComponent, out var eyeComponent))
@@ -71,14 +73,16 @@ public sealed class CameraSystem : EntitySystem
             if (!transformComponent.ParentUid.IsValid())
             {
                 _transformSystem.SetParent(camUid, followUid.Value);
+                return;
             }
-            else if (transformComponent.ParentUid != followUid.Value.Comp.ParentUid)
+            if (transformComponent.ParentUid != followUid.Value.Comp.ParentUid)
             {
                 _transformSystem.SetParent(camUid, followUid.Value.Comp.ParentUid);
+                return;
             }
             
             var delta = transformComponent.LocalPosition - followUid.Value.Comp.LocalPosition;
-            transformComponent.LocalPosition -= delta / 2;
+            transformComponent.LocalPosition -= delta / 4;
         }
     }
 }
