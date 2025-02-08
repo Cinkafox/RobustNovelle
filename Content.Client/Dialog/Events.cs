@@ -1,6 +1,3 @@
-using System;
-using Robust.Shared.GameObjects;
-
 namespace Content.Client.Dialog;
 
 [Serializable]

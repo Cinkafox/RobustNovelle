@@ -8,8 +8,8 @@ namespace Content.Client.Dialog.DialogActions;
 
 public sealed partial class EndGameAction : IDialogAction
 {
-    public void Act()
+    public void Act(IDependencyCollection collection)
     {
-        IoCManager.Resolve<IStateManager>().RequestStateChange<MenuState>();
+        collection.Resolve<IStateManager>().RequestStateChange<MenuState>();
     }
 }

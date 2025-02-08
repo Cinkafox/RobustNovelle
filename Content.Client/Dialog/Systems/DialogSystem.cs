@@ -62,7 +62,7 @@ public sealed partial class DialogSystem : EntitySystem
         
         foreach (var action in ev.Dialog.Actions.ToList())
         {
-            action.Act();
+            action.Act(IoCManager.Instance!);
         }
         
         foreach (var choise in ev.Dialog.Choices.ToList())
@@ -89,7 +89,7 @@ public sealed partial class DialogSystem : EntitySystem
         else
         {
             var btns = _dialogUiController.GetDialogButtons();
-            if(btns.Count == 1) btns[0].DialogAction.Act();
+            if(btns.Count == 1) btns[0].DialogAction.Act(IoCManager.Instance!);
         }
     }
 
@@ -166,7 +166,7 @@ public sealed partial class DialogSystem : EntitySystem
         ShowCharacters();
         HideCharacters();
         
-        _characterSystem.TryGetCharacter(CurrentDialog.Character, out _, out var characterUid);
+        _characterSystem.TryGetCharacter(CurrentDialog.Character?.ToString(), out _, out var characterUid);
         
         if (CurrentDialog.Name == null && CurrentDialog.Character != null)
         {
@@ -208,7 +208,7 @@ public sealed partial class DialogSystem : EntitySystem
         
         CurrentDialog.PassedTime = 0;
 
-        if (_characterSystem.TryGetCharacter(CurrentDialog.Character, out _, out var characterUid))
+        if (_characterSystem.TryGetCharacter(CurrentDialog.Character?.ToString(), out _, out var characterUid))
         {
             RaiseLocalEvent(characterUid,new DialogAppendEvent(CurrentDialog));
         }
@@ -220,5 +220,4 @@ public sealed partial class DialogSystem : EntitySystem
     {
         return string.IsNullOrEmpty(text) || text == " ";
     }
-
 }

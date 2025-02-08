@@ -3,6 +3,7 @@ using Content.Client.Scene.Manager;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems;
 using Content.Client.Location.Systems;
+using Robust.Client;
 using Robust.Client.GameObjects;
 using Robust.Client.Input;
 using Robust.Client.Player;
@@ -28,6 +29,7 @@ public class GameplayStateBase : State
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
+    [Dependency] private readonly IBaseClient _client = default!;
 
     public GameplayStateBase()
     {
@@ -40,6 +42,7 @@ public class GameplayStateBase : State
 
     protected override void Startup()
     {
+        _client.StartSinglePlayer();
         _uiManager.LoadScreen<DefaultGameScreen>();
         _loadController.LoadScreen();
         _sceneManager.Initialize();
@@ -52,6 +55,7 @@ public class GameplayStateBase : State
         _uiManager.UnloadScreen();
         _loadController.UnloadScreen();
         _inputManager.KeyBindStateChanged -= InputManagerOnKeyBindStateChanged;
+        _client.StopSinglePlayer();
     }
     
     private void InputManagerOnKeyBindStateChanged(ViewportBoundKeyEventArgs args)

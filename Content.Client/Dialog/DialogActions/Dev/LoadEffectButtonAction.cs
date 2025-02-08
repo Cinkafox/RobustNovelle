@@ -10,7 +10,7 @@ namespace Content.Client.Dialog.DialogActions.Dev;
 
 public sealed partial class LoadEffectButtonAction : IDialogAction
 {
-    public void Act()
+    public void Act(IDependencyCollection collection)
     {
         var entMan = IoCManager.Resolve<IEntityManager>();
         var sceneMan = IoCManager.Resolve<ISceneManager>();

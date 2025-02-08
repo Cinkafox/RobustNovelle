@@ -61,7 +61,6 @@ public sealed class EntryPoint : GameClient
         IoCManager.Resolve<ILightManager>().Enabled = false;
         
         _uiManager.MainViewport.Visible = false;
-        _client.StartSinglePlayer();
         _uiManager.SetDefaultTheme("DefaultTheme");
         _styleSheetManager.ApplyStyleSheet("default");
 

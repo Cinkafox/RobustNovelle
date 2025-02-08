@@ -37,7 +37,7 @@ public sealed class InteractionSystem : EntitySystem
         
         foreach (var action in interactionComponent.CurrentInteractible.Value.Item1.Actions)
         {
-            action.Act();
+            action.Act(IoCManager.Instance!);
         }
     }
 

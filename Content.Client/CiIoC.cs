@@ -1,3 +1,4 @@
+using Content.Client.GameVariables;
 using Content.Client.Scene.Manager;
 using Content.Client.Viewport;
 
@@ -9,5 +10,6 @@ public static class CiIoC
     {
         IoCManager.Register<ViewportManager, ViewportManager>();
         IoCManager.Register<ISceneManager, SceneManager>();
+        IoCManager.Register<VariableManager>();
     }
 }

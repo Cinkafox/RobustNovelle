@@ -52,8 +52,9 @@ public sealed class CameraSystem : EntitySystem
 
             _playerManager.SetAttachedEntity(_playerManager.LocalSession, CameraUid);
         }
-
-        CameraUid.Value.Comp1.LocalPosition = entTransform.LocalPosition;
+        
+        if(CurrentFollowEnt is null)
+            CameraUid.Value.Comp1.LocalPosition = entTransform.LocalPosition;
 
         CameraUid.Value.Comp2.FollowUid = new Entity<TransformComponent>(entityUid, entTransform);
     }

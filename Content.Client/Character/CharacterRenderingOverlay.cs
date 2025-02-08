@@ -40,7 +40,7 @@ public sealed class CharacterRenderingOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if(!IsVisible) return;
+        //if(!IsVisible) return;
         
         var handle = args.ScreenHandle;
 

@@ -14,8 +14,8 @@ public sealed partial class LoadSceneAction : IDialogAction
 {
     [DataField] public ProtoId<ScenePrototype> Prototype = default!;
     
-    public void Act()
+    public void Act(IDependencyCollection collection)
     {
-        IoCManager.Resolve<ISceneManager>().LoadScene(Prototype);
+        collection.Resolve<ISceneManager>().LoadScene(Prototype);
     }
 }

@@ -12,9 +12,9 @@ public sealed partial class SwitchEffectBackAction : IDialogAction
 {
     [DataField("prototype", required: true)]
     public string Prototype = default!;
-    public void Act()
+    public void Act(IDependencyCollection collection)
     {
-        var entMan = IoCManager.Resolve<IEntityManager>();
+        var entMan = collection.Resolve<IEntityManager>();
         var audioSystem = entMan.System<SceneAudioSystem>();
 
         if (entMan.TryGetComponent<AudioComponent>(SceneAudioSystem.Background, out var component))

@@ -10,8 +10,8 @@ namespace Content.Client.Dialog.DialogActions;
 [UsedImplicitly]
 public sealed partial class DefaultDialogAction : IDialogAction
 {
-    public void Act()
+    public void Act(IDependencyCollection collection)
     {
-        IoCManager.Resolve<EntityManager>().System<DialogSystem>().ContinueDialog();
+        collection.Resolve<EntityManager>().SystemOrNull<DialogSystem>()?.ContinueDialog();
     }
 }

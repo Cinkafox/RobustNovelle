@@ -13,8 +13,8 @@ public sealed partial class ChangeCharacterState : IDialogAction
 
     [DataField] public string State = "default";
 
-    public void Act()
+    public void Act(IDependencyCollection collection)
     {
-        IoCManager.Resolve<EntityManager>().System<CharacterSystem>().SetCharacterState(Prototype,State);
+        collection.Resolve<EntityManager>().System<CharacterSystem>().SetCharacterState(Prototype,State);
     }
 }

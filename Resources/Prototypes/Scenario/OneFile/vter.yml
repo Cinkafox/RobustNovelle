@@ -169,6 +169,8 @@
       actions:
         - !type:AudioAction
           prototype: voiceHru
+        - !type:AppendValueAction
+          name: Nahruk
           
 - type: entity
   id: igor
@@ -188,12 +190,12 @@
   id: default
   dialogs:
     - title: "Femboy adventures ;з"
-    - location: gym_outside
-    - cameraOn: raveel
-    - actions:
+      location: gym_outside
+      cameraOn: raveel
+      actions:
         - !type:AudioAction
           prototype: backCity
-    - show: raveel 0,5
+      show: raveel 0,5
     - character: raveel
       text: Ох.. вот и спортзал
     - show: raveel 0,2
@@ -234,6 +236,16 @@
 - type: scene
   id: chelik
   dialogs:
+    - actions:
+        - !type:IsGreaterAction
+          first: $Zaeb
+          second: 0
+          if:
+            !type:LoadSceneAction
+            prototype: chelik2
+    - actions:
+        - !type:AppendValueAction
+          name: Zaeb
     - character: raveel2
       text: СУКА! Я ВИДЕЛ НЕКОТОРОЕ ДЕРЬМО!
     - character: raveel2
@@ -246,6 +258,32 @@
       text: И... и я тоже..
     - character: raveel2
       text: Боже... я хочу умереть!
+    - actions:
+        - !type:IsGreaterAction
+          first: $Nahruk
+          second: 0
+          if:
+            !type:LoadSceneAction
+            prototype: chelik_hru
+      
+- type: scene
+  id: chelik2
+  dialogs:
+    - character: raveel2
+      text: Бля.. ну отьебись а чел..
+    - actions:
+        - !type:IsGreaterAction
+          first: $Nahruk
+          second: 0
+          if:
+            !type:LoadSceneAction
+            prototype: chelik_hru
+      
+- type: scene
+  id: chelik_hru
+  dialogs:
+    - character: raveel2
+      text: И да, ты устроил нахрюк $Nahruk раз
 
 - type: scene
   id: gymstartinside

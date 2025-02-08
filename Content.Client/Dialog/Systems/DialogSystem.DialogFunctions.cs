@@ -46,7 +46,9 @@ public partial class DialogSystem
         if (CurrentDialog.Choices.Count == 0)
         {
             if (CurrentDialog.SkipDialog)
+            {
                 CurrentDialog.Actions.Add(new DefaultDialogAction());
+            }
             else
                 CurrentDialog.Choices.Add(new DialogButton() { Name = Loc.GetString("dialog-continue") });
         }

@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Client.Location.Data;
+using Content.Client.PasterString.Data;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.Dialog.Data;
@@ -9,9 +10,9 @@ public sealed partial class Dialog
 {
     [DataField] public List<IDialogAction> Actions = new();
     [DataField] public float Delay = 30;
-    [DataField] public string? Character;
-    [DataField] public string? Name;
-    [DataField] public string Text = " ";
+    [DataField] public SmartString? Character;
+    [DataField] public SmartString? Name;
+    [DataField] public SmartString Text = " ";
     [DataField] public string Emote = "default";
     [DataField] public bool NewDialog = true;
     [DataField] public bool SkipDialog;
@@ -20,7 +21,7 @@ public sealed partial class Dialog
     [DataField] public bool SayLetters = true;
     [DataField] public int SkipSayCount = 1;
     [DataField] public ProtoId<LocationPrototype>? Location;
-    [DataField] public string? Title;
+    [DataField] public SmartString? Title;
     [DataField] public string? CameraOn;
     [DataField] public string? Show;
     [DataField] public string? Hide;
