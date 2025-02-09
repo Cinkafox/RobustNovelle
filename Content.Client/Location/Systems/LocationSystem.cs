@@ -5,12 +5,11 @@ using System.Numerics;
 using Content.Client.Background;
 using Content.Client.Location.Components;
 using Content.Client.Location.Data;
-using Robust.Client.GameStates;
-using Robust.Shared;
-using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Map;
+using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Client.Location.Systems;
 
@@ -118,6 +117,8 @@ public sealed class ColliderMap: IEnumerable<Vector2i>
     private readonly Dictionary<Vector2i, bool> _map = new();
     public int Colon { get; private set; }
     public int Row { get; private set; }
+
+    private List<Edge> edges = default!;
     
     public ColliderMap(StreamReader streamReader)
     {
@@ -144,5 +145,90 @@ public sealed class ColliderMap: IEnumerable<Vector2i>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+    
+    public List<Vector2> ToVectors()
+    {
+        DetectEdges();
+        var edg = edges.ToList();
+        var l = new List<Vector2>();
+        var a = edg.First();
+
+        do
+        {
+            l.Add(a.Start);
+            edg.Remove(a);
+        } 
+        while (edg.TryFirstOrDefault(pr => pr.Start == a.End, out a));
+            
+           
+        return l;
+    } 
+    
+    private void DetectEdges()
+    {
+        edges = new List<Edge>();
+            
+        foreach (var vector2I in _map.Where(kvp => kvp.Value).Select(kvp => kvp.Key))
+        {
+            // Проверка соседей
+            var neighbors = new[]
+            {
+                new Vector2i(vector2I.X, vector2I.Y - 1), // Вверх
+                new Vector2i(vector2I.X + 1, vector2I.Y), // Вправо
+                new Vector2i(vector2I.X, vector2I.Y + 1), // Вниз
+                new Vector2i(vector2I.X - 1, vector2I.Y)  // Влево
+            };
+
+            // Добавляем грани, где нет соседей
+            if (!_map.ContainsKey(neighbors[0])) 
+                edges.Add(new Edge(
+                    new Vector2i(vector2I.X, vector2I.Y),
+                    new Vector2i(vector2I.X + 1, vector2I.Y)
+                ));
+
+            if (!_map.ContainsKey(neighbors[1])) 
+                edges.Add(new Edge(
+                    new Vector2i(vector2I.X + 1, vector2I.Y),
+                    new Vector2i(vector2I.X + 1, vector2I.Y + 1)
+                ));
+
+            if (!_map.ContainsKey(neighbors[2])) 
+                edges.Add(new Edge(
+                    new Vector2i(vector2I.X + 1, vector2I.Y + 1),
+                    new Vector2i(vector2I.X, vector2I.Y + 1)
+                ));
+
+            if (!_map.ContainsKey(neighbors[3])) 
+                edges.Add(new Edge(
+                    new Vector2i(vector2I.X, vector2I.Y + 1),
+                    new Vector2i(vector2I.X, vector2I.Y)
+                ));
+        }
+
+        // Удаление дубликатов (если две соседние ячейки отсутствуют)
+        edges = edges
+            .GroupBy(e => new { Start = e.Start, End = e.End })
+            .Select(g => g.First())
+            .ToList();
+    }
+
+    public PolygonShape ToShape()
+    {
+        var shape = new PolygonShape();
+        shape.Set(ToVectors());
+        return shape;
+    }
+}
+
+public sealed class Edge
+{
+    public Vector2i Start { get; }
+    public Vector2i End { get; }
+
+    public Edge(Vector2i start, Vector2i end)
+    {
+        Start = start;
+        End = end;
     }
 }
