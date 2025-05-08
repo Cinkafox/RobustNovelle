@@ -13,7 +13,7 @@ public sealed partial class Dialog
     [DataField] public SmartString? Character;
     [DataField] public SmartString? Name;
     [DataField] public SmartString Text = " ";
-    [DataField] public string Emote = "default";
+    [DataField] public string? Emote;
     [DataField] public bool NewDialog = true;
     [DataField] public bool SkipDialog;
     [DataField] public bool DontLetSkip;

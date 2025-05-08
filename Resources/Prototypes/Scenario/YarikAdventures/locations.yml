@@ -1,0 +1,9 @@
+- type: location
+  id: yarikSpal
+  background: /Textures/Backgrounds/yarik_ahui.rsi/default.png
+  entities:
+    - entity: yarik
+
+- type: location
+  id: space
+  background: /Textures/Backgrounds/space.png

@@ -30,7 +30,9 @@ public sealed class EmoteSystem : EntitySystem
     
     private void OnEmoteStarted(EntityUid uid, EmoteComponent component, DialogStartedEvent args)
     {
-        if (TryGetEmotesSprite(uid, out var resource) && resource.RSI.TryGetState(args.Dialog.Emote, out var state))
+        var dialogState = args.Dialog.Emote ?? component.Default;
+        
+        if (TryGetEmotesSprite(uid, out var resource) && resource.RSI.TryGetState(dialogState, out var state))
             _dialog.SetEmote(state.Frame0);
         else if (args.Dialog.IsDialog)
             _dialog.SetEmote(null);

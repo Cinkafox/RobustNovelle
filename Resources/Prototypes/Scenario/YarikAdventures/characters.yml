@@ -1,0 +1,20 @@
+- type: entity
+  id: yarik
+  parent: chartBase
+  name: Ярик
+  components:
+    - type: Sprite
+      sprite: Entities/raveel.rsi
+      layers:
+        - state: fox
+          map: [enum.MoveAnimationVisual.Stay]
+        - state: fox-moving
+          map: [enum.MoveAnimationVisual.Walk]
+    - type: MoveSprite
+    - type: Character
+      sprite: Characters/raveel.rsi 
+    - type: Voice
+      voice: voiceMeow
+    - type: Emote
+      sprite: Emotes/yarik.rsi 
+      default: smile
