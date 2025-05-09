@@ -1,10 +1,7 @@
-using System.Numerics;
+using System.Collections.Immutable;
 using Content.Client.Viewport;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Configuration;
-using Robust.Shared.IoC;
-using Robust.Shared.Log;
-using Robust.Shared.Maths;
 
 namespace Content.Client.UserInterface.Controls;
 
@@ -14,8 +11,17 @@ namespace Content.Client.UserInterface.Controls;
 /// </summary>
 public sealed class MainViewport : UIWidget
 {
+    private static readonly HashSet<MainViewport> InstancesPrivate = [];
+    public static ImmutableHashSet<MainViewport> Instances => InstancesPrivate.ToImmutableHashSet();
+    public static void UpdateConfAll()
+    {
+        foreach (var instance in InstancesPrivate)
+        {
+            instance.UpdateCfg();
+        }
+    }
+    
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly ViewportManager _vpManager = default!;
 
     public MainViewport()
     {
@@ -29,24 +35,16 @@ public sealed class MainViewport : UIWidget
         };
 
         AddChild(Viewport);
+        InstancesPrivate.Add(this);
+    }
+
+    ~MainViewport()
+    {
+        InstancesPrivate.Remove(this);
     }
 
     public ScalingViewport Viewport { get; }
-
-    protected override void EnteredTree()
-    {
-        base.EnteredTree();
-
-        _vpManager.AddViewport(this);
-    }
-
-    protected override void ExitedTree()
-    {
-        base.ExitedTree();
-
-        _vpManager.RemoveViewport(this);
-    }
-
+    
     public void UpdateCfg()
     {
         var stretch = _cfg.GetCVar(CCVars.CCVars.ViewportStretch);

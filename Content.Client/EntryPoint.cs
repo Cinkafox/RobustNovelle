@@ -27,7 +27,6 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly ITileDefinitionManager _tileDefinitionManager = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
-    [Dependency] private readonly IStyleSheetManager _styleSheetManager = default!;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
     [Dependency] private readonly IResourceCache _resource = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
@@ -38,7 +37,6 @@ public sealed class EntryPoint : GameClient
     {
         IoCManager.Resolve<ILocalizationManager>().LoadCulture(new CultureInfo(Culture));
         CiIoC.Register(); 
-        StyleSheetify.Client.DependencyRegistration.Register(IoCManager.Instance!);
         IoCManager.BuildGraph();
         IoCManager.InjectDependencies(this);
         _clyde.SetWindowTitle("LOADING: [------]");
@@ -62,7 +60,7 @@ public sealed class EntryPoint : GameClient
         
         _uiManager.MainViewport.Visible = false;
         _uiManager.SetDefaultTheme("DefaultTheme");
-        _styleSheetManager.ApplyStyleSheet("default");
+        IoCManager.Resolve<IContentStyleSheetManager>().ApplyStyleSheet("default");
 
         _stateManager.RequestStateChange<MenuState>();
         
@@ -123,11 +121,12 @@ public sealed class EntryPoint : GameClient
     }
 }
 
-public sealed class VoidTile : ITileDefinition
+[Prototype("VoidTile")]
+public sealed class VoidTile : ITileDefinition, IPrototype
 {
     public ushort TileId { get; set; }
     public string Name { get; } = "Void";
-    public string ID { get; } = "Void";
+    [IdDataField] public string ID { get; } = "Void";
     public ResPath? Sprite { get; }
     public Dictionary<Direction, ResPath> EdgeSprites { get; } = new();
     public int EdgeSpritePriority { get; }
