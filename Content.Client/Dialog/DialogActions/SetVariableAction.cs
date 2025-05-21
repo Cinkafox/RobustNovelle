@@ -1,3 +1,4 @@
+using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Data;
 using Content.Client.GameVariables;
 using Content.Client.PasterString.Data;
@@ -9,7 +10,7 @@ public sealed partial class SetVariableAction : IDialogAction
     [DataField] public string Name;
     [DataField] public string Value;
     
-    public void Act(IDependencyCollection collection)
+    public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
         var variableSystem = collection.Resolve<VariableManager>();;
         variableSystem.SetValue(Name, Value);
@@ -27,14 +28,14 @@ public abstract partial class BaseCompareAction : IDialogAction
 
     private VariableManager _variableSystem = default!;
 
-    public void Act(IDependencyCollection collection)
+    public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
         _variableSystem = collection.Resolve<VariableManager>();;
         
         if(Checkup(First, Second))
-            If?.Act(collection);
+            If?.Act(collection, actorUid);
         else 
-            Else?.Act(collection);
+            Else?.Act(collection, actorUid);
     }
 
     protected abstract bool Checkup(string value1, string value2); 
@@ -79,7 +80,7 @@ public sealed partial class AppendValueAction : IDialogAction
     [DataField] public string Name;
     [DataField] public SmartString Count = "1";
     
-    public void Act(IDependencyCollection collection)
+    public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
         var variableSystem = collection.Resolve<VariableManager>();
         if (!float.TryParse(variableSystem.GetValue(Name, 0f.ToString()), out var value) ||

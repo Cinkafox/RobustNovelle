@@ -1,7 +1,5 @@
-﻿using System.Numerics;
-using Content.Client.Camera.Components;
+﻿using Content.Client.Camera.Components;
 using Robust.Client.GameStates;
-using Robust.Client.Timing;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Physics.Components;
@@ -13,7 +11,6 @@ namespace Content.Client.Movement;
 
 public sealed class InputMoverController : VirtualController
 {
-    [Dependency] private readonly IClientGameTiming _gameTiming = default!;
     [Dependency] private readonly IClientGameStateManager _gameStateManager = default!;
     
     private EntityQuery<InputMoverComponent> _inputMoverQuery;
@@ -84,7 +81,7 @@ public sealed class InputMoverController : VirtualController
             PhysicsSystem.SetLinearVelocity(cameraComponent.FollowUid.Value,inputMoverComponent.Direction.ToVec() * inputMoverComponent.Speed , body: physicsComponent);
             
             if(inputMoverComponent.IsEnabled)
-                cameraComponent.FollowUid.Value.Comp.LocalRotation = inputMoverComponent.Direction.ToAngle();
+                Transform(cameraComponent.FollowUid.Value).LocalRotation = inputMoverComponent.Direction.ToAngle();
         }
     }
 }

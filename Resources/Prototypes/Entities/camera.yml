@@ -4,6 +4,9 @@
     - type: Input
       context: "human"
     - type: Eye
+      zoom: 0.5,0.5
     - type: InputMover
     - type: Camera
+    - type: DialogContainer
     - type: Interaction
+    - type: SceneContainer

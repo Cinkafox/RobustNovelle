@@ -1,7 +1,6 @@
 using Content.Client.Scene.Data;
-using Content.Client.Scene.Manager;
+using Content.Client.Scene.Systems;
 using Robust.Shared.Console;
-using Robust.Shared.IoC;
 
 namespace Content.Client.Scene;
 
@@ -13,14 +12,14 @@ public sealed class SceneCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        var sceneManager = IoCManager.Resolve<ISceneManager>();
+        var sceneManager = IoCManager.Resolve<IEntityManager>().System<SceneSystem>();
         if (args.Length == 0)
         {
             shell.WriteError("Need one argument");
             return;
         }
 
-        sceneManager.LoadScene(args[0]);
+        sceneManager.LoadScene(shell.Player!.AttachedEntity!.Value, args[0]);
     }
 
     public CompletionResult GetCompletion(IConsoleShell shell, string[] args)

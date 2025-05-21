@@ -1,4 +1,5 @@
 using Content.Client.Character.Systems;
+using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Data;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -13,7 +14,7 @@ public sealed partial class ChangeCharacterState : IDialogAction
 
     [DataField] public string State = "default";
 
-    public void Act(IDependencyCollection collection)
+    public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
         collection.Resolve<EntityManager>().System<CharacterSystem>().SetCharacterState(Prototype,State);
     }

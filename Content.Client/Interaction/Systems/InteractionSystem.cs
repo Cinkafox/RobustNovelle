@@ -1,6 +1,6 @@
 using System.Linq;
+using Content.Client.Dialog.Components;
 using Content.Client.Interaction.Components;
-using Content.Client.Movement;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Input;
@@ -33,11 +33,15 @@ public sealed class InteractionSystem : EntitySystem
 
     public void HandleUse(EntityUid entity, bool isDown)
     {
-        if(!TryComp<InteractionComponent>(entity, out var interactionComponent) || !interactionComponent.IsEnabled || !isDown || interactionComponent.CurrentInteractible is null) return;
+        if(!TryComp<InteractionComponent>(entity, out var interactionComponent) || 
+           !interactionComponent.IsEnabled || !isDown || 
+           interactionComponent.CurrentInteractible is null
+           ) return;
         
         foreach (var action in interactionComponent.CurrentInteractible.Value.Item1.Actions)
         {
-            action.Act(IoCManager.Instance!);
+            action.Act(IoCManager.Instance!, new Entity<DialogContainerComponent>(entity, 
+                Comp<DialogContainerComponent>(entity)));
         }
     }
 

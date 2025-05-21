@@ -3,5 +3,5 @@
 [RegisterComponent]
 public sealed partial class CameraComponent : Component
 {
-   [ViewVariables] public Entity<TransformComponent>? FollowUid;
+   [ViewVariables] public EntityUid? FollowUid;
 }

@@ -1,4 +1,6 @@
-﻿using Content.Client.Character.Components;
+﻿using Content.Client.Camera.Components;
+using Content.Client.Character.Components;
+using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Data;
 using Content.Client.Dialog.DialogActions;
 using Robust.Client.Animations;
@@ -8,55 +10,60 @@ namespace Content.Client.Dialog.Systems;
 
 public partial class DialogSystem
 {
-    private void LoadLocation()
+    private void LoadLocation(Entity<DialogContainerComponent> ent)
     {
-        if (CurrentDialog.Location is not null)
+        if(!TryComp<CameraComponent>(ent, out var camera)) return;
+        
+        var camEnt = new Entity<CameraComponent>(ent, camera);
+        
+        if (ent.Comp.CurrentDialog.Location is not null)
         {
-            var location = _location.LoadLocation(CurrentDialog.Location);
-            if (!_cameraSystem.ResetFollowing() && location.IsValid())
-                _cameraSystem.FollowTo(location);
+            var location = _location.LoadLocation(ent.Comp.CurrentDialog.Location);
+            if (location.IsValid())
+                _cameraSystem.FollowTo(camEnt, location);
         }
         
-        if (CurrentDialog.CameraOn is not null)
-            _cameraSystem.FollowTo(CurrentDialog.CameraOn);
+        if (ent.Comp.CurrentDialog.CameraOn is not null && 
+            _location.TryGetLocationEntity(ent.Comp.CurrentDialog.CameraOn, out var camFol))
+            _cameraSystem.FollowTo(camEnt, camFol);
     }
 
-    private void SetTitle()
+    private void SetTitle(Entity<DialogContainerComponent> ent)
     {
-        if (CurrentDialog.Title is not null)
+        if (ent.Comp.CurrentDialog.Title is not null)
         {
-            _clyde.SetWindowTitle(CurrentDialog.Title);
+            _clyde.SetWindowTitle(ent.Comp.CurrentDialog.Title);
         }
     }
 
-    private void EnsureDialogs()
+    private void EnsureDialogs(Entity<DialogContainerComponent> ent)
     {
-        if (CurrentDialog.NewDialog) _dialogUiController.ClearDialogs();
+        if (ent.Comp.CurrentDialog.NewDialog) _dialogUiController.ClearDialogs();
         
-        if (IsEmptyString(CurrentDialog.Text))
+        if (IsEmptyString(ent.Comp.CurrentDialog.Text))
         {
-            CurrentDialog.IsDialog = false;
-            if (CurrentDialog.Choices.Count == 0)
-                CurrentDialog.SkipDialog = true;
+            ent.Comp.CurrentDialog.IsDialog = false;
+            if (ent.Comp.CurrentDialog.Choices.Count == 0)
+                ent.Comp.CurrentDialog.SkipDialog = true;
         }
     }
 
-    private void EnsureChoices()
+    private void EnsureChoices(Entity<DialogContainerComponent> ent)
     {
-        if (CurrentDialog.Choices.Count == 0)
+        if (ent.Comp.CurrentDialog.Choices.Count == 0)
         {
-            if (CurrentDialog.SkipDialog)
+            if (ent.Comp.CurrentDialog.SkipDialog)
             {
-                CurrentDialog.Actions.Add(new DefaultDialogAction());
+                ent.Comp.CurrentDialog.Actions.Add(new DefaultDialogAction());
             }
             else
-                CurrentDialog.Choices.Add(new DialogButton() { Name = Loc.GetString("dialog-continue") });
+                ent.Comp.CurrentDialog.Choices.Add(new DialogButton() { Name = Loc.GetString("dialog-continue") });
         }
     }
 
-    private void ShowCharacters()
+    private void ShowCharacters(Entity<DialogContainerComponent> ent)
     {
-        if (CurrentDialog.Show is not { } name) return;
+        if (ent.Comp.CurrentDialog.Show is not { } name) return;
         
         var spl = name.Split(" ");
         double? pos = spl.Length > 1 ? double.Parse(spl[1]) : null;
@@ -95,9 +102,9 @@ public partial class DialogSystem
         }, "xPos");
     }
 
-    private void HideCharacters()
+    private void HideCharacters(Entity<DialogContainerComponent> ent)
     {
-        if (CurrentDialog.Hide is { } aname && _characterSystem.TryGetCharacter(aname, out var acharacterComponent, out _))
+        if (ent.Comp.CurrentDialog.Hide is { } aname && _characterSystem.TryGetCharacter(aname, out var acharacterComponent, out _))
         {
             acharacterComponent.Visible = false;
         }

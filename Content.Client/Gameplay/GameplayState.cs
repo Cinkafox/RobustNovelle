@@ -1,8 +1,6 @@
 using Content.Client.Gameplay.UI;
-using Content.Client.Scene.Manager;
-using Content.Client.UserInterface.Controls;
+using Content.Client.GameTicking;
 using Content.Client.UserInterface.Systems;
-using Content.Client.Location.Systems;
 using Robust.Client;
 using Robust.Client.GameObjects;
 using Robust.Client.Input;
@@ -17,12 +15,10 @@ using Robust.Shared.Timing;
 
 namespace Content.Client.Gameplay;
 
-[Virtual]
-public class GameplayStateBase : State
+public sealed class GameplayState : State
 {
     private readonly GameplayStateLoadController _loadController;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
-    [Dependency] private readonly ISceneManager _sceneManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -31,22 +27,19 @@ public class GameplayStateBase : State
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IBaseClient _client = default!;
 
-    public GameplayStateBase()
+    public GameplayState()
     {
         IoCManager.InjectDependencies(this);
 
         _loadController = _uiManager.GetUIController<GameplayStateLoadController>();
     }
 
-    public MainViewport Viewport => _uiManager.ActiveScreen!.GetWidget<MainViewport>()!;
-
     protected override void Startup()
     {
         _client.StartSinglePlayer();
         _uiManager.LoadScreen<DefaultGameScreen>();
         _loadController.LoadScreen();
-        _sceneManager.Initialize();
-        _sceneManager.LoadScene(_cfg.GetCVar(CCVars.CCVars.LastScenePrototype));
+        _entitySystemManager.GetEntitySystem<GameTicker>().SpawnPlayer(_playerManager.LocalSession!);
         _inputManager.KeyBindStateChanged += InputManagerOnKeyBindStateChanged;
     }
 

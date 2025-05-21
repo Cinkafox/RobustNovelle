@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Content.Client.Character;
+using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Data;
 using Content.Client.UserInterface.Systems.Dialog.Widgets;
 using Robust.Client.Graphics;
@@ -47,9 +46,9 @@ public sealed class DialogUIController : UIController
         return _dialogGui == null || _dialogGui.IsEmpty();
     }
 
-    public void AddButton(DialogButton button)
+    public void AddButton(DialogButton button, Entity<DialogContainerComponent> entity)
     {
-        _dialogGui?.AddButton(button);
+        _dialogGui?.AddButton(button, entity);
     }
 
     public List<DialogButton> GetDialogButtons()

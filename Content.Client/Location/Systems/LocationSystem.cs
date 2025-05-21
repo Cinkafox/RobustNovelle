@@ -70,7 +70,6 @@ public sealed class LocationSystem : EntitySystem
             foreach (var entity in entities)
             {
                 var uid = Spawn(entity.Entity, new EntityCoordinates(mapUid, entity.Position));
-                Logger.Debug("SPAWN " + uid + " " + entity.Entity);
                 hashEnt.Add(entity.Entity, uid);
             }
         }

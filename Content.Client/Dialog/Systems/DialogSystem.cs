@@ -7,6 +7,7 @@ using Content.Client.Location.Systems;
 using Content.Client.Movement;
 using Content.Client.UserInterface.Systems.Dialog;
 using Content.Client.Character.Components;
+using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Data;
 using Content.Client.Dialog.DialogActions;
 using Content.Client.Menu;
@@ -20,6 +21,7 @@ using Robust.Client.UserInterface;
 using Robust.Shared.Animations;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.Player;
 
 namespace Content.Client.Dialog.Systems;
 
@@ -35,114 +37,116 @@ public sealed partial class DialogSystem : EntitySystem
     
     private DialogUIController _dialogUiController = default!;
     
-    private List<Data.Dialog> _dialogQueue = [];
-    
-    private string? _textQueue = null;
-
-    public bool HasDialog => _dialogQueue.Count > 0;
-    
-    public Dialog.Data.Dialog CurrentDialog => _dialogQueue[0];
-
     public override void Initialize()
     {
         base.Initialize();
         _dialogUiController = _userInterfaceManager.GetUIController<DialogUIController>();
-        var cmdhandler = InputCmdHandler.FromDelegate(_ =>
-            SkipMessage());
         
-        _input.SetInputCommand(ContentKeyFunctions.SkipDialog,cmdhandler);
-        _input.SetInputCommand(EngineKeyFunctions.UIClick,cmdhandler);
+      
         
-        SubscribeLocalEvent<DialogEndedEvent>(OnDialogEnd);
+        var cmdhandler = new SkipDialogHandler(this);
+        CommandBinds.Builder
+            .Bind(ContentKeyFunctions.SkipDialog, cmdhandler)
+            .Bind(EngineKeyFunctions.UIClick, cmdhandler)
+            .Register<DialogSystem>();
+        
+        SubscribeLocalEvent<DialogContainerComponent, DialogEndedEvent>(OnDialogEnd);
     }
 
-    private void OnDialogEnd(DialogEndedEvent ev)
+    public Entity<DialogContainerComponent> EnsureDialogComp(ICommonSession? commonSession)
     {
-        _dialogQueue.RemoveAt(0);
+        if(commonSession is null) 
+            throw new NullReferenceException("CommonSession is null");
+        if(!commonSession.AttachedEntity.HasValue) 
+            throw new NullReferenceException("AttachedEntity is null");
+        var entityUid = commonSession.AttachedEntity.Value;
+        if(!TryComp<DialogContainerComponent>(entityUid, out var component)) 
+            throw new InvalidOperationException("Did not find component of type DialogContainerComponent");
+        return new Entity<DialogContainerComponent>(entityUid, component);
+    }
+
+    private void OnDialogEnd(Entity<DialogContainerComponent> ent,ref DialogEndedEvent ev)
+    {
+        ent.Comp.DialogQueue.RemoveAt(0);
         
         foreach (var action in ev.Dialog.Actions.ToList())
         {
-            action.Act(IoCManager.Instance!);
+            action.Act(IoCManager.Instance!, ent);
         }
         
         foreach (var choise in ev.Dialog.Choices.ToList())
         {
-            _dialogUiController.AddButton(choise);
+            _dialogUiController.AddButton(choise, ent);
         }
     }
 
-    public void AddDialog(Dialog.Data.Dialog dialog)
+    public void AddDialog(Entity<DialogContainerComponent> ent, Dialog.Data.Dialog dialog)
     {
-        if(_dialogQueue.Count == 0) Show();
-        _dialogQueue.Add(dialog);
+        if(ent.Comp.DialogQueue.Count == 0) Show(ent);
+        ent.Comp.DialogQueue.Add(dialog);
     }
 
-    public void SpeedupDialog()
+    public void SpeedupDialog(Entity<DialogContainerComponent> ent)
     {
-        if(!HasDialog || CurrentDialog.DontLetSkip) return;
-        CurrentDialog.Delay = 2;
+        if(!ent.Comp.HasDialog || ent.Comp.CurrentDialog.DontLetSkip) return;
+        ent.Comp.CurrentDialog.Delay = 2;
     }
     
-    public void SkipMessage()
+    public void SkipMessage(Entity<DialogContainerComponent> ent)
     {
-        if(_textQueue != null) SpeedupDialog();
+        if(ent.Comp.TextQueue != null) SpeedupDialog(ent);
         else
         {
             var btns = _dialogUiController.GetDialogButtons();
-            if(btns.Count == 1) btns[0].DialogAction.Act(IoCManager.Instance!);
+            if(btns.Count == 1) btns[0].DialogAction.Act(IoCManager.Instance!, ent);
         }
     }
-
-    private EntityUid? GetControlledUid()
-    {
-        return _cameraSystem.CameraUid?.Owner;
-    }
     
-    private void Show()
+    private void Show(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.Show();
-        if (TryComp<InteractionComponent>(GetControlledUid(), out var interactionComponent))
+        if (TryComp<InteractionComponent>(ent, out var interactionComponent))
         {
             interactionComponent.IsEnabled = false;
         }
-        if (TryComp<InputMoverComponent>(GetControlledUid(), out var inputMoverComponent))
+        if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent))
         {
             inputMoverComponent.IsEnabled = false;
         }
     }
 
-    private void Hide()
+    private void Hide(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.Hide();
-        if (TryComp<InteractionComponent>(GetControlledUid(), out var interactionComponent))
+        if (TryComp<InteractionComponent>(ent, out var interactionComponent))
         {
             interactionComponent.IsEnabled = true;
         }
-        if (TryComp<InputMoverComponent>(GetControlledUid(), out var inputMoverComponent))
+        if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent))
         {
             inputMoverComponent.IsEnabled = true;
         }
     }
 
-    private void SetDialogText(string text)
+    private void SetDialogText(Entity<DialogContainerComponent> ent, string text)
     {
-        _textQueue = text;
+        ent.Comp.TextQueue = text;
     }
 
-    private char NextDialogLetter()
+    private char NextDialogLetter(Entity<DialogContainerComponent> ent)
     {
-        if (_textQueue == null) return ' ';
-        var a = _textQueue[0];
-        _textQueue = _textQueue.Substring(1);
+        if (ent.Comp.TextQueue == null) return ' ';
+        var a = ent.Comp.TextQueue[0];
+        ent.Comp.TextQueue = ent.Comp.TextQueue.Substring(1);
 
         return a;
     }
 
-    public void CleanupDialog()
+    public void CleanupDialog(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.ClearDialogs();
-        _dialogQueue.Clear();
-        _textQueue = null;
+        ent.Comp.DialogQueue.Clear();
+        ent.Comp.TextQueue = null;
     }
 
     public void SetEmote(Texture? texture)
@@ -150,74 +154,96 @@ public sealed partial class DialogSystem : EntitySystem
         _dialogUiController.SetEmote(texture);
     }
     
-    public void ContinueDialog()
+    public void ContinueDialog(Entity<DialogContainerComponent> ent)
     {
-        if (_dialogQueue.Count == 0)
+        var comp = ent.Comp;
+        
+        if (comp.DialogQueue.Count == 0)
         {
-            Hide();
+            Hide(ent);
             return;
         }
 
-        LoadLocation();
-        SetTitle();
-        SetDialogText(CurrentDialog.Text);
-        EnsureDialogs();
-        EnsureChoices();
-        ShowCharacters();
-        HideCharacters();
+        LoadLocation(ent);
+        SetTitle(ent);
+        SetDialogText(ent, comp.CurrentDialog.Text);
+        EnsureDialogs(ent);
+        EnsureChoices(ent);
+        ShowCharacters(ent);
+        HideCharacters(ent);
         
-        _characterSystem.TryGetCharacter(CurrentDialog.Character?.ToString(), out _, out var characterUid);
+        _characterSystem.TryGetCharacter(comp.CurrentDialog.Character?.ToString(), out _, out var characterUid);
         
-        if (CurrentDialog.Name == null && CurrentDialog.Character != null)
+        if (comp.CurrentDialog.Name == null && comp.CurrentDialog.Character != null)
         {
-            CurrentDialog.Name = MetaData(characterUid).EntityName;
+            comp.CurrentDialog.Name = MetaData(characterUid).EntityName;
         }
 
-        if (CurrentDialog.Name != null && _dialogUiController.IsEmpty())
+        if (comp.CurrentDialog.Name != null && _dialogUiController.IsEmpty())
         {
-            _dialogUiController.AppendLabel($"[bold]{CurrentDialog.Name}[/bold]: ");
+            _dialogUiController.AppendLabel($"[bold]{comp.CurrentDialog.Name}[/bold]: ");
         }
 
-        var startedEv = new DialogStartedEvent(CurrentDialog);
+        var startedEv = new DialogStartedEvent(comp.CurrentDialog);
 
         if (characterUid.IsValid())
             RaiseLocalEvent(characterUid, startedEv);
-        else
-            RaiseLocalEvent(startedEv);
+        RaiseLocalEvent(ent, startedEv);
     }
     
 
     public override void FrameUpdate(float frameTime)
     {
         base.FrameUpdate(frameTime);
-        
-        if(_dialogQueue.Count == 0 || _textQueue == null) return;
-        
-        if (string.IsNullOrEmpty(_textQueue))
-        {
-            _textQueue = null;
-            RaiseLocalEvent(new DialogEndedEvent(CurrentDialog));
-            return;
-        }
 
-        if (CurrentDialog.PassedTime < CurrentDialog.Delay)
+        var query = EntityQueryEnumerator<DialogContainerComponent>();
+        while (query.MoveNext(out var uid, out var dialogComponent))
         {
-            CurrentDialog.PassedTime += frameTime * 1000;
-            return;
-        }
+            if(dialogComponent.DialogQueue.Count == 0 || dialogComponent.TextQueue == null) return;
         
-        CurrentDialog.PassedTime = 0;
+            if (string.IsNullOrEmpty(dialogComponent.TextQueue))
+            {
+                dialogComponent.TextQueue = null;
+                RaiseLocalEvent(uid, new DialogEndedEvent(dialogComponent.CurrentDialog));
+                return;
+            }
 
-        if (_characterSystem.TryGetCharacter(CurrentDialog.Character?.ToString(), out _, out var characterUid))
-        {
-            RaiseLocalEvent(characterUid,new DialogAppendEvent(CurrentDialog));
-        }
+            if (dialogComponent.CurrentDialog.PassedTime < dialogComponent.CurrentDialog.Delay)
+            {
+                dialogComponent.CurrentDialog.PassedTime += frameTime * 1000;
+                return;
+            }
         
-        _dialogUiController.AppendLetter(NextDialogLetter());
+            dialogComponent.CurrentDialog.PassedTime = 0;
+
+            if (_characterSystem.TryGetCharacter(dialogComponent.CurrentDialog.Character?.ToString(), out _, out var characterUid))
+            {
+                RaiseLocalEvent(characterUid,new DialogAppendEvent(dialogComponent.CurrentDialog));
+            }
+        
+            _dialogUiController.AppendLetter(NextDialogLetter(new Entity<DialogContainerComponent>(uid, dialogComponent)));
+        }
     }
     
     private bool IsEmptyString(string text)
     {
         return string.IsNullOrEmpty(text) || text == " ";
+    }
+}
+
+public sealed class SkipDialogHandler : InputCmdHandler
+{
+    private readonly DialogSystem _dialogSystem;
+
+    public SkipDialogHandler(DialogSystem dialogSystem)
+    {
+        _dialogSystem = dialogSystem;
+    }
+
+    public override bool HandleCmdMessage(IEntityManager entManager, ICommonSession? session, IFullInputCmdMessage message)
+    {
+        if (session?.AttachedEntity is null || message.State == BoundKeyState.Down) return false;
+        _dialogSystem.SkipMessage(_dialogSystem.EnsureDialogComp(session));
+        return false;
     }
 }

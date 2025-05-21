@@ -1,4 +1,5 @@
 using Content.Client.Audio.Systems;
+using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Data;
 using JetBrains.Annotations;
 
@@ -11,7 +12,7 @@ public sealed partial class AudioAction : IDialogAction
     
     [DataField("effect")] private string _effectPrototype = String.Empty;
     
-    public void Act(IDependencyCollection collection)
+    public void Act(IDependencyCollection collection,  Entity<DialogContainerComponent> actorUid)
     {
        collection.Resolve<EntityManager>().System<SceneAudioSystem>().Play(_audioPrototype,_effectPrototype);
     }

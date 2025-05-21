@@ -32,7 +32,7 @@ public sealed class SceneAudioSystem : EntitySystem
 
     private void OnStateChanged(StateChangedEventArgs ev)
     {
-        if(ev.OldState is not GameplayStateBase) return;
+        if(ev.OldState is not GameplayState) return;
         var query = EntityQueryEnumerator<AudioComponent>();
         while (query.MoveNext(out var uid, out _))
         {
