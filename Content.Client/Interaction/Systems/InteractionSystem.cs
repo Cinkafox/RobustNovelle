@@ -19,16 +19,9 @@ public sealed class InteractionSystem : EntitySystem
     {
         _overlayManager.AddOverlay(new InteractionOverlay());
         
-        SubscribeLocalEvent<InteractionComponent, ComponentInit>(OnInit);
-        
         CommandBinds.Builder
             .Bind(EngineKeyFunctions.Use, new UseInretactionCommand(this))
             .Register<InteractionSystem>();
-    }
-
-    private void OnInit(Entity<InteractionComponent> ent, ref ComponentInit args)
-    {
-        ent.Comp.IconTexture = _resCache.GetResource<TextureResource>(ent.Comp.InteractionIconPath).Texture;
     }
 
     public void HandleUse(EntityUid entity, bool isDown)

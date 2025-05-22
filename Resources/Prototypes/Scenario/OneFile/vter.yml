@@ -112,6 +112,7 @@
   name: Door
   components:
     - type: Interactible
+      name: открыть дверь
       actions:
         - !type:LoadSceneAction
           prototype: gymstartinside
@@ -152,6 +153,7 @@
     - type: Emote
       sprite: Emotes/raveel.rsi # File in Emotes/Characters/raveel.rsi
     - type: Interactible
+      name: поболтать
       actions:
         - !type:LoadSceneAction
           prototype: chelik
@@ -166,6 +168,7 @@
       layers:
         - state: default
     - type: Interactible
+      name: хрюкать
       actions:
         - !type:AudioAction
           prototype: voiceHru
