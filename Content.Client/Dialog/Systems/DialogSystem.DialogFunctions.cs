@@ -18,14 +18,18 @@ public partial class DialogSystem
         
         if (ent.Comp.CurrentDialog.Location is not null)
         {
-            var location = _location.LoadLocation(ent.Comp.CurrentDialog.Location);
-            if (location.IsValid())
-                _cameraSystem.FollowTo(camEnt, location);
+            _location.LoadLocation(ent.Comp.CurrentDialog.Location);
+            if(_location.TryGetLocationEntity(ent.Comp.CameraFollowProtoId, out var camFol))
+            {
+                _cameraSystem.FollowTo(camEnt, camFol);
+            }
         }
         
-        if (ent.Comp.CurrentDialog.CameraOn is not null && 
-            _location.TryGetLocationEntity(ent.Comp.CurrentDialog.CameraOn, out var camFol))
-            _cameraSystem.FollowTo(camEnt, camFol);
+        if(_location.TryGetLocationEntity(ent.Comp.CurrentDialog.CameraOn, out var camFolWatch))
+        {
+            ent.Comp.CameraFollowProtoId = ent.Comp.CurrentDialog.CameraOn;
+            _cameraSystem.FollowTo(camEnt, camFolWatch);
+        }
     }
 
     private void SetTitle(Entity<DialogContainerComponent> ent)

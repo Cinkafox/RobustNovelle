@@ -20,23 +20,16 @@ public sealed class CameraSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        
     }
 
-    public void FollowTo(Entity<CameraComponent> cameraUid,EntityUid entityUid)
+    public void FollowTo(Entity<CameraComponent> cameraUid, EntityUid entityUid)
     {
-        var followTransform = Transform(entityUid);
+        var followTransform = Transform(entityUid); 
         var transformComponent = Transform(cameraUid);
             
-        if (!transformComponent.ParentUid.IsValid())
-        {
-            _transformSystem.SetParent(cameraUid, entityUid);
-            return;
-        }
         if (transformComponent.ParentUid != followTransform.ParentUid)
         {
             _transformSystem.SetParent(cameraUid, followTransform.ParentUid);
-            return;
         }
         
         _transformSystem.SetLocalPosition(cameraUid, Transform(entityUid).LocalPosition);

@@ -90,3 +90,30 @@ public sealed partial class AppendValueAction : IDialogAction
         variableSystem.SetValue(Name, (value + floatCount).ToString());
     }
 }
+
+public sealed partial class FireValueAction : IDialogAction
+{
+    [DataField] public string Name;
+    public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
+    {
+        var variableSystem = collection.Resolve<VariableManager>();
+        variableSystem.SetValue(Name, "1");
+    }
+}
+
+public sealed partial class IsFiredAction : IDialogAction
+{
+    [DataField] public string Name;
+
+    [DataField] public IDialogAction? If;
+    [DataField] public IDialogAction? Else;
+
+    public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
+    {
+        var variableSystem = collection.Resolve<VariableManager>();    
+        if(variableSystem.GetValue(Name, "0") == "1")
+            If?.Act(collection, actorUid);
+        else 
+            Else?.Act(collection, actorUid);
+    }
+}

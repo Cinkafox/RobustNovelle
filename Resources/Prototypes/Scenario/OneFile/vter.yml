@@ -237,14 +237,13 @@
   id: chelik
   dialogs:
     - actions:
-        - !type:IsGreaterAction
-          first: $Zaeb
-          second: 0
+        - !type:IsFiredAction
+          name: Zaeb
           if:
             !type:LoadSceneAction
             prototype: chelik2
     - actions:
-        - !type:AppendValueAction
+        - !type:FireValueAction
           name: Zaeb
     - character: raveel2
       text: СУКА! Я ВИДЕЛ НЕКОТОРОЕ ДЕРЬМО!
