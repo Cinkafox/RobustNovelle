@@ -17,11 +17,6 @@ public sealed class CameraSystem : EntitySystem
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-    }
-
     public void FollowTo(Entity<CameraComponent> cameraUid, EntityUid entityUid)
     {
         var followTransform = Transform(entityUid); 

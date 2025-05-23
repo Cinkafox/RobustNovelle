@@ -12,7 +12,6 @@
   # background: /Textures/Backgrounds/gym.rsi/gym_outside.png
   location:
     path: /Textures/Locations/sportik.png
-    map: /ColliderMaps/sportik.map
   entities:
    - entity: raveel
      position: 8,3.2

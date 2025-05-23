@@ -5,11 +5,15 @@ using System.Numerics;
 using Content.Client.Background;
 using Content.Client.Location.Components;
 using Content.Client.Location.Data;
+using Robust.Client.Graphics;
+using Robust.Client.Utility;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Content.Client.Location.Systems;
 
@@ -19,6 +23,7 @@ public sealed class LocationSystem : EntitySystem
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IResourceManager _resourceManager = default!;
+    [Dependency] private readonly IClyde _clyde = default!;
     
     private EntityUid _currentLocationId;
     private readonly Dictionary<string, LocationPrototype> _locationPrototypes = new();
@@ -53,15 +58,15 @@ public sealed class LocationSystem : EntitySystem
         {
             var loc = AddComp<LocationComponent>(mapUid);
             loc.CurrentLocation = proto.Location;
-
-            if (proto.Location.Map is not null)
+            
+            proto.Location.Map ??= new ResPath(proto.Location.Path.ToString().Replace(".png",".map.png"));
+            
+            using var stream = _resourceManager.ContentFileRead(proto.Location.Map.Value.ToString());
+            var texture = Image.Load<Rgba32>(stream);
+            var map = new ColliderMap(texture);
+            foreach (var pos in map)
             {
-                using var sr =  _resourceManager.ContentFileReadText(proto.Location.Map.Value);
-                var map = new ColliderMap(sr);
-                foreach (var pos in map)
-                {
-                    Spawn(WallsId, new EntityCoordinates(mapUid, pos));
-                }
+                Spawn(WallsId, new EntityCoordinates(mapUid, pos));
             }
         }
         
@@ -114,22 +119,25 @@ public sealed class LocationSystem : EntitySystem
 public sealed class ColliderMap: IEnumerable<Vector2i>
 {
     private readonly Dictionary<Vector2i, bool> _map = new();
-    public int Colon { get; private set; }
-    public int Row { get; private set; }
+    public int Width { get; private set; }
+    public int Height { get; private set; }
 
     private List<Edge> edges = default!;
     
-    public ColliderMap(StreamReader streamReader)
+    public ColliderMap(Image<Rgba32> image)
     {
-        string? line;
-        while ((line = streamReader.ReadLine()) != null)
+        Width = image.Width;
+        Height = image.Height;
+        
+        var span = image.GetPixelSpan();
+        
+        for (var y = 0; y < Height; y++)
         {
-            for (Row = 0; Row < line.Length; Row++)
+            for (var x = 0; x < Width; x++)
             {
-                _map.Add(new Vector2i(Row, Colon), line[Row] == '#');
+                var imgPixel = span[Width*y + x];
+                _map.Add(new Vector2i(x, Height - y), imgPixel.A != 0);
             }
-
-            Colon++;
         }
     }
 
