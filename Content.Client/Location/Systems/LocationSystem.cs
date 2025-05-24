@@ -23,7 +23,6 @@ public sealed class LocationSystem : EntitySystem
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IResourceManager _resourceManager = default!;
-    [Dependency] private readonly IClyde _clyde = default!;
     
     private EntityUid _currentLocationId;
     private readonly Dictionary<string, LocationPrototype> _locationPrototypes = new();
@@ -31,7 +30,7 @@ public sealed class LocationSystem : EntitySystem
     private readonly Dictionary<string, EntityUid> _locationsId = new();
     private readonly Dictionary<EntityUid, Dictionary<EntProtoId,EntityUid>> _entities = new();
 
-    private EntProtoId WallsId = "Wall";
+    private readonly EntProtoId _wallsId = "Wall";
 
     public EntityUid GetCurrentLocationId()
     {
@@ -66,7 +65,7 @@ public sealed class LocationSystem : EntitySystem
             var map = new ColliderMap(texture);
             foreach (var pos in map)
             {
-                Spawn(WallsId, new EntityCoordinates(mapUid, pos));
+                Spawn(_wallsId, new EntityCoordinates(mapUid, pos - new Vector2(-0.5f, 0.5f)));
             }
         }
         

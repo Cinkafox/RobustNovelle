@@ -19,4 +19,5 @@ public sealed partial class LocationDefinition
 {
     [DataField] public ResPath Path;
     [DataField] public ResPath? Map;
+    [DataField] public ResPath? LightPath;
 }

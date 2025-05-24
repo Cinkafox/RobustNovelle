@@ -1,0 +1,171 @@
+- type: audio
+  id: voiceType
+  audio:
+    path: "/Audio/Voice/oneshot-text.ogg"
+
+- type: location
+  id: room_bedrooom
+  location:
+    path: /Textures/Locations/room/room.png
+    lightPath: /Textures/Locations/room/room.overlay.png
+  entities:
+    - entity: alexandra
+      position: 6,2
+    - entity: doorOutInteractible
+      position: 2,4
+    - entity: computerInteractible
+      position: 4,3
+    - entity: bedInteractible
+      position: 6,2
+    - entity: windowInteractible
+      position: 7,3
+
+- type: entity
+  id: doorOutInteractible
+  name: Door
+  components:
+    - type: Interactible
+      name: открыть дверь
+      actions:
+        - !type:IsFiredAction
+          name: IsDressedUp
+          if:
+            !type:LoadSceneAction
+            prototype: goOut
+          else:
+            !type:LoadSceneAction
+            prototype: goOutNoDress
+
+
+- type: entity
+  id: alexandra
+  parent: chartBase
+  name: Александра
+  components:
+    - type: Sprite
+      sprite: Entities/alexandra.rsi
+      layers:
+        - state: stand
+          map: [enum.MoveAnimationVisual.Stay]
+        - state: moving
+          map: [enum.MoveAnimationVisual.Walk]
+    - type: MoveSprite
+    - type: Voice
+      voice: voiceType
+
+- type: entity
+  id: computerInteractible
+  name: Компуктер
+  components:
+    - type: Interactible
+      name: осмотреть компьютер
+      actions:
+        - !type:IsFiredAction
+          name: IsLookedComputer
+          if:
+            !type:LoadSceneAction
+            prototype: computerLoading
+          else:
+            !type:LoadSceneAction
+            prototype: computerLook
+
+- type: entity
+  id: bedInteractible
+  name: кровать
+  components:
+    - type: Interactible
+      name: осмотреть кровать
+      actions:
+        - !type:LoadSceneAction
+          prototype: bedLook
+
+- type: entity
+  id: windowInteractible
+  name: кровать
+  components:
+    - type: Interactible
+      name: выглянуть в окошко
+      actions:
+        - !type:LoadSceneAction
+          prototype: windowLook
+
+- type: scene
+  id: windowLook
+  dialogs:
+    - character: alexandra
+      text: Хах, какая же классная погода!
+    - character: alexandra
+      text: ...
+    - character: alexandra
+      text: К чёрту всё это! Я спать хочу!
+
+- type: scene
+  id: goOutNoDress
+  dialogs:
+    - character: alexandra
+      text: Бляха-муха! Ну и как я собралась пойти в таком прикиде то?
+    - character: alexandra
+      text: Так.. где у меня шмотки?
+
+- type: scene
+  id: goOut
+  dialogs:
+    - character: alexandra
+      text: Ну.. вроде готова.
+    - character: alexandra
+      text: Так.. где у меня шмотки?
+
+- type: scene
+  id: computerLook
+  dialogs:
+    - actions:
+        - !type:FireValueAction
+          name: IsLookedComputer
+    - character: alexandra
+      text: Мм, это мой компуктер на пентиум 2
+    - character: alexandra
+      text: Медлющий.. зато своё, родимое!
+    - character: alexandra
+      text: У него пока идёт загрузка
+    - character: alexandra
+      text: Нет смысла на него глазеть
+
+- type: scene
+  id: bedLook
+  dialogs:
+    - character: alexandra
+      text: Чёрт..
+    - character: alexandra
+      text: Эта кровать меня так и манит к себе.
+    - character: alexandra
+      text: Я просто хочу плюхнуться в него!
+    - character: alexandra
+      text: Но мне не до этого!
+
+- type: scene
+  id: computerLoading
+  dialogs:
+    - character: alexandra
+      text: Всё ещё грузится..
+
+- type: scene
+  id: default
+  dialogs:
+    - title: "Где-то в спальне"
+      location: room_bedrooom
+      cameraOn: alexandra
+      actions:
+        - !type:AudioAction
+          prototype: backCity
+    - character: alexandra
+      text: ...
+    - character: alexandra
+      text: С добрым утром получается...
+    - character: alexandra
+      text: Но чёрт.. я б лучше поспала!
+    - character: alexandra
+      text: Аргх! Да ёще и шум за окном!
+    - character: alexandra
+      text: бесит...
+    - character: alexandra
+      text: Ладно.. мне бы собраться пожалуй..

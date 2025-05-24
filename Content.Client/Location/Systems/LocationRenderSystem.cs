@@ -9,5 +9,6 @@ public sealed class LocationRenderSystem : EntitySystem
     public override void Initialize()
     {
         _overlayManager.AddOverlay(new LocationOverlay());
+        _overlayManager.AddOverlay(new LocationLightOverlay());
     }
 }

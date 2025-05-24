@@ -18,7 +18,7 @@ public sealed class InteractionOverlay : Overlay
     public InteractionOverlay()
     {
         IoCManager.InjectDependencies(this);
-        font = _resCache.GetFont("/Fonts/Minecraft/minecraft.ttf",30);
+        font = _resCache.GetFont("/Fonts/Minecraft/minecraft.ttf",25);
     }
     
     public override OverlaySpace Space => OverlaySpace.ScreenSpace;

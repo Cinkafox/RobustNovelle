@@ -8,11 +8,11 @@
   "copyright": "by cinka",
   "states": [
     {
-      "name": "fox",
+      "name": "stand",
       "directions": 4
     },
     {
-      "name": "fox-moving",
+      "name": "moving",
       "directions": 4,
       "delays": [
 	    [
