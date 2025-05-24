@@ -52,7 +52,7 @@ public sealed class InteractionSystem : EntitySystem
             interaction.CurrentInteractible = 
                 EntityQuery<InteractibleComponent, TransformComponent>()
                 .OrderBy(distance)
-                .Where(a => distance(a) < interaction.MaxDistance).FirstOrNull();
+                .Where(a => distance(a) < a.Item1.MaxDistance).FirstOrNull();
         }
     }
 }

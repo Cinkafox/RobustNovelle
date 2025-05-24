@@ -15,6 +15,7 @@ using Robust.Shared.Prototypes;
 using Content.StyleSheetify.Client.StyleSheet;
 using Robust.Shared.Map;
 using Robust.Shared.Utility;
+using Content.Client.Gameplay;
 
 namespace Content.Client;
 
@@ -57,13 +58,11 @@ public sealed class EntryPoint : GameClient
         _clyde.SetWindowTitle("LOADING: [###---]");
         //Нахуя нам свет в новелле да?
         IoCManager.Resolve<ILightManager>().Enabled = false;
-        
+
         _uiManager.MainViewport.Visible = false;
         _uiManager.SetDefaultTheme("DefaultTheme");
         IoCManager.Resolve<IContentStyleSheetManager>().ApplyStyleSheet("default");
 
-        _stateManager.RequestStateChange<MenuState>();
-        
         _clyde.SetWindowTitle("LOADING: [####--]");
         //Some cache shit
         foreach (var audio in _prototype.EnumeratePrototypes<AudioPrototype>())
@@ -85,8 +84,11 @@ public sealed class EntryPoint : GameClient
         }
         _clyde.SetWindowTitle("LOADING: [#####-]");
         Logger.Debug("Cached some audio shit!");
-        
+
         _clyde.SetWindowTitle("Main menu...");
+        
+         //_stateManager.RequestStateChange<MenuState>();
+        _stateManager.RequestStateChange<GameplayState>();
     }
     
     
