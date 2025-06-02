@@ -8,8 +8,6 @@ using BackgroundComponent = Content.Client.Background.Components.BackgroundCompo
 
 namespace Content.Client.Background;
 
-using BackgroundComponent = Components.BackgroundComponent;
-
 public sealed class BackgroundOverlay : Overlay
 {
     [Dependency] private readonly IEntityManager _entityManager = default!;

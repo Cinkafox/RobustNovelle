@@ -1,3 +1,4 @@
+using Content.Client.Audio.Data;
 using Content.Client.Dialog.Data;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -12,6 +13,7 @@ public sealed class LocationPrototype : IPrototype
     [DataField] public ResPath? Background;
     [DataField] public LocationDefinition? Location;
     [DataField] public HashSet<EntityDefinition>? Entities;
+    [DataField] public HashSet<ProtoId<AudioPrototype>> AmbientSounds = [];
 }
 
 [DataDefinition]

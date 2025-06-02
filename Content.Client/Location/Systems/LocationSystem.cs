@@ -2,11 +2,13 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Content.Client.Audio.Systems;
 using Content.Client.Background;
 using Content.Client.Location.Components;
 using Content.Client.Location.Data;
-using Robust.Client.Graphics;
+using Robust.Client.Audio;
 using Robust.Client.Utility;
+using Robust.Shared.Audio;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Collision.Shapes;
@@ -19,43 +21,31 @@ namespace Content.Client.Location.Systems;
 
 public sealed class LocationSystem : EntitySystem
 {
-    [Dependency] private readonly IEntityManager _entityManager = default!;
+    [Dependency] private readonly SceneAudioSystem _sceneAudioSystem = default!;
+    [Dependency] private readonly AudioSystem _audioSystem = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IResourceManager _resourceManager = default!;
+    [Dependency] private readonly BackgroundSystem _backgroundSystem = default!;
     
     private EntityUid _currentLocationId;
-    private readonly Dictionary<string, LocationPrototype> _locationPrototypes = new();
 
     private readonly Dictionary<string, EntityUid> _locationsId = new();
-    private readonly Dictionary<EntityUid, Dictionary<EntProtoId,EntityUid>> _entities = new();
 
     private readonly EntProtoId _wallsId = "Wall";
-
-    public EntityUid GetCurrentLocationId()
-    {
-        return _currentLocationId;
-    }
     
-    private bool TryInitializeLocation(string prototype, out EntityUid mapUid)
+    private HashSet<EntityUid> _ambients = [];
+    
+    private bool TryInitializeLocation(LocationPrototype proto, out EntityUid mapUid)
     {
-        mapUid = EntityUid.Invalid;
-        if (!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var proto))
-        {
-            Logger.Error($"PROTO LOCATION {prototype} NOT EXIST!!!");
-            return false;
-        }
-
         mapUid = _mapSystem.CreateMap();
-        Logger.Debug($"Current location ID: {mapUid}");
-        _locationsId.TryAdd(prototype, mapUid);
-        _locationPrototypes.TryAdd(prototype, proto);
-        var hashEnt = new Dictionary<EntProtoId, EntityUid>();
-        _entities.Add(mapUid,hashEnt);
+        Log.Info($"Current location ID: {mapUid}");
+        _locationsId.TryAdd(proto.ID, mapUid);
+        var loc = AddComp<LocationComponent>(mapUid);
         
         if (proto.Location is not null)
         {
-            var loc = AddComp<LocationComponent>(mapUid);
+            _backgroundSystem.LoadBackground(mapUid, null);
             loc.CurrentLocation = proto.Location;
             
             proto.Location.Map ??= new ResPath(proto.Location.Path.ToString().Replace(".png",".map.png"));
@@ -69,12 +59,17 @@ public sealed class LocationSystem : EntitySystem
             }
         }
         
+        if (proto.Background is not null)
+        {
+            _backgroundSystem.LoadBackground(mapUid, proto.Background.Value);
+        }
+        
         if (proto.Entities is { } entities)
         {
             foreach (var entity in entities)
             {
                 var uid = Spawn(entity.Entity, new EntityCoordinates(mapUid, entity.Position));
-                hashEnt.Add(entity.Entity, uid);
+                loc.EntityDefinitions.Add(entity.Entity, uid);
             }
         }
         
@@ -83,17 +78,25 @@ public sealed class LocationSystem : EntitySystem
 
     public EntityUid LoadLocation(string prototype)
     {
+        if (!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var proto))
+        {
+            throw new Exception($"PROTO LOCATION {prototype} NOT EXIST!!!");
+        }
+        
         if (!_locationsId.TryGetValue(prototype, out var mapId) &&
-            !TryInitializeLocation(prototype, out mapId))
+            !TryInitializeLocation(proto, out mapId))
         {
             throw new Exception("Увы...");
         }
 
-        var proto = _locationPrototypes[prototype];
-
-        if (proto.Background is not null)
+        foreach (var soundEntity in _ambients)
         {
-            _entityManager.System<BackgroundSystem>().LoadBackground(proto.Background.Value);
+            _audioSystem.Stop(soundEntity);
+        }
+
+        foreach (var sound in proto.AmbientSounds)
+        {
+            _ambients.Add(_sceneAudioSystem.Play(sound));
         }
         
         _currentLocationId = mapId;
@@ -103,15 +106,15 @@ public sealed class LocationSystem : EntitySystem
     public bool TryGetLocationEntity(EntProtoId? ent, out EntityUid uid)
     {
         uid = EntityUid.Invalid;
-        return ent is not null &&
-               _entities.TryGetValue(_currentLocationId, out var dictionary) && 
-               dictionary.TryGetValue(ent.Value, out uid);
+        return ent is not null && 
+               TryComp<LocationComponent>(_currentLocationId, out var component) &&
+               component.EntityDefinitions.TryGetValue(ent.Value, out uid);
     }
 
     public IEnumerable<EntityUid> GetLocationEnumerator()
     {
-        if(!_entities.TryGetValue(_currentLocationId, out var entityUids)) return [];
-        return entityUids.Values.Select(a => a);
+        if(!TryComp<LocationComponent>(_currentLocationId, out var component)) return [];
+        return component.EntityDefinitions.Values;
     }
 }
 

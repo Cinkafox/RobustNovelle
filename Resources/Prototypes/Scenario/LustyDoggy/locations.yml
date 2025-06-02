@@ -1,0 +1,24 @@
+- type: location
+  id: room_bedrooom
+  location:
+    path: /Textures/LustyDoggy/Location/room/room.png
+    lightPath: /Textures/LustyDoggy/Location/room/room.overlay.png
+  entities:
+    - entity: lustoeb
+      position: 6,2
+    - entity: doorOutInteractible
+      position: 2,4
+    - entity: computerInteractible
+      position: 4,3
+    - entity: bedInteractible
+      position: 6,2
+    - entity: windowInteractible
+      position: 7,3
+      
+- type: location
+  id: station
+  location:
+    path: /Textures/LustyDoggy/Location/station/station.png
+  entities:
+    - entity: lustoeb
+      position: 8,15

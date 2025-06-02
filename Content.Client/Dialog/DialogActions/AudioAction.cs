@@ -10,10 +10,8 @@ public sealed partial class AudioAction : IDialogAction
 {
     [DataField("prototype",required:true)] private string _audioPrototype = default!;
     
-    [DataField("effect")] private string _effectPrototype = String.Empty;
-    
-    public void Act(IDependencyCollection collection,  Entity<DialogContainerComponent> actorUid)
+    public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
-       collection.Resolve<EntityManager>().System<SceneAudioSystem>().Play(_audioPrototype,_effectPrototype);
+       collection.Resolve<EntityManager>().System<SceneAudioSystem>().Play(_audioPrototype);
     }
 }

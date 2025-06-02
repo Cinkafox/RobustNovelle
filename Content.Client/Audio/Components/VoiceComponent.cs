@@ -1,10 +1,10 @@
-using Robust.Shared.GameObjects;
-using Robust.Shared.Serialization.Manager.Attributes;
+using Content.Client.Audio.Data;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.Audio.Components;
 
 [RegisterComponent]
 public sealed partial class VoiceComponent : Component
 {
-    [DataField] public string Voice = string.Empty;
+    [DataField] public ProtoId<AudioPrototype> Voice;
 }

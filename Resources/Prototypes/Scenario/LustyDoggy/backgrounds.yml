@@ -1,0 +1,19 @@
+- type: location
+  id: lustoeb_ficha
+  background: /Textures/LustyDoggy/Background/lustoeb_ficha.png
+  entities:
+    - entity: lustoeb
+    - entity: mother
+
+- type: location
+  id: lustoeb_room
+  background: /Textures/LustyDoggy/Background/lustoeb_room.png
+  entities:
+    - entity: lustoeb
+    - entity: mother
+  
+- type: location
+  id: lustoeb_school
+  background: /Textures/LustyDoggy/Background/lustoeb_school.png
+  entities:
+    - entity: lustoeb

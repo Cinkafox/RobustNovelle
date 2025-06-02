@@ -42,8 +42,6 @@ public sealed partial class DialogSystem : EntitySystem
         base.Initialize();
         _dialogUiController = _userInterfaceManager.GetUIController<DialogUIController>();
         
-      
-        
         var cmdhandler = new SkipDialogHandler(this);
         CommandBinds.Builder
             .Bind(ContentKeyFunctions.SkipDialog, cmdhandler)

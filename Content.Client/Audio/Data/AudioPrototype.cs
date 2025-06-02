@@ -1,6 +1,5 @@
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager.Attributes;
 
 namespace Content.Client.Audio.Data;
 
@@ -8,9 +7,16 @@ namespace Content.Client.Audio.Data;
 public sealed class AudioPrototype : IPrototype
 {
     [IdDataField] public string ID { get; } = default!;
+    
+    [DataField] public AudioParams AudioParams { get; set; }
+    [DataField] public ProtoId<AudioPresetPrototype>? Effect { get; set; }
+    [DataField] public AudioRepeatOptions? Repeat { get; set; } 
 
-    [DataField] public bool IsBackground;
+    [DataField(required:true)] public SoundSpecifier Audio { get; set; } = default!;
+}
 
-    [DataField(required:true)] //,customTypeSerializer:typeof(SoundSpecifierTypeSerializer))] 
-    public SoundSpecifier Audio = default!;
+[DataDefinition]
+public partial struct AudioRepeatOptions
+{
+    [DataField] public HashSet<int> Intervals { get; set; } = [1];
 }

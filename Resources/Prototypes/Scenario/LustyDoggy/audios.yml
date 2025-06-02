@@ -1,0 +1,4 @@
+- type: audio
+  id: voiceType
+  audio:
+    path: "/Audio/Voice/oneshot-text.ogg"

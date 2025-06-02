@@ -3,6 +3,8 @@
 - type: location
   id: gym
   background: /Textures/Backgrounds/gym.rsi/gym.png
+  ambientSounds:
+    - backGym
   entities:
     - entity: raveel
     - entity: igor
@@ -12,6 +14,8 @@
   # background: /Textures/Backgrounds/gym.rsi/gym_outside.png
   location:
     path: /Textures/Locations/sportik.png
+  ambientSounds:
+    - backCity
   entities:
    - entity: raveel
      position: 8,3.2
@@ -25,6 +29,8 @@
 - type: location
   id: basement
   background: Backgrounds/basement.rsi/default.png
+  ambientSounds:
+    - backBasement
   entities:
     - entity: raveel
     - entity: igor
@@ -35,17 +41,23 @@
 - type: audio
   id: backCity
   audio: "/Audio/Background/back_city.ogg"
-  isBackground: true
+  audioParams:
+    volume: 0.6
+    loop: true
   
 - type: audio
   id: backGym
   audio: "/Audio/Background/back_gym.ogg"
-  isBackground: true
+  audioParams:
+    volume: 0.6
+    loop: true
 
 - type: audio
   id: backBasement
   audio: "/Audio/Background/back_basement.ogg"
-  isBackground: true
+  audioParams:
+    volume: 0.6
+    loop: true
 
 - type: audio
   id: anotherVictim
@@ -189,14 +201,11 @@
 # SCENE
 
 - type: scene
-  id: default5
+  id: default
   dialogs:
     - title: "Femboy adventures ;з"
       location: gym_outside
       cameraOn: raveel
-      actions:
-        - !type:AudioAction
-          prototype: backCity
       show: raveel 0,5
     - character: raveel
       text: Ох.. вот и спортзал
@@ -291,8 +300,6 @@
   dialogs:
     - location: gym
       actions:
-        - !type:AudioAction
-          prototype: backGym
         - !type:AudioAction
           prototype: gymEnter
           effect: LivingRoom

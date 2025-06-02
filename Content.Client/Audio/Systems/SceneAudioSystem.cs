@@ -1,15 +1,9 @@
-using System.Collections.Generic;
 using Content.Client.Audio.Data;
 using Content.Client.Gameplay;
-using Content.Client.UserInterface.Systems.Dialog;
 using Robust.Client.Audio;
 using Robust.Client.State;
-using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
-using Robust.Shared.Log;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
@@ -20,10 +14,8 @@ public sealed class SceneAudioSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly AudioSystem _audioSystem = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
-    
-    public static EntityUid? Background;
 
-    public static Dictionary<string, EntityUid> EffectBank = new();
+    private static Dictionary<string, EntityUid> EffectBank = new();
 
     public override void Initialize()
     {
@@ -40,53 +32,46 @@ public sealed class SceneAudioSystem : EntitySystem
         }
     }
 
-    public void Play(string prototypeName,string effect = "")
+    public EntityUid Play(ProtoId<AudioPrototype> prototypeName)
     {
-        if (!_prototypeManager.TryIndex<AudioPrototype>(prototypeName, out var prototype))
+        if (!_prototypeManager.TryIndex(prototypeName, out var prototype))
         {
-            Logger.Error("Oh fuck! Could not play audio shit!");
-            return;
+            throw new Exception("Could not play audio!");
         }
         
-        if (prototype.IsBackground)
-        {
-            _audioSystem.Stop(Background);
-            Background = PlayAudio(prototype.Audio, AudioParams.Default.WithVolume(-6).WithLoop(true),effect);
-        } 
-        else
-        {
-            PlayAudio(prototype.Audio, AudioParams.Default,effect);
-        }
-        
+        return PlayAudio(prototype.Audio, prototype.AudioParams, prototype.Effect);
     }
     
-    private EntityUid? PlayAudio(SoundSpecifier specifier, AudioParams audioParams,string effect = "")
+    private EntityUid PlayAudio(SoundSpecifier specifier, AudioParams audioParams, ProtoId<AudioPresetPrototype>? effect = null)
     {
         var audio = _audioSystem
             .PlayGlobal(specifier, Filter.Local(), false, audioParams);
-        if (audio is null) return null;
+        
+        if (audio is null) 
+            throw new Exception("Could not play audio!");
         
         var (uid,comp) = audio.Value;
-        
-        SwitchEffect(uid,comp,effect);
-        
+
+        if (effect != null) 
+            SwitchEffect(uid, comp, effect.Value);
+
         return uid;
     }
     
-    public void SwitchEffect(EntityUid uid,AudioComponent comp, string effect)
+    public void SwitchEffect(EntityUid uid,AudioComponent comp, ProtoId<AudioPresetPrototype> effect)
     {
-        if (IoCManager.Resolve<IPrototypeManager>().TryIndex<AudioPresetPrototype>(effect,out var prototype))
+        if (!_prototypeManager.TryIndex(effect, out var prototype)) 
+            return;
+        
+        if (!EffectBank.TryGetValue(effect, out var auxUid))
         {
-            if (!EffectBank.TryGetValue(effect, out var auxUid))
-            {
-                (auxUid, var auxComp) = _audioSystem.CreateAuxiliary();
-                var (effectUid, effectComp) = _audioSystem.CreateEffect();
-                _audioSystem.SetEffectPreset(effectUid,effectComp,prototype);
-                _audioSystem.SetEffect(auxUid,auxComp,effectUid);
-                EffectBank.Add(effect, auxUid);
-            }
-            
-            _audioSystem.SetAuxiliary(uid,comp,auxUid);
+            (auxUid, var auxComp) = _audioSystem.CreateAuxiliary();
+            var (effectUid, effectComp) = _audioSystem.CreateEffect();
+            _audioSystem.SetEffectPreset(effectUid,effectComp,prototype);
+            _audioSystem.SetEffect(auxUid,auxComp,effectUid);
+            EffectBank.Add(effect, auxUid);
         }
+            
+        _audioSystem.SetAuxiliary(uid,comp,auxUid);
     }
 }

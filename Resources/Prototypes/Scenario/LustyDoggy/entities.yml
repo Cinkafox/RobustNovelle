@@ -1,0 +1,39 @@
+- type: entity
+  id: doorOutInteractible
+  name: Door
+  components:
+    - type: Interactible
+      name: открыть дверь
+      actions:
+        - !type:LoadSceneAction
+          prototype: doorLook
+
+- type: entity
+  id: computerInteractible
+  name: Компуктер
+  components:
+    - type: Interactible
+      name: осмотреть компьютер
+      actions:
+       - !type:LoadSceneAction
+         prototype: computerLook
+
+- type: entity
+  id: bedInteractible
+  name: кровать
+  components:
+    - type: Interactible
+      name: осмотреть кровать
+      actions:
+        - !type:LoadSceneAction
+          prototype: bedLook
+
+- type: entity
+  id: windowInteractible
+  name: кровать
+  components:
+    - type: Interactible
+      name: выглянуть в окошко
+      actions:
+        - !type:LoadSceneAction
+          prototype: windowLook

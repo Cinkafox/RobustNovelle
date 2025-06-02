@@ -7,6 +7,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
+using Robust.Shared.Map;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Utility;
 using Robust.Shared.ViewVariables;
@@ -25,6 +26,7 @@ public sealed class BackgroundSystem : EntitySystem
     [Dependency] private readonly IOverlayManager _overlay = default!;
     [Dependency] private readonly AnimationPlayerSystem _animationPlayer = default!;
     [Dependency] private readonly IResourceCache _cache = default!;
+    [Dependency] private readonly TransformSystem _transform = default!;
 
     [ViewVariables] private Entity<BackgroundComponent>? _backgroundUid;
     [ViewVariables] private Entity<BackgroundComponent>? _fadingUid;
@@ -44,17 +46,26 @@ public sealed class BackgroundSystem : EntitySystem
         QueueDel(uid);
     }
     
-    public void LoadBackground(ResPath path)
+    public void LoadBackground(EntityUid mapUid, ResPath? path)
     {
+        Log.Info($"Loading background: {path}");
+        
         _fadingUid = _backgroundUid;
-        
-        var uid = EntityManager.Spawn();
-        var backgroundComp = EnsureComp<BackgroundComponent>(uid);
-        backgroundComp.Layer = _cache.GetResource<TextureResource>(path).Texture;
-        _backgroundUid = new Entity<BackgroundComponent>(uid, backgroundComp);
-        
         if(_fadingUid.HasValue)
             Fade(_fadingUid.Value);
+
+        if (path == null)
+        {
+            _backgroundUid = null;
+            return;
+        }
+        
+        var uid = EntityManager.Spawn();
+        _transform.SetParent(uid, mapUid);
+        
+        var backgroundComp = EnsureComp<BackgroundComponent>(uid);
+        backgroundComp.Layer = _cache.GetResource<TextureResource>(path.Value).Texture;
+        _backgroundUid = new Entity<BackgroundComponent>(uid, backgroundComp);
     }
     
     private void Fade(Entity<BackgroundComponent> entity,int fadeTime = 1)

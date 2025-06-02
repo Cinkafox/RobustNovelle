@@ -1,0 +1,19 @@
+- type: entity
+  id: lustoeb
+  parent: chartBase
+  name: Лустоеб
+  components:
+    - type: Sprite
+      sprite: LustyDoggy/Entities/lustoeb.rsi
+      layers:
+        - state: stand
+    - type: Voice
+      voice: voiceType
+      
+- type: entity
+  id: mother
+  parent: chartBase
+  name: маманя
+  components:
+    - type: Voice
+      voice: voiceType

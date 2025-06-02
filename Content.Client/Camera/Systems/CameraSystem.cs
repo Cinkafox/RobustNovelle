@@ -4,6 +4,7 @@ using Content.Client.Location.Systems;
 using Robust.Client.GameObjects;
 using Robust.Client.Player;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
@@ -19,6 +20,12 @@ public sealed class CameraSystem : EntitySystem
 
     public void FollowTo(Entity<CameraComponent> cameraUid, EntityUid entityUid)
     {
+        if (TryComp<MapComponent>(entityUid, out _))
+        {
+            _transformSystem.SetParent(cameraUid, entityUid);
+            return;
+        }
+        
         var followTransform = Transform(entityUid); 
         var transformComponent = Transform(cameraUid);
             
@@ -30,6 +37,7 @@ public sealed class CameraSystem : EntitySystem
         _transformSystem.SetLocalPosition(cameraUid, Transform(entityUid).LocalPosition);
         
         cameraUid.Comp.FollowUid = entityUid;
+        Logger.Debug($"Following to {Name(entityUid)}");
     }
 
     public Entity<CameraComponent> CreateCamera(ICommonSession session)

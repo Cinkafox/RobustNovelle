@@ -1,0 +1,104 @@
+- type: scene
+  id: default5
+  dialogs:
+    - title: "Пролог"
+      location: lustoeb_room
+    - text: Жил был лустоеб.
+    - text: Любил он после школы играть на своем любимом сервере про 2д космонавтиков - Lust Station.
+    - location: lustoeb_school
+    - text: В школе его постоянно окунали вниз головой старшеклассники с 10б в сральник.
+    - text: Уго явно тут в хуй не ставили, ведь он ходит как петух, так ещё и педик оказывается!
+    - text: Носит свои ЛГБТ пины и значок кодепа визденов.
+    - text: Приходя домой, весь в говне и в моче, он тут же придумывает очередной остросюжетный РП момент со своим персонажем - розовая вульпа маленького роста по имени Няшка Няшкова.
+    - title: "Где-то в спальне"
+      location: room_bedrooom
+      cameraOn: lustoeb
+    - character: lustoeb
+      text: ...
+    - character: lustoeb
+      text: Бозе.. миня абижали вчира..
+    - character: lustoeb
+      text: НО СИГОДНЯ ВИХАДНОЙ! УРЯЯ! Я СМАГУ ЕРПШИТЬ НА ЛУСТЕ!
+    - character: lustoeb
+      text: Так.. хочу к компуктеру!
+
+- type: scene
+  id: windowLook
+  dialogs:
+    - character: lustoeb
+      text: АА СОЛНЫШКА ААА
+    - character: lustoeb
+      text: ЙА ВАМПИР ПО ЭРПЕ! ФУ СОЛНЦЕ!
+
+- type: scene
+  id: doorLook
+  dialogs:
+    - character: lustoeb
+      text: АА ДВЕРЬ! Я НИХАЧУ НА ВЫХАД!
+    - character: lustoeb
+      text: Т...там... трава!
+
+- type: scene
+  id: computerLook
+  dialogs:
+    - character: lustoeb
+      text: ООО! А ЭТА МОЙ КАМПУКТЕР!
+    - character: lustoeb
+      text: ПРОСТА ЖЕСТЬ!
+    - character: lustoeb
+      text: Хм.. может ща зайти на луст?
+      choices:
+        - name: Начать РПшить в игре про 2д космонавтиков
+          dialogAction:
+            !type:LoadSceneAction
+            prototype: computerPlay
+        - name: Пока нет
+    - character: lustoeb
+      text: Ладна! Патом как онлайн 100 будит
+      
+- type: scene
+  id: computerPlay
+  dialogs:
+    - character: lustoeb
+      text: Тыакс.. Блина, как же мне нравицца логотип у лаунчера визденав
+    - character: lustoeb
+      text: Текс, гди там луст?
+    - character: lustoeb
+      text: ВО! ИГРАТЬ! ИГРАТЬ!
+    - location: lustoeb_ficha
+    - character: lustoeb
+      text: Загрузилось! 
+    - character: lustoeb
+      text: Тыааакс! Где тут роль мейдоч..
+    - character: lustoeb
+      text: Вот чёрт! Кто же выбрал мою ЛЮБИМУЮ РОЛЬ??? МЕЙДОЧКУ!!
+    - character: lustoeb
+      text: Я, блять, очень злой!
+    - character: lustoeb
+      text: "*уебал по столу своими ручками*"
+    - character: mother
+      text: ЧЕ ТУТ ПРОИСХОДИТ НАХУЙ! ТЫ ТАМ ОПЯТЬ В ТУ ПЕНДОСКУЮ ХУЙНЮ ИГРАЕШЬ?
+    - character: lustoeb
+      text: н.. НЕТ МАМ! ВСЁ ХАВАФО!
+    - character: mother
+      text: Ну смотри, если еще раз услышу стук то я отберу у тебя компуктер на МЕСЯЦ!
+    - character: lustoeb
+      text: х.. ХАВАФО!
+    - character: lustoeb
+      text: блин блин... мне нужно быть аккуратнее. Я не хочу разлучатся с метадрузьями..
+    - location: station
+    - text: "[Рация][Няшка Няшкова] Всем привет!"
+    - text: "[Рация][Mood GreyTadovich] Уу нахуй, подойдешь ко мне - пизда тебе!"
+    - character: lustoeb
+      text: блин блин... он какой то токсик.. лишь бы не встретить его
+
+
+- type: scene
+  id: bedLook
+  dialogs:
+    - character: lustoeb
+      text: Блина-а-а, обычно я хочу спать
+    - character: lustoeb
+      text: НО МЕНЯ ЖДЕТ КОМПУКТЕР!
+    - character: lustoeb
+      text: И МИНЯ ЖДУТ МЕТАДРУЗЬЯ С ЛУСТА!

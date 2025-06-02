@@ -21,8 +21,10 @@ public sealed class LocationLightOverlay : Overlay
         var query = _entityManager.EntityQueryEnumerator<TransformComponent, LocationComponent>();
         while (query.MoveNext(out var transform, out var locationComponent))
         {
-            if (locationComponent.CurrentLocation.LightPath != null)
+            if (locationComponent.CurrentLocation is { LightPath: not null })
             {
+                if(args.Viewport.Eye?.Position.MapId != transform.MapID) continue;
+                
                 var tex = _resCache.GetResource<TextureResource>(locationComponent.CurrentLocation.LightPath.Value).Texture;
                 args.WorldHandle.DrawTexture(tex, transform.WorldPosition);
             }
