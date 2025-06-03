@@ -57,7 +57,6 @@ public sealed class SceneSystem : EntitySystem
     public void CleanupScene(Entity<SceneContainerComponent> entity)
     {
         _dialogSystem.CleanupDialog(GetDialogContainer(entity));
-        _characterSystem.HideAll();
         entity.Comp.CurrentScene = null;
     }
 

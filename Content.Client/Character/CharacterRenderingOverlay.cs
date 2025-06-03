@@ -44,7 +44,7 @@ public sealed class CharacterRenderingOverlay : Overlay
         
         var handle = args.ScreenHandle;
 
-        var characters = _characterSystem.EnumerateCharacters().ToList();
+        var characters = _characterSystem.EnumerateCharacters(args.MapUid).ToList();
 
         foreach (var character in characters)
             DrawCharacter(character, handle, args);

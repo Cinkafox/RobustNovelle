@@ -1,13 +1,14 @@
 using Content.Client.Audio.Components;
 using Content.Client.Dialog;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
+using Robust.Client.Audio;
+using Robust.Shared.Audio;
 
 namespace Content.Client.Audio.Systems;
 
 public sealed class VoiceSystem : EntitySystem
 {
-    [Dependency] private readonly SceneAudioSystem _audioSystem = default!;
+    [Dependency] private readonly AudioSystem _audioSystem = default!;
+    
     public override void Initialize()
     {
         base.Initialize();
@@ -19,7 +20,7 @@ public sealed class VoiceSystem : EntitySystem
         if (args.Dialog is not { Delay: > 10, SayLetters: true }) return;
         if (args.Dialog.SkipCounter == args.Dialog.SkipSayCount)
         {
-            _audioSystem.Play(component.Voice);
+            _audioSystem.PlayEntity(component.Voice, args.DialogEntity, uid, AudioParams.Default);
             args.Dialog.SkipCounter = 0;
         }
         else

@@ -4,18 +4,17 @@
   id: gym
   background: /Textures/Backgrounds/gym.rsi/gym.png
   ambientSounds:
-    - backGym
+    - path: "/Audio/Background/back_gym.ogg"
   entities:
     - entity: raveel
     - entity: igor
 
 - type: location
   id: gym_outside
-  # background: /Textures/Backgrounds/gym.rsi/gym_outside.png
   location:
     path: /Textures/Locations/sportik.png
   ambientSounds:
-    - backCity
+    - path: "/Audio/Background/back_city.ogg"
   entities:
    - entity: raveel
      position: 8,3.2
@@ -30,69 +29,12 @@
   id: basement
   background: Backgrounds/basement.rsi/default.png
   ambientSounds:
-    - backBasement
+    - path: "/Audio/Background/back_basement.ogg"
   entities:
     - entity: raveel
     - entity: igor
   
-
 # Audio
-
-- type: audio
-  id: backCity
-  audio: "/Audio/Background/back_city.ogg"
-  audioParams:
-    volume: 0.6
-    loop: true
-  
-- type: audio
-  id: backGym
-  audio: "/Audio/Background/back_gym.ogg"
-  audioParams:
-    volume: 0.6
-    loop: true
-
-- type: audio
-  id: backBasement
-  audio: "/Audio/Background/back_basement.ogg"
-  audioParams:
-    volume: 0.6
-    loop: true
-
-- type: audio
-  id: anotherVictim
-  audio: "/Audio/Gym/another_victim.wav"
-
-- type: audio
-  id: anikiGrunt
-  audio: "/Audio/Gym/aniki_grunt.wav"
-
-- type: audio
-  id: fpra
-  audio: "/Audio/Gym/fpra.wav"
-
-- type: audio
-  id: gymEnter
-  audio: "/Audio/Gym/gym_enter.ogg"
-
-- type: audio
-  id: augh
-  audio: "/Audio/Augh/AUGH.wav"
-
-- type: audio
-  id: voiceAugh
-  audio:
-    collection: Augh
-
-- type: audio
-  id: voiceMeow
-  audio:
-    collection: Meow
-    
-- type: audio
-  id: voiceHru
-  audio:
-    collection: Hru
 
 - type: soundCollection
   id: Meow
@@ -144,7 +86,8 @@
     - type: Character
       sprite: Characters/raveel.rsi # File in Textures/Characters/raveel.rsi
     - type: Voice
-      voice: voiceMeow
+      voice:
+        collection: Meow
     - type: Emote
       sprite: Emotes/raveel.rsi # File in Emotes/Characters/raveel.rsi
 
@@ -160,7 +103,8 @@
     - type: Character
       sprite: Characters/raveel.rsi # File in Textures/Characters/raveel.rsi
     - type: Voice
-      voice: voiceMeow
+      voice:
+        collection: Meow
     - type: Emote
       sprite: Emotes/raveel.rsi # File in Emotes/Characters/raveel.rsi
     - type: Interactible
@@ -182,7 +126,8 @@
       name: хрюкать
       actions:
         - !type:AudioAction
-          prototype: voiceHru
+          sound:
+            collection: Hru
         - !type:AppendValueAction
           name: Nahruk
           
@@ -194,7 +139,8 @@
     - type: Character
       sprite: Characters/igor.rsi
     - type: Voice
-      voice: voiceAugh
+      voice:
+        collection: Augh
     - type: Emote
       sprite: Emotes/igor.rsi
       
@@ -301,8 +247,8 @@
     - location: gym
       actions:
         - !type:AudioAction
-          prototype: gymEnter
-          effect: LivingRoom
+          sound:
+            path: "/Audio/Gym/gym_enter.ogg"
       show: raveel 0,5
     - character: raveel
       text: ...

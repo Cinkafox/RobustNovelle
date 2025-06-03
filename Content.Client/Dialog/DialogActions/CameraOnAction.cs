@@ -17,7 +17,7 @@ public sealed partial class CameraOnAction : IDialogAction
         if(!entMgr.TryGetComponent<CameraComponent>(actorUid, out var camera)) 
             throw new Exception("Camera not found!");
         
-        if(!entMgr.System<LocationSystem>().TryGetLocationEntity(Follow, out var camFol))
+        if(!entMgr.System<LocationSystem>().TryGetLocationEntity(actorUid, Follow, out var camFol))
             throw new Exception($"Entity {Follow} not found!");
             
         collection.Resolve<IEntityManager>().System<CameraSystem>().FollowTo(new Entity<CameraComponent>(actorUid, camera), camFol);

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Client.Camera.Components;
 using Content.Client.Location.Systems;
@@ -25,6 +26,11 @@ public sealed class CameraSystem : EntitySystem
             _transformSystem.SetParent(cameraUid, entityUid);
             return;
         }
+
+        // Clean some thinks after self
+        if (TryComp<CameraFollowingComponent>(cameraUid.Comp.FollowUid, out var cameraFollowingComponent) &&
+            cameraFollowingComponent.CameraUid == cameraUid.Owner)
+            RemComp(cameraUid.Comp.FollowUid.Value, cameraFollowingComponent);
         
         var followTransform = Transform(entityUid); 
         var transformComponent = Transform(cameraUid);
@@ -37,7 +43,9 @@ public sealed class CameraSystem : EntitySystem
         _transformSystem.SetLocalPosition(cameraUid, Transform(entityUid).LocalPosition);
         
         cameraUid.Comp.FollowUid = entityUid;
-        Logger.Debug($"Following to {Name(entityUid)}");
+        EnsureComp<CameraFollowingComponent>(entityUid).CameraUid = cameraUid;
+        
+        Log.Debug($"Following to {Name(entityUid)}");
     }
 
     public Entity<CameraComponent> CreateCamera(ICommonSession session)
@@ -49,6 +57,27 @@ public sealed class CameraSystem : EntitySystem
 
         _playerManager.SetAttachedEntity(session, cameraUid);
         return cameraUid;
+    }
+
+    public bool TryGetCamera(EntityUid? entityUid,[NotNullWhen(true)] out Entity<CameraComponent>? cameraUid)
+    {
+        cameraUid = null;
+        if (!TryComp<CameraFollowingComponent>(entityUid, out var cameraFollowingComponent) || 
+            !TryComp<CameraComponent>(cameraFollowingComponent.CameraUid, out var cameraComponent)) 
+            return false;
+
+        cameraUid = new Entity<CameraComponent>(cameraFollowingComponent.CameraUid, cameraComponent);
+        return true;
+    }
+
+    public bool TryGetCameraSession(EntityUid? entityUid,[NotNullWhen(true)] out ICommonSession? session)
+    {
+        session = null;
+        if (!TryComp<CameraFollowingComponent>(entityUid, out var cameraFollowingComponent) || 
+            !_playerManager.TryGetSessionByEntity(cameraFollowingComponent.CameraUid, out session)) 
+            return false;
+
+        return true;
     }
 
     public override void FrameUpdate(float frameTime)

@@ -1,9 +1,6 @@
 using System.Globalization;
-using Content.Client.Audio.Data;
 using Content.Client.Input;
-using Content.Client.Menu;
 using Content.Client.Tile;
-using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.ResourceManagement;
@@ -23,7 +20,6 @@ public sealed class EntryPoint : GameClient
 {
     private const string Culture = "ru-RU";
     
-    [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [Dependency] private readonly ITileDefinitionManager _tileDefinitionManager = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
@@ -32,7 +28,6 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IResourceCache _resource = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IClyde _clyde = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     public override void PreInit()
     {
@@ -64,26 +59,16 @@ public sealed class EntryPoint : GameClient
         IoCManager.Resolve<IContentStyleSheetManager>().ApplyStyleSheet("default");
 
         _clyde.SetWindowTitle("LOADING: [####--]");
-        //Some cache shit
-        foreach (var audio in _prototype.EnumeratePrototypes<AudioPrototype>())
+        //Some cache TODO: Find out how to cache nonCollection audio
+        foreach (var soundCollection in _prototype.EnumeratePrototypes<SoundCollectionPrototype>())
         {
-            var specifier = audio.Audio;
-            if (specifier is SoundPathSpecifier pathSpecifier)
+            foreach (var resPath in soundCollection.PickFiles)
             {
-                _resource.TryGetResource<AudioResource>(pathSpecifier.Path, out _);
-            }
-
-            if (specifier is SoundCollectionSpecifier collectionSpecifier
-                && _prototype.TryIndex<SoundCollectionPrototype>(collectionSpecifier.Collection!, out var collectionPrototype))
-            {
-                foreach (var resPath in collectionPrototype.PickFiles)
-                {
-                    _resource.TryGetResource<AudioResource>(resPath, out _);
-                }
+                _resource.TryGetResource<AudioResource>(resPath, out _);
             }
         }
         _clyde.SetWindowTitle("LOADING: [#####-]");
-        Logger.Debug("Cached some audio shit!");
+        Logger.Debug("Cached some audio!");
 
         _clyde.SetWindowTitle("Main menu...");
         
@@ -98,7 +83,7 @@ public sealed class EntryPoint : GameClient
         
         _tileDefinitionManager.Register(new VoidTile());
         
-        foreach (var tileDef in _prototypeManager.EnumeratePrototypes<ContentTileDefinition>())
+        foreach (var tileDef in _prototype.EnumeratePrototypes<ContentTileDefinition>())
         {
             tileDef.Sprite = tileDef.SpriteSpecifier switch
             {

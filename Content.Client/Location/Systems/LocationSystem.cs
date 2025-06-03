@@ -11,7 +11,9 @@ using Robust.Client.Utility;
 using Robust.Shared.Audio;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Collision.Shapes;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using SixLabors.ImageSharp;
@@ -21,24 +23,19 @@ namespace Content.Client.Location.Systems;
 
 public sealed class LocationSystem : EntitySystem
 {
-    [Dependency] private readonly SceneAudioSystem _sceneAudioSystem = default!;
     [Dependency] private readonly AudioSystem _audioSystem = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IResourceManager _resourceManager = default!;
     [Dependency] private readonly BackgroundSystem _backgroundSystem = default!;
-    
-    private EntityUid _currentLocationId;
 
     private readonly Dictionary<string, EntityUid> _locationsId = new();
 
     private readonly EntProtoId _wallsId = "Wall";
     
-    private HashSet<EntityUid> _ambients = [];
-    
     private bool TryInitializeLocation(LocationPrototype proto, out EntityUid mapUid)
     {
-        mapUid = _mapSystem.CreateMap();
+        mapUid = _mapSystem.CreateMap(out var mapId);
         Log.Info($"Current location ID: {mapUid}");
         _locationsId.TryAdd(proto.ID, mapUid);
         var loc = AddComp<LocationComponent>(mapUid);
@@ -73,6 +70,12 @@ public sealed class LocationSystem : EntitySystem
             }
         }
         
+        foreach (var sound in proto.AmbientSounds)
+        {
+            loc.Ambients.Add(
+                _audioSystem.PlayEntity(sound, Filter.BroadcastMap(mapId), mapUid, false, AudioParams.Default.WithVolume(0.5f).WithLoop(true))!.Value.Entity);
+        }
+        
         return true;
     }
 
@@ -88,33 +91,28 @@ public sealed class LocationSystem : EntitySystem
         {
             throw new Exception("Увы...");
         }
-
-        foreach (var soundEntity in _ambients)
-        {
-            _audioSystem.Stop(soundEntity);
-        }
-
-        foreach (var sound in proto.AmbientSounds)
-        {
-            _ambients.Add(_sceneAudioSystem.Play(sound));
-        }
         
-        _currentLocationId = mapId;
-        return _currentLocationId;
+        return mapId;
     }
 
-    public bool TryGetLocationEntity(EntProtoId? ent, out EntityUid uid)
+    public bool TryGetLocationEntity(EntityUid anotherLocationEntity, EntProtoId? ent, out EntityUid uid)
     {
         uid = EntityUid.Invalid;
         return ent is not null && 
-               TryComp<LocationComponent>(_currentLocationId, out var component) &&
+               TryComp<LocationComponent>(GetMapFromEntity(anotherLocationEntity), out var component) &&
                component.EntityDefinitions.TryGetValue(ent.Value, out uid);
     }
 
-    public IEnumerable<EntityUid> GetLocationEnumerator()
+    public IEnumerable<EntityUid> GetLocationEnumerator(EntityUid anotherLocationEntity)
     {
-        if(!TryComp<LocationComponent>(_currentLocationId, out var component)) return [];
+        if(!TryComp<LocationComponent>(GetMapFromEntity(anotherLocationEntity), out var component)) return [];
         return component.EntityDefinitions.Values;
+    }
+
+    private EntityUid GetMapFromEntity(EntityUid entity)
+    {
+        if (HasComp<MapComponent>(entity)) return entity;
+        return GetMapFromEntity(Transform(entity).ParentUid);
     }
 }
 

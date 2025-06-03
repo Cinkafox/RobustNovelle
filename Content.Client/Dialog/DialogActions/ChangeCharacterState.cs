@@ -16,6 +16,6 @@ public sealed partial class ChangeCharacterState : IDialogAction
 
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
-        collection.Resolve<EntityManager>().System<CharacterSystem>().SetCharacterState(Prototype,State);
+        collection.Resolve<EntityManager>().System<CharacterSystem>().SetCharacterState(actorUid, Prototype,State);
     }
 }

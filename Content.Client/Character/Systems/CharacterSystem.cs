@@ -32,33 +32,25 @@ public sealed class CharacterSystem : EntitySystem
         component.Sprite = rs.RSI;
     }
     
-    public bool TryGetCharacter(string? prototype,[NotNullWhen(true)] out CharacterComponent? component,out EntityUid uid)
+    public bool TryGetCharacter(EntityUid locationEntity, string? prototype,[NotNullWhen(true)] out CharacterComponent? component,out EntityUid uid)
     {
         uid = EntityUid.Invalid;
         component = null;
         
-        if (prototype != null && !_locationManager.TryGetLocationEntity(prototype, out uid)) return false;
+        if (prototype != null && !_locationManager.TryGetLocationEntity(locationEntity,prototype, out uid)) return false;
         
         return TryComp(uid, out component);
     }
 
-    public void SetCharacterState(string prototype, string state)
+    public void SetCharacterState(EntityUid locationEntity, string prototype, string state)
     {
-        if (TryGetCharacter(prototype, out var data, out _))
+        if (TryGetCharacter(locationEntity, prototype, out var data, out _))
             data.State = state;
     }
-
-    public void HideAll()
-    {
-        foreach (var character in EnumerateCharacters())
-        {
-            character.Visible = false;
-        }
-    }
     
-    public IEnumerable<CharacterComponent> EnumerateCharacters()
+    public IEnumerable<CharacterComponent> EnumerateCharacters(EntityUid locationEntity)
     {
-        foreach (var uid in _locationManager.GetLocationEnumerator())
+        foreach (var uid in _locationManager.GetLocationEnumerator(locationEntity))
         {
             if (TryComp<CharacterComponent>(uid, out var characterComponent) && characterComponent.Visible)
                 yield return characterComponent;

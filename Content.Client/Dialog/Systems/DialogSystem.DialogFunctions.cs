@@ -20,13 +20,13 @@ public partial class DialogSystem
         {
             var locationUid = _location.LoadLocation(ent.Comp.CurrentDialog.Location);
             
-            if(_location.TryGetLocationEntity(ent.Comp.CameraFollowProtoId, out var camFol))
+            if(_location.TryGetLocationEntity(locationUid, ent.Comp.CameraFollowProtoId, out var camFol))
                 _cameraSystem.FollowTo(camEnt, camFol);
             else
                 _cameraSystem.FollowTo(camEnt, locationUid);
         }
         
-        if(_location.TryGetLocationEntity(ent.Comp.CurrentDialog.CameraOn, out var camFolWatch))
+        if(_location.TryGetLocationEntity(ent,ent.Comp.CurrentDialog.CameraOn, out var camFolWatch))
         {
             ent.Comp.CameraFollowProtoId = ent.Comp.CurrentDialog.CameraOn;
             _cameraSystem.FollowTo(camEnt, camFolWatch);
@@ -73,7 +73,7 @@ public partial class DialogSystem
         var spl = name.Split(" ");
         double? pos = spl.Length > 1 ? double.Parse(spl[1]) : null;
         
-        if (!_characterSystem.TryGetCharacter(spl[0], out var characterComponent, out var uid)) return;
+        if (!_characterSystem.TryGetCharacter(ent, spl[0], out var characterComponent, out var uid)) return;
         
         characterComponent.Visible = true;
         if (pos is null) return;
@@ -109,7 +109,7 @@ public partial class DialogSystem
 
     private void HideCharacters(Entity<DialogContainerComponent> ent)
     {
-        if (ent.Comp.CurrentDialog.Hide is { } aname && _characterSystem.TryGetCharacter(aname, out var acharacterComponent, out _))
+        if (ent.Comp.CurrentDialog.Hide is { } aname && _characterSystem.TryGetCharacter(ent, aname, out var acharacterComponent, out _))
         {
             acharacterComponent.Visible = false;
         }

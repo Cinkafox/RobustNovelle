@@ -170,7 +170,7 @@ public sealed partial class DialogSystem : EntitySystem
         ShowCharacters(ent);
         HideCharacters(ent);
         
-        _characterSystem.TryGetCharacter(comp.CurrentDialog.Character?.ToString(), out _, out var characterUid);
+        _characterSystem.TryGetCharacter(ent, comp.CurrentDialog.Character?.ToString(), out _, out var characterUid);
         
         if (comp.CurrentDialog.Name == null && comp.CurrentDialog.Character != null)
         {
@@ -182,7 +182,7 @@ public sealed partial class DialogSystem : EntitySystem
             _dialogUiController.AppendLabel($"[bold]{comp.CurrentDialog.Name}[/bold]: ");
         }
 
-        var startedEv = new DialogStartedEvent(comp.CurrentDialog);
+        var startedEv = new DialogStartedEvent(comp.CurrentDialog, ent);
 
         if (characterUid.IsValid())
             RaiseLocalEvent(characterUid, startedEv);
@@ -199,10 +199,12 @@ public sealed partial class DialogSystem : EntitySystem
         {
             if(dialogComponent.DialogQueue.Count == 0 || dialogComponent.TextQueue == null) return;
         
+            var ent = new Entity<DialogContainerComponent>(uid, dialogComponent);
+            
             if (string.IsNullOrEmpty(dialogComponent.TextQueue))
             {
                 dialogComponent.TextQueue = null;
-                RaiseLocalEvent(uid, new DialogEndedEvent(dialogComponent.CurrentDialog));
+                RaiseLocalEvent(uid, new DialogEndedEvent(dialogComponent.CurrentDialog, ent));
                 return;
             }
 
@@ -214,9 +216,9 @@ public sealed partial class DialogSystem : EntitySystem
         
             dialogComponent.CurrentDialog.PassedTime = 0;
 
-            if (_characterSystem.TryGetCharacter(dialogComponent.CurrentDialog.Character?.ToString(), out _, out var characterUid))
+            if (_characterSystem.TryGetCharacter(uid, dialogComponent.CurrentDialog.Character?.ToString(), out _, out var characterUid))
             {
-                RaiseLocalEvent(characterUid,new DialogAppendEvent(dialogComponent.CurrentDialog));
+                RaiseLocalEvent(characterUid,new DialogAppendEvent(dialogComponent.CurrentDialog, ent));
             }
         
             _dialogUiController.AppendLetter(NextDialogLetter(new Entity<DialogContainerComponent>(uid, dialogComponent)));
