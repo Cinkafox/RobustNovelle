@@ -1,8 +1,9 @@
 - type: scene
-  id: default5
+  id: default
   dialogs:
     - title: "Пролог"
       location: lustoeb_room
+    - character: dictor
     - text: Жил был лустоеб.
     - text: Любил он после школы играть на своем любимом сервере про 2д космонавтиков - Lust Station.
     - location: lustoeb_school
@@ -14,91 +15,94 @@
       location: room_bedrooom
       cameraOn: lustoeb
     - character: lustoeb
-      text: ...
-    - character: lustoeb
-      text: Бозе.. миня абижали вчира..
-    - character: lustoeb
-      text: НО СИГОДНЯ ВИХАДНОЙ! УРЯЯ! Я СМАГУ ЕРПШИТЬ НА ЛУСТЕ!
-    - character: lustoeb
-      text: Так.. хочу к компуктеру!
+    - text: ...
+    - text: Бозе.. миня абижали вчира..
+    - text: НО СИГОДНЯ ВИХАДНОЙ! УРЯЯ! Я СМАГУ ЕРПШИТЬ НА ЛУСТЕ!
+    - text: Так.. хочу к компуктеру!
 
 - type: scene
   id: windowLook
   dialogs:
     - character: lustoeb
-      text: АА СОЛНЫШКА ААА
-    - character: lustoeb
-      text: ЙА ВАМПИР ПО ЭРПЕ! ФУ СОЛНЦЕ!
+    - text: АА СОЛНЫШКА ААА
+    - text: ЙА ВАМПИР ПО ЭРПЕ! ФУ СОЛНЦЕ!
 
 - type: scene
   id: doorLook
   dialogs:
     - character: lustoeb
-      text: АА ДВЕРЬ! Я НИХАЧУ НА ВЫХАД!
-    - character: lustoeb
-      text: Т...там... трава!
+    - text: АА ДВЕРЬ! Я НИХАЧУ НА ВЫХАД!
+    - text: Т...там... трава!
 
 - type: scene
   id: computerLook
   dialogs:
     - character: lustoeb
-      text: ООО! А ЭТА МОЙ КАМПУКТЕР!
-    - character: lustoeb
-      text: ПРОСТА ЖЕСТЬ!
-    - character: lustoeb
-      text: Хм.. может ща зайти на луст?
+    - text: ООО! А ЭТА МОЙ КАМПУКТЕР!
+    - text: ПРОСТА ЖЕСТЬ!
+    - text: Хм.. может ща зайти на луст?
       choices:
         - name: Начать РПшить в игре про 2д космонавтиков
           dialogAction:
             !type:LoadSceneAction
             prototype: computerPlay
         - name: Пока нет
-    - character: lustoeb
-      text: Ладна! Патом как онлайн 100 будит
-      
-- type: scene
-  id: computerPlay
-  dialogs:
-    - character: lustoeb
-      text: Тыакс.. Блина, как же мне нравицца логотип у лаунчера визденав
-    - character: lustoeb
-      text: Текс, гди там луст?
-    - character: lustoeb
-      text: ВО! ИГРАТЬ! ИГРАТЬ!
-    - location: lustoeb_ficha
-    - character: lustoeb
-      text: Загрузилось! 
-    - character: lustoeb
-      text: Тыааакс! Где тут роль мейдоч..
-    - character: lustoeb
-      text: Вот чёрт! Кто же выбрал мою ЛЮБИМУЮ РОЛЬ??? МЕЙДОЧКУ!!
-    - character: lustoeb
-      text: Я, блять, очень злой!
-    - character: lustoeb
-      text: "*уебал по столу своими ручками*"
-    - character: mother
-      text: ЧЕ ТУТ ПРОИСХОДИТ НАХУЙ! ТЫ ТАМ ОПЯТЬ В ТУ ПЕНДОСКУЮ ХУЙНЮ ИГРАЕШЬ?
-    - character: lustoeb
-      text: н.. НЕТ МАМ! ВСЁ ХАВАФО!
-    - character: mother
-      text: Ну смотри, если еще раз услышу стук то я отберу у тебя компуктер на МЕСЯЦ!
-    - character: lustoeb
-      text: х.. ХАВАФО!
-    - character: lustoeb
-      text: блин блин... мне нужно быть аккуратнее. Я не хочу разлучатся с метадрузьями..
-    - location: station
-    - text: "[Рация][Няшка Няшкова] Всем привет!"
-    - text: "[Рация][Mood GreyTadovich] Уу нахуй, подойдешь ко мне - пизда тебе!"
-    - character: lustoeb
-      text: блин блин... он какой то токсик.. лишь бы не встретить его
-
+    - text: Ладна! Патом как онлайн 100 будит
 
 - type: scene
   id: bedLook
   dialogs:
     - character: lustoeb
-      text: Блина-а-а, обычно я хочу спать
+    - text: Блина-а-а, обычно я хочу спать
+    - text: НО МЕНЯ ЖДЕТ КОМПУКТЕР!
+    - text: И МИНЯ ЖДУТ МЕТАДРУЗЬЯ С ЛУСТА!
+
+- type: scene
+  id: computerPlay
+  dialogs:
     - character: lustoeb
-      text: НО МЕНЯ ЖДЕТ КОМПУКТЕР!
+    - text: Тыакс.. Блина, как же мне нравицца логотип у лаунчера визденав
+    - text: Текс, гди там луст?
+    - text: ВО! ИГРАТЬ! ИГРАТЬ!
+    - location: lustoeb_ficha
+    - text: Загрузилось!
+    - text: Тыааакс! Где тут роль мейдоч..
+    - text: Вот чёрт! Кто же выбрал мою ЛЮБИМУЮ РОЛЬ??? МЕЙДОЧКУ!!
+    - text: Я, блять, очень злой!
+    - text: "*уебал по столу своими ручками*"
+    - character: mother
+    - text: ЧЕ ТУТ ПРОИСХОДИТ НАХУЙ! ТЫ ТАМ ОПЯТЬ В ТУ ПЕНДОСКУЮ ХУЙНЮ ИГРАЕШЬ?
     - character: lustoeb
-      text: И МИНЯ ЖДУТ МЕТАДРУЗЬЯ С ЛУСТА!
+    - text: н.. НЕТ МАМ! ВСЁ ХАВАФО!
+    - character: mother
+    - text: Ну смотри, если еще раз услышу стук то я отберу у тебя компуктер на МЕСЯЦ!
+    - character: lustoeb
+    - text: х.. ХАВАФО!
+    - text: блин блин... мне нужно быть аккуратнее. Я не хочу разлучатся с метадрузьями..
+    - location: station
+      cameraOn: lustoebIngame
+      character: lustoebIngame
+      text: "Всем привет!"
+    - character: greysha
+    - text: "Уу нахуй, подойдешь ко мне - пизда тебе!"
+    - character: lustoebIngame
+    - text: блин блин... он какой то токсик.. лишь бы не встретить его
+
+
+- type: scene
+  id: computerPlayCorridor
+  dialogs:
+    - delay: 1000
+    - cameraOn: greysha
+    - delay: 1000
+    - cameraOn: lustoebIngame
+    - character: lustoebIngame
+    - text: ОГОСПАДИ!
+    - character: greysha
+    - text: Ну привет нахуй, я тебе что сказал там по рации?
+    - character: lustoebIngame
+    - text: Т..ты! ТЫ ИГРАЕШЬ ПО НОНРП! ТЫ ЗАХУЯРИЛ МОЕГО ЛЮБИМОГО МЕТАДРУГА!
+    - text: Я вызываю админа!
+    - text: АДМИН АДМИН ТУТ НОНРП!
+    - character: greysha
+    - text: Ну почему ебучие ЕРПшеры такие идиоты..

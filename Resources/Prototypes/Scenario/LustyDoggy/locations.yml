@@ -14,11 +14,16 @@
       position: 6,2
     - entity: windowInteractible
       position: 7,3
+    - entity: dictor
       
 - type: location
   id: station
   location:
     path: /Textures/LustyDoggy/Location/station/station.png
   entities:
-    - entity: lustoeb
+    - entity: lustoebIngame
       position: 8,15
+    - entity: greyTrigger
+      position: 8,11
+    - entity: greysha
+      position: 8,9

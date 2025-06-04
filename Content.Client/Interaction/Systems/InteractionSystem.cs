@@ -24,10 +24,10 @@ public sealed class InteractionSystem : EntitySystem
             .Register<InteractionSystem>();
     }
 
-    public void HandleUse(EntityUid entity, bool isDown)
+    public void HandleUse(EntityUid entity)
     {
         if(!TryComp<InteractionComponent>(entity, out var interactionComponent) || 
-           !interactionComponent.IsEnabled || !isDown || 
+           !interactionComponent.IsEnabled || 
            interactionComponent.CurrentInteractible is null
            ) return;
         
@@ -42,7 +42,7 @@ public sealed class InteractionSystem : EntitySystem
     {
         var query = EntityQueryEnumerator<InteractionComponent, TransformComponent>();
 
-        while (query.MoveNext(out var interaction, out var transform))
+        while (query.MoveNext(out var uid, out var interaction, out var transform))
         {
             float distance((InteractibleComponent, TransformComponent) a)
             {
@@ -54,6 +54,11 @@ public sealed class InteractionSystem : EntitySystem
                 .OrderBy(distance)
                 .Where(a => transform.MapID == a.Item2.MapID && 
                             distance(a) < a.Item1.MaxDistance).FirstOrNull();
+
+            if (interaction.CurrentInteractible is { Item1.InvokeImmediately: true })
+            {
+                HandleUse(uid);
+            }
         }
     }
 }
@@ -69,9 +74,9 @@ public sealed class UseInretactionCommand : InputCmdHandler
 
     public override bool HandleCmdMessage(IEntityManager entManager, ICommonSession? session, IFullInputCmdMessage message)
     {
-        if (session?.AttachedEntity is null) return false;
+        if (session?.AttachedEntity is null || message.State != BoundKeyState.Down) return false;
 
-        _interactionSystem.HandleUse(session.AttachedEntity.Value, message.State == BoundKeyState.Down);
+        _interactionSystem.HandleUse(session.AttachedEntity.Value);
 
         return false;
     }

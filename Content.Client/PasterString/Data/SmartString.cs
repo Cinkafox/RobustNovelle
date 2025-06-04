@@ -27,8 +27,6 @@ public sealed class SmartString
 
     public override string ToString()
     {
-        //if (value is { } v) return v;
-        
         if (!RawString.Contains('$'))
         {
             value = RawString;

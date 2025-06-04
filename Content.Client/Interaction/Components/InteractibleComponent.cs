@@ -7,6 +7,7 @@ namespace Content.Client.Interaction.Components;
 public sealed partial class InteractibleComponent : Component
 {
     [DataField] public float MaxDistance = 1f;
+    [DataField] public bool InvokeImmediately = false;
     [DataField] public SmartString Name = "Взаимодействовать";
     [DataField] public List<IDialogAction> Actions = new();
 }

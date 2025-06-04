@@ -24,6 +24,7 @@ public sealed class CameraSystem : EntitySystem
         if (TryComp<MapComponent>(entityUid, out _))
         {
             _transformSystem.SetParent(cameraUid, entityUid);
+            cameraUid.Comp.FirstTimeInMap = true;
             return;
         }
 
@@ -39,8 +40,12 @@ public sealed class CameraSystem : EntitySystem
         {
             _transformSystem.SetParent(cameraUid, followTransform.ParentUid);
         }
-        
-        _transformSystem.SetLocalPosition(cameraUid, Transform(entityUid).LocalPosition);
+
+        if (cameraUid.Comp.FirstTimeInMap)
+        {
+            _transformSystem.SetLocalPosition(cameraUid, Transform(entityUid).LocalPosition);
+            cameraUid.Comp.FirstTimeInMap = false;
+        }
         
         cameraUid.Comp.FollowUid = entityUid;
         EnsureComp<CameraFollowingComponent>(entityUid).CameraUid = cameraUid;

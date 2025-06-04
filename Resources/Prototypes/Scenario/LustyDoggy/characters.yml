@@ -9,12 +9,47 @@
         - state: stand
     - type: Voice
       voice:
+        collection: Meow
+        
+- type: entity
+  id: lustoebIngame
+  parent: chartBase
+  name: Няшка Няшкова
+  components:
+    - type: Sprite
+      sprite: LustyDoggy/Entities/lustoeb.rsi
+      layers:
+        - state: stand
+    - type: Voice
+      voice:
+        collection: Meow
+
+- type: entity
+  id: greysha
+  parent: chartBase
+  name: Григорий Серый
+  components:
+    - type: Sprite
+      sprite: LustyDoggy/Entities/lustoeb.rsi
+      layers:
+        - state: stand
+    - type: Voice
+      voice:
         path: "/Audio/Voice/oneshot-text.ogg"
-      
+        
 - type: entity
   id: mother
   parent: chartBase
   name: маманя
+  components:
+    - type: Voice
+      voice:
+        path: "/Audio/Voice/oneshot-text.ogg"
+        
+- type: entity
+  id: dictor
+  parent: chartBase
+  name: ???
   components:
     - type: Voice
       voice:

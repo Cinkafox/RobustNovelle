@@ -24,7 +24,7 @@ public sealed class EmoteSystem : EntitySystem
 
     private void OnDialogStarted(DialogStartedEvent ev)
     {
-        if(ev.Dialog is { IsDialog: true, Character: null })
+        if(ev.Dialog.IsDialog && ev.DialogEntity.Comp.SelectedCharacter == null)
             _dialog.SetEmote(null);
     }
     

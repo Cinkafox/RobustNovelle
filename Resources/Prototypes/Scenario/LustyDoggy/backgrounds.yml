@@ -4,6 +4,7 @@
   entities:
     - entity: lustoeb
     - entity: mother
+    - entity: dictor
 
 - type: location
   id: lustoeb_room
@@ -11,9 +12,11 @@
   entities:
     - entity: lustoeb
     - entity: mother
+    - entity: dictor
   
 - type: location
   id: lustoeb_school
   background: /Textures/LustyDoggy/Background/lustoeb_school.png
   entities:
     - entity: lustoeb
+    - entity: dictor

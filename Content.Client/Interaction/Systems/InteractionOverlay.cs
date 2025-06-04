@@ -29,7 +29,9 @@ public sealed class InteractionOverlay : Overlay
         var query = _entityManager.EntityQueryEnumerator<InteractionComponent>();
         while (query.MoveNext(out var interactionComponent))
         {
-            if(!interactionComponent.IsEnabled || interactionComponent.CurrentInteractible is null) continue;
+            if(!interactionComponent.IsEnabled || 
+               interactionComponent.CurrentInteractible is null || 
+               interactionComponent.CurrentInteractible.Value.Item1.InvokeImmediately) continue;
             var text = "E: " + interactionComponent.CurrentInteractible.Value.Item1.Name;
             
             

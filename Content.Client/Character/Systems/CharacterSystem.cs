@@ -6,6 +6,7 @@ using Content.Client.Dialog.Data;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 
 namespace Content.Client.Character.Systems;
@@ -32,7 +33,7 @@ public sealed class CharacterSystem : EntitySystem
         component.Sprite = rs.RSI;
     }
     
-    public bool TryGetCharacter(EntityUid locationEntity, string? prototype,[NotNullWhen(true)] out CharacterComponent? component,out EntityUid uid)
+    public bool TryGetCharacter(EntityUid locationEntity, EntProtoId? prototype,[NotNullWhen(true)] out CharacterComponent? component,out EntityUid uid)
     {
         uid = EntityUid.Invalid;
         component = null;

@@ -13,4 +13,6 @@ public sealed partial class DialogContainerComponent : Component
     
     [ViewVariables] public Dialog.Data.Dialog CurrentDialog => DialogQueue[0];
     [ViewVariables] public EntProtoId? CameraFollowProtoId;
+
+    [ViewVariables] public EntProtoId? SelectedCharacter;
 }

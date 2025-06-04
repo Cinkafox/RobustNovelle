@@ -65,7 +65,7 @@ public sealed class LocationSystem : EntitySystem
         {
             foreach (var entity in entities)
             {
-                var uid = Spawn(entity.Entity, new EntityCoordinates(mapUid, entity.Position));
+                var uid = Spawn(entity.Entity, new EntityCoordinates(mapUid, entity.Position - new Vector2(-0.5f, 0.5f)));
                 loc.EntityDefinitions.Add(entity.Entity, uid);
             }
         }

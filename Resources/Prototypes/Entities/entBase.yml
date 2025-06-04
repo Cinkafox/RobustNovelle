@@ -2,6 +2,7 @@
   id: chartBase
   name: Фембойчик
   components:
+    - type: Character
     - type: Sprite
     - type: Fixtures
       fixtures:

@@ -37,3 +37,13 @@
       actions:
         - !type:LoadSceneAction
           prototype: windowLook
+          
+- type: entity
+  id: greyTrigger
+  name: триггер
+  components:
+    - type: Interactible
+      invokeImmediately: true
+      actions:
+        - !type:LoadSceneAction
+          prototype: computerPlayCorridor

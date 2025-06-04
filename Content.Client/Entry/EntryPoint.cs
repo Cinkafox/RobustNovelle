@@ -1,20 +1,22 @@
 using System.Globalization;
+using Content.Client.Gameplay;
 using Content.Client.Input;
+using Content.Client.Menu;
 using Content.Client.Tile;
+using Content.StyleSheetify.Client.StyleSheet;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Shared.Audio;
+using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
-using Robust.Shared.Prototypes;
-using Content.StyleSheetify.Client.StyleSheet;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
-using Content.Client.Gameplay;
 
-namespace Content.Client;
+namespace Content.Client.Entry;
 
 public sealed class EntryPoint : GameClient
 {
@@ -28,6 +30,7 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IResourceCache _resource = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IClyde _clyde = default!;
+    [Dependency] private readonly IConfigurationManager _configurationManager = default!;
 
     public override void PreInit()
     {
@@ -59,6 +62,7 @@ public sealed class EntryPoint : GameClient
         IoCManager.Resolve<IContentStyleSheetManager>().ApplyStyleSheet("default");
 
         _clyde.SetWindowTitle("LOADING: [####--]");
+        
         //Some cache TODO: Find out how to cache nonCollection audio
         foreach (var soundCollection in _prototype.EnumeratePrototypes<SoundCollectionPrototype>())
         {
@@ -68,12 +72,17 @@ public sealed class EntryPoint : GameClient
             }
         }
         _clyde.SetWindowTitle("LOADING: [#####-]");
-        Logger.Debug("Cached some audio!");
 
-        _clyde.SetWindowTitle("Main menu...");
-        
-         //_stateManager.RequestStateChange<MenuState>();
-        _stateManager.RequestStateChange<GameplayState>();
+        if (_configurationManager.GetCVar(CCVars.CCVars.GameLoadImmediately))
+        {
+            _clyde.SetWindowTitle("Game");
+            _stateManager.RequestStateChange<GameplayState>();
+        }
+        else
+        {
+            _clyde.SetWindowTitle("Main menu...");
+            _stateManager.RequestStateChange<MenuState>();
+        }
     }
     
     

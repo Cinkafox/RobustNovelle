@@ -49,7 +49,14 @@ public partial class DialogSystem
         {
             ent.Comp.CurrentDialog.IsDialog = false;
             if (ent.Comp.CurrentDialog.Choices.Count == 0)
+            {
                 ent.Comp.CurrentDialog.SkipDialog = true;
+                _dialogUiController.Hide();
+            }
+        }
+        else
+        {
+            _dialogUiController.Show();
         }
     }
 

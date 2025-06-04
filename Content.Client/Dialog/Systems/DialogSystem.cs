@@ -170,9 +170,14 @@ public sealed partial class DialogSystem : EntitySystem
         ShowCharacters(ent);
         HideCharacters(ent);
         
-        _characterSystem.TryGetCharacter(ent, comp.CurrentDialog.Character?.ToString(), out _, out var characterUid);
+        if(comp.CurrentDialog.Character != null)
+        {
+            comp.SelectedCharacter = comp.CurrentDialog.Character.ToString();
+        }
         
-        if (comp.CurrentDialog.Name == null && comp.CurrentDialog.Character != null)
+        _characterSystem.TryGetCharacter(ent, comp.SelectedCharacter, out _, out var characterUid);
+        
+        if (comp.CurrentDialog.Name == null && comp.SelectedCharacter != null)
         {
             comp.CurrentDialog.Name = MetaData(characterUid).EntityName;
         }
@@ -216,7 +221,7 @@ public sealed partial class DialogSystem : EntitySystem
         
             dialogComponent.CurrentDialog.PassedTime = 0;
 
-            if (_characterSystem.TryGetCharacter(uid, dialogComponent.CurrentDialog.Character?.ToString(), out _, out var characterUid))
+            if (_characterSystem.TryGetCharacter(uid, dialogComponent.SelectedCharacter, out _, out var characterUid))
             {
                 RaiseLocalEvent(characterUid,new DialogAppendEvent(dialogComponent.CurrentDialog, ent));
             }

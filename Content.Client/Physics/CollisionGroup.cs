@@ -2,7 +2,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Physics.Dynamics;
 using Robust.Shared.Serialization;
 
-namespace Content.Client;
+namespace Content.Client.Physics;
 
 [Flags]
 [FlagsFor(typeof(CollisionLayer)), FlagsFor(typeof(CollisionMask))]
