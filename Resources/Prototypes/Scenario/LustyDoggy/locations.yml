@@ -3,6 +3,8 @@
   location:
     path: /Textures/LustyDoggy/Location/room/room.png
     lightPath: /Textures/LustyDoggy/Location/room/room.overlay.png
+  ambientSounds:
+    - path: "/Audio/Background/back_city.ogg"
   entities:
     - entity: lustoeb
       position: 6,2
@@ -27,3 +29,5 @@
       position: 8,11
     - entity: greysha
       position: 8,9
+    - entity: npcdead
+      position: 8,8

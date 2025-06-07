@@ -17,7 +17,7 @@
   name: Няшка Няшкова
   components:
     - type: Sprite
-      sprite: LustyDoggy/Entities/lustoeb.rsi
+      sprite: LustyDoggy/Entities/lustoeb_ingame.rsi
       layers:
         - state: stand
     - type: Voice
@@ -30,9 +30,22 @@
   name: Григорий Серый
   components:
     - type: Sprite
-      sprite: LustyDoggy/Entities/lustoeb.rsi
+      sprite: LustyDoggy/Entities/greysha.rsi
       layers:
         - state: stand
+    - type: Voice
+      voice:
+        path: "/Audio/Voice/oneshot-text.ogg"
+        
+- type: entity
+  id: npcdead
+  parent: chartBase
+  name: Трупик Трупиков
+  components:
+    - type: Sprite
+      sprite: LustyDoggy/Entities/npc_dead.rsi
+      layers:
+        - state: dead
     - type: Voice
       voice:
         path: "/Audio/Voice/oneshot-text.ogg"

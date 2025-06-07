@@ -42,7 +42,6 @@ public sealed class LocationSystem : EntitySystem
         
         if (proto.Location is not null)
         {
-            _backgroundSystem.LoadBackground(mapUid, null);
             loc.CurrentLocation = proto.Location;
             
             proto.Location.Map ??= new ResPath(proto.Location.Path.ToString().Replace(".png",".map.png"));
@@ -54,11 +53,6 @@ public sealed class LocationSystem : EntitySystem
             {
                 Spawn(_wallsId, new EntityCoordinates(mapUid, pos - new Vector2(-0.5f, 0.5f)));
             }
-        }
-        
-        if (proto.Background is not null)
-        {
-            _backgroundSystem.LoadBackground(mapUid, proto.Background.Value);
         }
         
         if (proto.Entities is { } entities)
@@ -90,6 +84,16 @@ public sealed class LocationSystem : EntitySystem
             !TryInitializeLocation(proto, out mapId))
         {
             throw new Exception("Увы...");
+        }
+
+        if (proto.Location is not null)
+        {
+            _backgroundSystem.LoadBackground(mapId, null);
+        }
+        
+        if (proto.Background is not null)
+        {
+            _backgroundSystem.LoadBackground(mapId, proto.Background.Value);
         }
         
         return mapId;

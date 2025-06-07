@@ -8,8 +8,7 @@
   "copyright": "by cinka",
   "states": [
     {
-      "name": "stand",
-      "directions": 4
+      "name": "dead"
     }
   ]
 }

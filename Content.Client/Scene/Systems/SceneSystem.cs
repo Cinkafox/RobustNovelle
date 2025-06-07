@@ -1,8 +1,11 @@
 using Content.Client.Character.Systems;
 using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Systems;
+using Content.Client.Menu;
 using Content.Client.Scene.Components;
 using Content.Client.Scene.Data;
+using Robust.Client;
+using Robust.Client.State;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager;
@@ -17,6 +20,8 @@ public sealed class SceneSystem : EntitySystem
 
     [Dependency] private readonly CharacterSystem _characterSystem = default!;
     [Dependency] private readonly DialogSystem _dialogSystem = default!;
+    [Dependency] private readonly IStateManager _stateManager = default!;
+    [Dependency] private readonly IGameController _gameController = default!;
     
     public void LoadScene(EntityUid actorUid, ProtoId<ScenePrototype> prototype)
     {
@@ -58,6 +63,14 @@ public sealed class SceneSystem : EntitySystem
     {
         _dialogSystem.CleanupDialog(GetDialogContainer(entity));
         entity.Comp.CurrentScene = null;
+    }
+
+    public void ShutdownScene()
+    {
+        if (_cfg.GetCVar(CCVars.CCVars.GameLoadImmediately))
+            _gameController.Shutdown();
+        else
+            _stateManager.RequestStateChange<MenuState>();
     }
 
     private Entity<DialogContainerComponent> GetDialogContainer(Entity<SceneContainerComponent> entity)

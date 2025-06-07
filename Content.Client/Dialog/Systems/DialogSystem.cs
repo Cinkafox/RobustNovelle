@@ -175,7 +175,10 @@ public sealed partial class DialogSystem : EntitySystem
             comp.SelectedCharacter = comp.CurrentDialog.Character.ToString();
         }
         
-        _characterSystem.TryGetCharacter(ent, comp.SelectedCharacter, out _, out var characterUid);
+        if(!_characterSystem.TryGetCharacter(ent, comp.SelectedCharacter, out _, out var characterUid))
+        {
+           return;
+        }
         
         if (comp.CurrentDialog.Name == null && comp.SelectedCharacter != null)
         {

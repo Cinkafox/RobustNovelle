@@ -20,3 +20,11 @@
   entities:
     - entity: lustoeb
     - entity: dictor
+      
+- type: location
+  id: dark
+  background: /Textures/LustyDoggy/Background/vpopenegra.png
+  entities:
+    - entity: lustoeb
+    - entity: dictor
+    - entity: lustoebIngame

@@ -8,7 +8,7 @@
     - text: Любил он после школы играть на своем любимом сервере про 2д космонавтиков - Lust Station.
     - location: lustoeb_school
     - text: В школе его постоянно окунали вниз головой старшеклассники с 10б в сральник.
-    - text: Уго явно тут в хуй не ставили, ведь он ходит как петух, так ещё и педик оказывается!
+    - text: Его явно тут в хуй не ставили, ведь он ходит как петух, так ещё и педик оказывается!
     - text: Носит свои ЛГБТ пины и значок кодепа визденов.
     - text: Приходя домой, весь в говне и в моче, он тут же придумывает очередной остросюжетный РП момент со своим персонажем - розовая вульпа маленького роста по имени Няшка Няшкова.
     - title: "Где-то в спальне"
@@ -60,6 +60,10 @@
 - type: scene
   id: computerPlay
   dialogs:
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/klava.ogg
     - character: lustoeb
     - text: Тыакс.. Блина, как же мне нравицца логотип у лаунчера визденав
     - text: Текс, гди там луст?
@@ -69,7 +73,12 @@
     - text: Тыааакс! Где тут роль мейдоч..
     - text: Вот чёрт! Кто же выбрал мою ЛЮБИМУЮ РОЛЬ??? МЕЙДОЧКУ!!
     - text: Я, блять, очень злой!
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/stolpunch.ogg
     - text: "*уебал по столу своими ручками*"
+      sayLetters: false
     - character: mother
     - text: ЧЕ ТУТ ПРОИСХОДИТ НАХУЙ! ТЫ ТАМ ОПЯТЬ В ТУ ПЕНДОСКУЮ ХУЙНЮ ИГРАЕШЬ?
     - character: lustoeb
@@ -79,6 +88,7 @@
     - character: lustoeb
     - text: х.. ХАВАФО!
     - text: блин блин... мне нужно быть аккуратнее. Я не хочу разлучатся с метадрузьями..
+    - title: "[RU][SS14][ERP][18+IQ] ЛУСТОЁБ СТЕЙШН"
     - location: station
       cameraOn: lustoebIngame
       character: lustoebIngame
@@ -92,17 +102,85 @@
 - type: scene
   id: computerPlayCorridor
   dialogs:
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/strahoebina1.ogg
     - delay: 1000
     - cameraOn: greysha
-    - delay: 1000
+    - delay: 2000
     - cameraOn: lustoebIngame
     - character: lustoebIngame
     - text: ОГОСПАДИ!
     - character: greysha
+    - cameraOn: greysha
     - text: Ну привет нахуй, я тебе что сказал там по рации?
     - character: lustoebIngame
+    - cameraOn: lustoebIngame
     - text: Т..ты! ТЫ ИГРАЕШЬ ПО НОНРП! ТЫ ЗАХУЯРИЛ МОЕГО ЛЮБИМОГО МЕТАДРУГА!
     - text: Я вызываю админа!
     - text: АДМИН АДМИН ТУТ НОНРП!
     - character: greysha
+    - cameraOn: greysha
     - text: Ну почему ебучие ЕРПшеры такие идиоты..
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/strahoebina2.ogg
+    - text: БЕСКОНТАКТНОЕ УБИЙСТВО ЕРПШЕРА!
+    - character: lustoebIngame
+    - cameraOn: lustoebIngame
+    - delay: 1000
+    - location: dark
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/reznya.ogg
+    - delay: 2000
+    - location: lustoeb_ficha
+    - cameraOn: lustoeb
+    - title: "Доигрался(("
+    - character: lustoeb
+      text: "..."
+      delay: 300
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/stolpunch.ogg
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/blya.ogg
+    - text: ЭТОКАКОГОХУЯЩАБЫЛОБЛЯ
+      skipDialog: true
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/stolpunch.ogg
+    - text: АДМИННАХУЙЭТОНОНРПБЛЯТЫГДЕСУЧКАЕБАННАЯСЫНШЛЮХИ
+      skipDialog: true
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/stolpunch.ogg
+    - text: ЯВРОТЕБАЛТЕБЯИТВОЮСЕМЬЮБЛЯДИНАЕБАННАЯ
+      skipDialog: true
+    - actions:
+        - !type:AudioAction
+          sound:
+            path: /Audio/LustyDoggy/stolpunch.ogg
+    - text: СУУУУУУУУУУУУУУУУУУУУУУУУУУУКААААААААААААААА!
+      skipDialog: true
+    - text: ой.. мама пришла!.....
+      delay: 100
+      skipDialog: true
+    - character: mother
+    - text: Я,БЛЯ, ЩА ДАМ,БЛЯХА, ЧЕ ЗА ХУЙНЯ ТО А???!!?
+      skipDialog: true
+    - delay: 10000
+    - character: dictor
+    - text: Вот и сказочке конец
+    - text: А кто слушал...
+    - text: Ты дурак?
+    - text: Играть надо было!
+    - actions:
+        - !type:EndGameAction
