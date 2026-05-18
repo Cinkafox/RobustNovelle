@@ -1,0 +1,6 @@
+﻿<Project>
+    <Import Project="RobustToolbox/Directory.Packages.props" />
+    <ItemGroup>
+
+    </ItemGroup>
+</Project>

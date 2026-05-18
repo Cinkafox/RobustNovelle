@@ -7,9 +7,7 @@ namespace Content.Client.Background.Components;
 public sealed partial class BackgroundComponent : Component
 {
     public Texture Layer;
-    
+
     //Some visibility shit. 0 - Not visible and 255 is visible
-    [Animatable]
-    [ViewVariables]
-    public int Visibility { get; set; } = 255;
+    [Animatable] [ViewVariables] public int Visibility { get; set; } = 255;
 }

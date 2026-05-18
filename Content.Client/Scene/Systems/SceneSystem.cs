@@ -12,23 +12,20 @@ using Robust.Shared.Serialization.Manager;
 
 namespace Content.Client.Scene.Systems;
 
-public sealed class SceneSystem : EntitySystem
+public sealed partial class SceneSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly ISerializationManager _serializationManager = default!;
-
-    [Dependency] private readonly CharacterSystem _characterSystem = default!;
-    [Dependency] private readonly DialogSystem _dialogSystem = default!;
-    [Dependency] private readonly IStateManager _stateManager = default!;
-    [Dependency] private readonly IGameController _gameController = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
     
+    [Dependency] private DialogSystem _dialogSystem = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private ISerializationManager _serializationManager = default!;
+
     public void LoadScene(EntityUid actorUid, ProtoId<ScenePrototype> prototype)
     {
-        if(!TryComp<SceneContainerComponent>(actorUid, out var container)) throw new Exception();
+        if (!TryComp<SceneContainerComponent>(actorUid, out var container)) throw new Exception();
         LoadScene(new Entity<SceneContainerComponent>(actorUid, container), prototype);
     }
-    
+
     public void LoadScene(Entity<SceneContainerComponent> entity, ProtoId<ScenePrototype> prototype)
     {
         CleanupScene(entity);
@@ -40,11 +37,11 @@ public sealed class SceneSystem : EntitySystem
         }
 
         var dialogContainer = GetDialogContainer(entity);
-        
-        entity.Comp.CurrentScene = _serializationManager.CreateCopy(proto, notNullableOverride:true);
-        
+
+        entity.Comp.CurrentScene = _serializationManager.CreateCopy(proto, notNullableOverride: true);
+
         foreach (var dialog in entity.Comp.CurrentScene.Dialogs) _dialogSystem.AddDialog(dialogContainer, dialog);
-        
+
         _dialogSystem.ContinueDialog(dialogContainer);
     }
 
@@ -55,7 +52,7 @@ public sealed class SceneSystem : EntitySystem
 
     public void SaveScenePosition(Entity<SceneContainerComponent> entity)
     {
-        if (entity.Comp.CurrentScene is ScenePrototype prototype) 
+        if (entity.Comp.CurrentScene is ScenePrototype prototype)
             _cfg.SetCVar(CCVars.CCVars.LastScenePrototype, prototype.ID);
     }
 
@@ -63,14 +60,6 @@ public sealed class SceneSystem : EntitySystem
     {
         _dialogSystem.CleanupDialog(GetDialogContainer(entity));
         entity.Comp.CurrentScene = null;
-    }
-
-    public void ShutdownScene()
-    {
-        if (_cfg.GetCVar(CCVars.CCVars.GameLoadImmediately))
-            _gameController.Shutdown();
-        else
-            _stateManager.RequestStateChange<MenuState>();
     }
 
     private Entity<DialogContainerComponent> GetDialogContainer(Entity<SceneContainerComponent> entity)

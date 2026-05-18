@@ -1,8 +1,6 @@
 using System.Collections;
-using System.IO;
 using System.Linq;
 using System.Numerics;
-using Content.Client.Audio.Systems;
 using Content.Client.Background;
 using Content.Client.Location.Components;
 using Content.Client.Location.Data;
@@ -21,95 +19,79 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Content.Client.Location.Systems;
 
-public sealed class LocationSystem : EntitySystem
+public sealed partial class LocationSystem : EntitySystem
 {
-    [Dependency] private readonly AudioSystem _audioSystem = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IResourceManager _resourceManager = default!;
-    [Dependency] private readonly BackgroundSystem _backgroundSystem = default!;
-
     private readonly Dictionary<string, EntityUid> _locationsId = new();
 
     private readonly EntProtoId _wallsId = "Wall";
-    
+    [Dependency] private AudioSystem _audioSystem = default!;
+    [Dependency] private BackgroundSystem _backgroundSystem = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IResourceManager _resourceManager = default!;
+
     private bool TryInitializeLocation(LocationPrototype proto, out EntityUid mapUid)
     {
         mapUid = _mapSystem.CreateMap(out var mapId);
         Log.Info($"Current location ID: {mapUid}");
         _locationsId.TryAdd(proto.ID, mapUid);
         var loc = AddComp<LocationComponent>(mapUid);
-        
+
         if (proto.Location is not null)
         {
             loc.CurrentLocation = proto.Location;
-            
-            proto.Location.Map ??= new ResPath(proto.Location.Path.ToString().Replace(".png",".map.png"));
-            
+
+            proto.Location.Map ??= new ResPath(proto.Location.Path.ToString().Replace(".png", ".map.png"));
+
             using var stream = _resourceManager.ContentFileRead(proto.Location.Map.Value.ToString());
             var texture = Image.Load<Rgba32>(stream);
             var map = new ColliderMap(texture);
-            foreach (var pos in map)
-            {
-                Spawn(_wallsId, new EntityCoordinates(mapUid, pos - new Vector2(-0.5f, 0.5f)));
-            }
+            foreach (var pos in map) Spawn(_wallsId, new EntityCoordinates(mapUid, pos - new Vector2(-0.5f, 0.5f)));
         }
-        
+
         if (proto.Entities is { } entities)
-        {
             foreach (var entity in entities)
             {
-                var uid = Spawn(entity.Entity, new EntityCoordinates(mapUid, entity.Position - new Vector2(-0.5f, 0.5f)));
+                var uid = Spawn(entity.Entity,
+                    new EntityCoordinates(mapUid, entity.Position - new Vector2(-0.5f, 0.5f)));
                 loc.EntityDefinitions.Add(entity.Entity, uid);
             }
-        }
-        
+
         foreach (var sound in proto.AmbientSounds)
-        {
             loc.Ambients.Add(
-                _audioSystem.PlayEntity(sound, Filter.BroadcastMap(mapId), mapUid, false, AudioParams.Default.WithVolume(0.5f).WithLoop(true))!.Value.Entity);
-        }
-        
+                _audioSystem.PlayEntity(sound, Filter.BroadcastMap(mapId), mapUid, false,
+                    AudioParams.Default.WithVolume(0.5f).WithLoop(true))!.Value.Entity);
+
         return true;
     }
 
     public EntityUid LoadLocation(string prototype)
     {
         if (!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var proto))
-        {
             throw new Exception($"PROTO LOCATION {prototype} NOT EXIST!!!");
-        }
-        
+
         if (!_locationsId.TryGetValue(prototype, out var mapId) &&
             !TryInitializeLocation(proto, out mapId))
-        {
             throw new Exception("Увы...");
-        }
 
-        if (proto.Location is not null)
-        {
-            _backgroundSystem.LoadBackground(mapId, null);
-        }
-        
-        if (proto.Background is not null)
-        {
-            _backgroundSystem.LoadBackground(mapId, proto.Background.Value);
-        }
-        
+        if (proto.Location is not null) _backgroundSystem.LoadBackground(mapId, null);
+
+        if (proto.Background is not null) _backgroundSystem.LoadBackground(mapId, proto.Background.Value);
+
         return mapId;
     }
 
     public bool TryGetLocationEntity(EntityUid anotherLocationEntity, EntProtoId? ent, out EntityUid uid)
     {
         uid = EntityUid.Invalid;
-        return ent is not null && 
+        return ent is not null &&
                TryComp<LocationComponent>(GetMapFromEntity(anotherLocationEntity), out var component) &&
                component.EntityDefinitions.TryGetValue(ent.Value, out uid);
     }
 
     public IEnumerable<EntityUid> GetLocationEnumerator(EntityUid anotherLocationEntity)
     {
-        if(!TryComp<LocationComponent>(GetMapFromEntity(anotherLocationEntity), out var component)) return [];
+        if (!TryComp<LocationComponent>(GetMapFromEntity(anotherLocationEntity), out var component)) return [];
         return component.EntityDefinitions.Values;
     }
 
@@ -120,44 +102,42 @@ public sealed class LocationSystem : EntitySystem
     }
 }
 
-public sealed class ColliderMap: IEnumerable<Vector2i>
+public sealed class ColliderMap : IEnumerable<Vector2i>
 {
     private readonly Dictionary<Vector2i, bool> _map = new();
-    public int Width { get; private set; }
-    public int Height { get; private set; }
 
     private List<Edge> edges = default!;
-    
+
     public ColliderMap(Image<Rgba32> image)
     {
         Width = image.Width;
         Height = image.Height;
-        
+
         var span = image.GetPixelSpan();
-        
+
         for (var y = 0; y < Height; y++)
+        for (var x = 0; x < Width; x++)
         {
-            for (var x = 0; x < Width; x++)
-            {
-                var imgPixel = span[Width*y + x];
-                _map.Add(new Vector2i(x, Height - y), imgPixel.A != 0);
-            }
+            var imgPixel = span[Width * y + x];
+            _map.Add(new Vector2i(x, Height - y), imgPixel.A != 0);
         }
     }
+
+    public int Width { get; }
+    public int Height { get; }
 
     public IEnumerator<Vector2i> GetEnumerator()
     {
         foreach (var (pos, isEnabled) in _map)
-        {
-            if (isEnabled) yield return pos;
-        }
+            if (isEnabled)
+                yield return pos;
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
     }
-    
+
     public List<Vector2> ToVectors()
     {
         DetectEdges();
@@ -169,17 +149,16 @@ public sealed class ColliderMap: IEnumerable<Vector2i>
         {
             l.Add(a.Start);
             edg.Remove(a);
-        } 
-        while (edg.TryFirstOrDefault(pr => pr.Start == a.End, out a));
-            
-           
+        } while (edg.TryFirstOrDefault(pr => pr.Start == a.End, out a));
+
+
         return l;
-    } 
-    
+    }
+
     private void DetectEdges()
     {
         edges = new List<Edge>();
-            
+
         foreach (var vector2I in _map.Where(kvp => kvp.Value).Select(kvp => kvp.Key))
         {
             // Проверка соседей
@@ -188,29 +167,29 @@ public sealed class ColliderMap: IEnumerable<Vector2i>
                 new Vector2i(vector2I.X, vector2I.Y - 1), // Вверх
                 new Vector2i(vector2I.X + 1, vector2I.Y), // Вправо
                 new Vector2i(vector2I.X, vector2I.Y + 1), // Вниз
-                new Vector2i(vector2I.X - 1, vector2I.Y)  // Влево
+                new Vector2i(vector2I.X - 1, vector2I.Y) // Влево
             };
 
             // Добавляем грани, где нет соседей
-            if (!_map.ContainsKey(neighbors[0])) 
+            if (!_map.ContainsKey(neighbors[0]))
                 edges.Add(new Edge(
                     new Vector2i(vector2I.X, vector2I.Y),
                     new Vector2i(vector2I.X + 1, vector2I.Y)
                 ));
 
-            if (!_map.ContainsKey(neighbors[1])) 
+            if (!_map.ContainsKey(neighbors[1]))
                 edges.Add(new Edge(
                     new Vector2i(vector2I.X + 1, vector2I.Y),
                     new Vector2i(vector2I.X + 1, vector2I.Y + 1)
                 ));
 
-            if (!_map.ContainsKey(neighbors[2])) 
+            if (!_map.ContainsKey(neighbors[2]))
                 edges.Add(new Edge(
                     new Vector2i(vector2I.X + 1, vector2I.Y + 1),
                     new Vector2i(vector2I.X, vector2I.Y + 1)
                 ));
 
-            if (!_map.ContainsKey(neighbors[3])) 
+            if (!_map.ContainsKey(neighbors[3]))
                 edges.Add(new Edge(
                     new Vector2i(vector2I.X, vector2I.Y + 1),
                     new Vector2i(vector2I.X, vector2I.Y)
@@ -219,7 +198,7 @@ public sealed class ColliderMap: IEnumerable<Vector2i>
 
         // Удаление дубликатов (если две соседние ячейки отсутствуют)
         edges = edges
-            .GroupBy(e => new { Start = e.Start, End = e.End })
+            .GroupBy(e => new { e.Start, e.End })
             .Select(g => g.First())
             .ToList();
     }
@@ -234,12 +213,12 @@ public sealed class ColliderMap: IEnumerable<Vector2i>
 
 public sealed class Edge
 {
-    public Vector2i Start { get; }
-    public Vector2i End { get; }
-
     public Edge(Vector2i start, Vector2i end)
     {
         Start = start;
         End = end;
     }
+
+    public Vector2i Start { get; }
+    public Vector2i End { get; }
 }

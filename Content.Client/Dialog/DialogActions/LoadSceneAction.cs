@@ -10,10 +10,10 @@ namespace Content.Client.Dialog.DialogActions;
 [UsedImplicitly]
 public sealed partial class LoadSceneAction : IDialogAction
 {
-    [DataField] public ProtoId<ScenePrototype> Prototype = default!;
-    
+    [DataField] public ProtoId<ScenePrototype> Prototype;
+
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
-        collection.Resolve<IEntityManager>().System<SceneSystem>().LoadScene(actorUid,Prototype);
+        collection.Resolve<IEntityManager>().System<SceneSystem>().LoadScene(actorUid, Prototype);
     }
 }

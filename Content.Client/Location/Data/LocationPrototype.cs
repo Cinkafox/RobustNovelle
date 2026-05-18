@@ -5,21 +5,21 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.Location.Data;
 
-[Prototype("location")]
-public sealed class LocationPrototype : IPrototype
+[Prototype]
+public sealed partial class LocationPrototype : IPrototype
 {
-    [IdDataField] public string ID { get; private set; } = default!;
-    
-    [DataField] public ResPath? Background;
-    [DataField] public LocationDefinition? Location;
-    [DataField] public HashSet<EntityDefinition>? Entities;
     [DataField] public HashSet<SoundSpecifier> AmbientSounds = [];
+
+    [DataField] public ResPath? Background;
+    [DataField] public HashSet<EntityDefinition>? Entities;
+    [DataField] public LocationDefinition? Location;
+    [IdDataField] public string ID { get; private set; } = default!;
 }
 
 [DataDefinition]
 public sealed partial class LocationDefinition
 {
-    [DataField] public ResPath Path;
-    [DataField] public ResPath? Map;
     [DataField] public ResPath? LightPath;
+    [DataField] public ResPath? Map;
+    [DataField] public ResPath Path;
 }

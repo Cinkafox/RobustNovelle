@@ -3,6 +3,7 @@ namespace Content.Client.GameVariables;
 public sealed class VariableManager
 {
     private readonly Dictionary<string, string> _variables = new();
+
     public void SetValue(string name, string value)
     {
         _variables[name] = value;

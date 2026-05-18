@@ -2,9 +2,9 @@
 
 namespace Content.Client.Location.Systems;
 
-public sealed class LocationRenderSystem : EntitySystem
+public sealed partial class LocationRenderSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
+    [Dependency] private IOverlayManager _overlayManager = default!;
 
     public override void Initialize()
     {

@@ -10,15 +10,14 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.Interaction.Systems;
 
-public sealed class InteractionSystem : EntitySystem
+public sealed partial class InteractionSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
-    [Dependency] private readonly IResourceCache _resCache = default!;
-    
+    [Dependency] private IOverlayManager _overlayManager = default!;
+
     public override void Initialize()
     {
         _overlayManager.AddOverlay(new InteractionOverlay());
-        
+
         CommandBinds.Builder
             .Bind(EngineKeyFunctions.Use, new UseInretactionCommand(this))
             .Register<InteractionSystem>();
@@ -26,16 +25,14 @@ public sealed class InteractionSystem : EntitySystem
 
     public void HandleUse(EntityUid entity)
     {
-        if(!TryComp<InteractionComponent>(entity, out var interactionComponent) || 
-           !interactionComponent.IsEnabled || 
-           interactionComponent.CurrentInteractible is null
+        if (!TryComp<InteractionComponent>(entity, out var interactionComponent) ||
+            !interactionComponent.IsEnabled ||
+            interactionComponent.CurrentInteractible is null
            ) return;
-        
+
         foreach (var action in interactionComponent.CurrentInteractible.Value.Item1.Actions)
-        {
-            action.Act(IoCManager.Instance!, new Entity<DialogContainerComponent>(entity, 
+            action.Act(IoCManager.Instance!, new Entity<DialogContainerComponent>(entity,
                 Comp<DialogContainerComponent>(entity)));
-        }
     }
 
     public override void Update(float frameTime)
@@ -48,17 +45,14 @@ public sealed class InteractionSystem : EntitySystem
             {
                 return (transform.LocalPosition - a.Item2.LocalPosition).Length();
             }
-            
-            interaction.CurrentInteractible = 
-                EntityQuery<InteractibleComponent, TransformComponent>()
-                .OrderBy(distance)
-                .Where(a => transform.MapID == a.Item2.MapID && 
-                            distance(a) < a.Item1.MaxDistance).FirstOrNull();
 
-            if (interaction.CurrentInteractible is { Item1.InvokeImmediately: true })
-            {
-                HandleUse(uid);
-            }
+            interaction.CurrentInteractible =
+                EntityQuery<InteractibleComponent, TransformComponent>()
+                    .OrderBy(distance)
+                    .Where(a => transform.MapID == a.Item2.MapID &&
+                                distance(a) < a.Item1.MaxDistance).FirstOrNull();
+
+            if (interaction.CurrentInteractible is { Item1.InvokeImmediately: true }) HandleUse(uid);
         }
     }
 }
@@ -72,7 +66,8 @@ public sealed class UseInretactionCommand : InputCmdHandler
         _interactionSystem = interactionSystem;
     }
 
-    public override bool HandleCmdMessage(IEntityManager entManager, ICommonSession? session, IFullInputCmdMessage message)
+    public override bool HandleCmdMessage(IEntityManager entManager, ICommonSession? session,
+        IFullInputCmdMessage message)
     {
         if (session?.AttachedEntity is null || message.State != BoundKeyState.Down) return false;
 

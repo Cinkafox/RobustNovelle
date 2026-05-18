@@ -4,21 +4,19 @@ using Content.Client.Character.Components;
 using Content.Client.Character.Systems;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
-using Robust.Shared.Maths;
 using Robust.Shared.Timing;
 
 namespace Content.Client.Character;
 
-public sealed class CharacterRenderingOverlay : Overlay
+public sealed partial class CharacterRenderingOverlay : Overlay
 {
+    [Dependency] private EntityManager _entityManager = default!;
+    
     private const float Shift = 2;
-    private readonly CharacterSystem _characterSystem;
-    [Dependency] private readonly EntityManager _entityManager = default!;
-
     public static bool IsVisible = true;
     
+    private readonly CharacterSystem _characterSystem;
+
     private float _elapsedTime;
     private int _frames;
     private float _lastDelta = 0.01f;
@@ -40,8 +38,8 @@ public sealed class CharacterRenderingOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if(!IsVisible) return;
-        
+        if (!IsVisible) return;
+
         var handle = args.ScreenHandle;
 
         var characters = _characterSystem.EnumerateCharacters(args.MapUid).ToList();
@@ -58,12 +56,12 @@ public sealed class CharacterRenderingOverlay : Overlay
         var texture = frames[(int)(_frames * _lastDelta / delay) % frames.Length];
 
         var bounds = args.ViewportBounds;
-        
+
         var width = texture.Width * (bounds.Height / (float)texture.Height);
         var xPos = character.XPosition;
 
         handle.DrawTextureRect(texture, UIBox2.FromDimensions(
-            new Vector2((float)(args.ViewportControl!.Window!.Size.X * xPos - width / 2f),0), 
+            new Vector2((float)(args.ViewportControl!.Window!.Size.X * xPos - width / 2f), 0),
             new Vector2(width, bounds.Height)));
     }
 }

@@ -9,19 +9,11 @@ namespace Content.Client.UserInterface.Controls;
 ///     Wrapper for <see cref="ScalingViewport" /> that listens to configuration variables.
 ///     Also does NN-snapping within tolerances.
 /// </summary>
-public sealed class MainViewport : UIWidget
+public sealed partial class MainViewport : UIWidget
 {
     private static readonly HashSet<MainViewport> InstancesPrivate = [];
-    public static ImmutableHashSet<MainViewport> Instances => InstancesPrivate.ToImmutableHashSet();
-    public static void UpdateConfAll()
-    {
-        foreach (var instance in InstancesPrivate)
-        {
-            instance.UpdateCfg();
-        }
-    }
-    
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     public MainViewport()
     {
@@ -38,13 +30,20 @@ public sealed class MainViewport : UIWidget
         InstancesPrivate.Add(this);
     }
 
+    public static ImmutableHashSet<MainViewport> Instances => InstancesPrivate.ToImmutableHashSet();
+
+    public ScalingViewport Viewport { get; }
+
+    public static void UpdateConfAll()
+    {
+        foreach (var instance in InstancesPrivate) instance.UpdateCfg();
+    }
+
     ~MainViewport()
     {
         InstancesPrivate.Remove(this);
     }
 
-    public ScalingViewport Viewport { get; }
-    
     public void UpdateCfg()
     {
         var stretch = _cfg.GetCVar(CCVars.CCVars.ViewportStretch);
@@ -68,7 +67,7 @@ public sealed class MainViewport : UIWidget
 
             return;
         }
-        
+
         Viewport.FixedStretchSize = Viewport.ViewportSize * fixedFactor;
         Viewport.StretchMode = ScalingViewportStretchMode.Nearest;
 
@@ -85,7 +84,7 @@ public sealed class MainViewport : UIWidget
             Viewport.FixedRenderScale = 1;
         }
     }
-    
+
 
     protected override void Resized()
     {

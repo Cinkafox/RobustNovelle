@@ -9,8 +9,8 @@ namespace Content.Client.Dialog.DialogActions;
 [UsedImplicitly]
 public sealed partial class AudioAction : IDialogAction
 {
-    [DataField(required:true)] public SoundSpecifier Sound = default!;
-    
+    [DataField(required: true)] public SoundSpecifier Sound = default!;
+
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
         collection.Resolve<EntityManager>().System<AudioSystem>().PlayGlobal(Sound, actorUid);

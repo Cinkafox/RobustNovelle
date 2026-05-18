@@ -4,8 +4,6 @@ namespace Content.Client.Movement;
 
 public sealed class MoveSpriteSystem : EntitySystem
 {
-    [Dependency] private readonly SpriteSystem _spriteSystem = default!;
-    
     public override void Initialize()
     {
         SubscribeLocalEvent<MoveSpriteComponent, OnEntityMoving>(OnMoving);
@@ -15,7 +13,7 @@ public sealed class MoveSpriteSystem : EntitySystem
 
     private void OnInit(Entity<MoveSpriteComponent> ent, ref ComponentInit args)
     {
-        if(!TryComp<SpriteComponent>(ent, out var spriteComponent))
+        if (!TryComp<SpriteComponent>(ent, out var spriteComponent))
         {
             RemComp(ent.Owner, ent.Comp);
             return;
@@ -26,16 +24,16 @@ public sealed class MoveSpriteSystem : EntitySystem
 
     private void OnStopMoving(Entity<MoveSpriteComponent> ent, ref OnEntityStopMoving args)
     {
-        if(!TryComp<SpriteComponent>(ent, out var spriteComponent)) return; 
-        
+        if (!TryComp<SpriteComponent>(ent, out var spriteComponent)) return;
+
         spriteComponent.LayerSetVisible(MoveAnimationVisual.Walk, false);
         spriteComponent.LayerSetVisible(MoveAnimationVisual.Stay, true);
     }
 
     private void OnMoving(Entity<MoveSpriteComponent> ent, ref OnEntityMoving args)
     {
-        if(!TryComp<SpriteComponent>(ent, out var spriteComponent)) return;
-        
+        if (!TryComp<SpriteComponent>(ent, out var spriteComponent)) return;
+
         spriteComponent.LayerSetVisible(MoveAnimationVisual.Walk, true);
         spriteComponent.LayerSetVisible(MoveAnimationVisual.Stay, false);
     }
@@ -43,5 +41,6 @@ public sealed class MoveSpriteSystem : EntitySystem
 
 public enum MoveAnimationVisual : byte
 {
-    Stay, Walk
+    Stay,
+    Walk
 }

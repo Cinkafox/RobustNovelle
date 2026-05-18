@@ -1,17 +1,16 @@
 using Content.Client.Camera.Systems;
-using Content.Client.Gameplay;
 using Content.Client.Scene.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 
 namespace Content.Client.GameTicking;
 
-public sealed class GameTicker : EntitySystem
+public sealed partial class GameTicker : EntitySystem
 {
-    [Dependency] private readonly SceneSystem _sceneSystem = default!;
-    [Dependency] private readonly CameraSystem _cameraSystem = default!;
-    [Dependency] private readonly IConfigurationManager _configurationManager = default!;
-    
+    [Dependency] private CameraSystem _cameraSystem = default!;
+    [Dependency] private IConfigurationManager _configurationManager = default!;
+    [Dependency] private SceneSystem _sceneSystem = default!;
+
 
     public void SpawnPlayer(ICommonSession session)
     {

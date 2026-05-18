@@ -9,10 +9,11 @@ public sealed partial class SetVariableAction : IDialogAction
 {
     [DataField] public string Name;
     [DataField] public string Value;
-    
+
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
-        var variableSystem = collection.Resolve<VariableManager>();;
+        var variableSystem = collection.Resolve<VariableManager>();
+        ;
         variableSystem.SetValue(Name, Value);
     }
 }
@@ -20,27 +21,26 @@ public sealed partial class SetVariableAction : IDialogAction
 [ImplicitDataDefinitionForInheritors]
 public abstract partial class BaseCompareAction : IDialogAction
 {
+    private VariableManager _variableSystem = default!;
+    [DataField] public IDialogAction? Else;
     [DataField] public SmartString First;
-    [DataField] public SmartString Second;
 
     [DataField] public IDialogAction? If;
-    [DataField] public IDialogAction? Else;
-
-    private VariableManager _variableSystem = default!;
+    [DataField] public SmartString Second;
 
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
-        _variableSystem = collection.Resolve<VariableManager>();;
-        
-        if(Checkup(First, Second))
+        _variableSystem = collection.Resolve<VariableManager>();
+        ;
+
+        if (Checkup(First, Second))
             If?.Act(collection, actorUid);
-        else 
+        else
             Else?.Act(collection, actorUid);
     }
 
-    protected abstract bool Checkup(string value1, string value2); 
+    protected abstract bool Checkup(string value1, string value2);
 }
-
 
 public sealed partial class IsEqualsAction : BaseCompareAction
 {
@@ -77,14 +77,14 @@ public sealed partial class IsLessAction : BaseCompareAction
 
 public sealed partial class AppendValueAction : IDialogAction
 {
-    [DataField] public string Name;
     [DataField] public SmartString Count = "1";
-    
+    [DataField] public string Name;
+
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
         var variableSystem = collection.Resolve<VariableManager>();
         if (!float.TryParse(variableSystem.GetValue(Name, 0f.ToString()), out var value) ||
-            !float.TryParse(Count, out var floatCount)) 
+            !float.TryParse(Count, out var floatCount))
             throw new Exception();
 
         variableSystem.SetValue(Name, (value + floatCount).ToString());
@@ -94,6 +94,7 @@ public sealed partial class AppendValueAction : IDialogAction
 public sealed partial class FireValueAction : IDialogAction
 {
     [DataField] public string Name;
+
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
         var variableSystem = collection.Resolve<VariableManager>();
@@ -103,17 +104,17 @@ public sealed partial class FireValueAction : IDialogAction
 
 public sealed partial class IsFiredAction : IDialogAction
 {
-    [DataField] public string Name;
+    [DataField] public IDialogAction? Else;
 
     [DataField] public IDialogAction? If;
-    [DataField] public IDialogAction? Else;
+    [DataField] public string Name;
 
     public void Act(IDependencyCollection collection, Entity<DialogContainerComponent> actorUid)
     {
-        var variableSystem = collection.Resolve<VariableManager>();    
-        if(variableSystem.GetValue(Name, "0") == "1")
+        var variableSystem = collection.Resolve<VariableManager>();
+        if (variableSystem.GetValue(Name, "0") == "1")
             If?.Act(collection, actorUid);
-        else 
+        else
             Else?.Act(collection, actorUid);
     }
 }

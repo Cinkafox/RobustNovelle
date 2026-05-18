@@ -25,7 +25,7 @@ public sealed class DialogUIController : UIController
     {
         _dialogGui?.SetEmote(texture);
     }
-    
+
     public void AppendLabel(string text)
     {
         _dialogGui?.AppendLabel(text);
@@ -61,7 +61,7 @@ public sealed class DialogUIController : UIController
         if (_dialogGui != null) _dialogGui.Visible = false;
         CharacterRenderingOverlay.IsVisible = false;
     }
-    
+
     public void Show()
     {
         if (_dialogGui != null) _dialogGui.Visible = true;

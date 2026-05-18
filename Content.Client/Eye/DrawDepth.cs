@@ -1,6 +1,7 @@
 using Robust.Shared.Serialization;
 
 namespace Content.Client;
+
 using DrawDepthTag = Robust.Shared.GameObjects.DrawDepth;
 
 [ConstantsFor(typeof(DrawDepthTag))]
@@ -13,11 +14,14 @@ public enum DrawDepth
 
     // various entity types that require different
     // draw depths, as to avoid hiding
+
     #region SubfloorEntities
+
     ThickPipe = DrawDepthTag.Default - 10,
     ThickWire = DrawDepthTag.Default - 9,
     ThinPipe = DrawDepthTag.Default - 8,
     ThinWire = DrawDepthTag.Default - 7,
+
     #endregion
 
     /// <summary>
@@ -75,7 +79,7 @@ public enum DrawDepth
     Items = DrawDepthTag.Default + 3,
 
     /// <summary>
-    /// Stuff that should be drawn below mobs, but on top of items. Like muzzle flash.
+    ///     Stuff that should be drawn below mobs, but on top of items. Like muzzle flash.
     /// </summary>
     BelowMobs = DrawDepthTag.Default + 4,
 
@@ -86,12 +90,12 @@ public enum DrawDepth
     Doors = DrawDepthTag.Default + 7,
 
     /// <summary>
-    /// Blast doors and shutters which go over the usual doors.
+    ///     Blast doors and shutters which go over the usual doors.
     /// </summary>
     BlastDoors = DrawDepthTag.Default + 8,
 
     /// <summary>
-    /// Stuff that needs to draw over most things, but not effects, like Kudzu.
+    ///     Stuff that needs to draw over most things, but not effects, like Kudzu.
     /// </summary>
     Overdoors = DrawDepthTag.Default + 9,
 
@@ -103,8 +107,8 @@ public enum DrawDepth
     Ghosts = DrawDepthTag.Default + 11,
 
     /// <summary>
-    ///    Use this selectively if it absolutely needs to be drawn above (almost) everything else. Examples include
-    ///    the pointing arrow, the drag & drop ghost-entity, and some debug tools.
+    ///     Use this selectively if it absolutely needs to be drawn above (almost) everything else. Examples include
+    ///     the pointing arrow, the drag & drop ghost-entity, and some debug tools.
     /// </summary>
-    Overlays = DrawDepthTag.Default + 12,
+    Overlays = DrawDepthTag.Default + 12
 }

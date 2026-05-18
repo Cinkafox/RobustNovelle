@@ -5,14 +5,14 @@ using Robust.Shared.Audio;
 
 namespace Content.Client.Audio.Systems;
 
-public sealed class VoiceSystem : EntitySystem
+public sealed partial class VoiceSystem : EntitySystem
 {
-    [Dependency] private readonly AudioSystem _audioSystem = default!;
-    
+    [Dependency] private AudioSystem _audioSystem = default!;
+
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<VoiceComponent,DialogAppendEvent>(OnDialogAppend);
+        SubscribeLocalEvent<VoiceComponent, DialogAppendEvent>(OnDialogAppend);
     }
 
     private void OnDialogAppend(EntityUid uid, VoiceComponent component, DialogAppendEvent args)

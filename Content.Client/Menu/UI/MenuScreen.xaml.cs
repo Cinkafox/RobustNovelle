@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using Content.Client.Gameplay;
 using Content.StyleSheetify.Client.Utils;
 using Robust.Client;
@@ -12,8 +11,6 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Animations;
 using Robust.Shared.Configuration;
-using Robust.Shared.IoC;
-using Robust.Shared.Localization;
 using Robust.Shared.Utility;
 
 namespace Content.Client.Menu.UI;
@@ -21,67 +18,70 @@ namespace Content.Client.Menu.UI;
 [GenerateTypedNameReferences]
 public sealed partial class MenuScreen : UIScreen
 {
-    [Dependency] private readonly IStateManager _stateManager = default!;
-    [Dependency] private readonly IGameController _gameController = default!;
-    
-    public AnimationExtend<Vector2> MenuLabelAnim;
-    public AnimationExtend<Vector2> ButtonAnim;
-    
+    [Dependency] private IGameController _gameController = default!;
+
     private bool _resizeFirstTime = true;
-    
+    [Dependency] private IStateManager _stateManager = default!;
+    public AnimationExtend<Vector2> ButtonAnim;
+
+    public AnimationExtend<Vector2> MenuLabelAnim;
+
     public MenuScreen()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        
+
         SetAnchorPreset(MainContainer, LayoutPreset.Wide);
         SetAnchorPreset(Background, LayoutPreset.Wide);
 
         MenuLabelAnim = new AnimationExtend<Vector2>(o => SetPosition(ButtonContainer, o),
-             this, AnimationInterpolationMode.Cubic,
-             new List<AnimationTrackProperty.KeyFrame>()
-             {
-                 new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 70), 0.1f),
-                 new AnimationTrackProperty.KeyFrame(new Vector2(55, 70), 0.3f),
-                 new AnimationTrackProperty.KeyFrame(new Vector2(0, 70), 0.4f)
-             }
+            this, AnimationInterpolationMode.Cubic,
+            new List<AnimationTrackProperty.KeyFrame>
+            {
+                new(new Vector2(-1500, 70), 0.1f),
+                new(new Vector2(55, 70), 0.3f),
+                new(new Vector2(0, 70), 0.4f)
+            }
         );
-      
+
 
         ButtonAnim = new AnimationExtend<Vector2>(o =>
-            SetPosition(MenuLabel, o), 
-            this, 
-            AnimationInterpolationMode.Cubic, 
-            new List<AnimationTrackProperty.KeyFrame>()
+                SetPosition(MenuLabel, o),
+            this,
+            AnimationInterpolationMode.Cubic,
+            new List<AnimationTrackProperty.KeyFrame>
             {
-                new AnimationTrackProperty.KeyFrame(new Vector2(-1500, 0), 0.3f),
-                new AnimationTrackProperty.KeyFrame(new Vector2(55, 0), 0.3f),
-                new AnimationTrackProperty.KeyFrame(new Vector2(0, 00), 0.4f),
+                new(new Vector2(-1500, 0), 0.3f),
+                new(new Vector2(55, 0), 0.3f),
+                new(new Vector2(0, 00), 0.4f)
             }
-            );
-        
-        IoCManager.Resolve<IConfigurationManager>().OnValueChanged(CCVars.CCVars.BackroundMenu,OnBackroundChanged,true);
-        
+        );
+
+        IoCManager.Resolve<IConfigurationManager>()
+            .OnValueChanged(CCVars.CCVars.BackroundMenu, OnBackroundChanged, true);
+
         PlayButton.OnPressed += PlayButtonOnOnPressed;
         Exit.OnPressed += OnExitPressed;
-        
-        Config.OnPressed += _ => PlayAnimations();;
+
+        Config.OnPressed += _ => PlayAnimations();
+        ;
         MenuLabel.SetMessage(FormattedMessage.FromMarkup(Loc.GetString("menu-label")));
     }
+
     protected override void Resized()
     {
         base.Resized();
         if (!_resizeFirstTime) return;
-        
+
         PlayAnimations();
         _resizeFirstTime = false;
     }
 
     private void PlayAnimations()
     {
-        if(!MenuLabelAnim.HasRunningAnimation())
+        if (!MenuLabelAnim.HasRunningAnimation())
             MenuLabelAnim.PlayAnimation();
-        if(!ButtonAnim.HasRunningAnimation())
+        if (!ButtonAnim.HasRunningAnimation())
             ButtonAnim.PlayAnimation();
     }
 
@@ -94,13 +94,13 @@ public sealed partial class MenuScreen : UIScreen
     {
         _stateManager.RequestStateChange<GameplayState>();
     }
-    
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
         PlayButton.OnPressed -= PlayButtonOnOnPressed;
         Exit.OnPressed -= OnExitPressed;
-        IoCManager.Resolve<IConfigurationManager>().UnsubValueChanged(CCVars.CCVars.BackroundMenu,OnBackroundChanged);
+        IoCManager.Resolve<IConfigurationManager>().UnsubValueChanged(CCVars.CCVars.BackroundMenu, OnBackroundChanged);
     }
 
     private void OnBackroundChanged(string path)

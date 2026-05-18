@@ -6,13 +6,13 @@ namespace Content.Client.Dialog.Components;
 public sealed partial class DialogContainerComponent : Component
 {
     [ViewVariables] public readonly List<Data.Dialog> DialogQueue = [];
-    
-    [ViewVariables] public string? TextQueue = null;
-
-    [ViewVariables] public bool HasDialog => DialogQueue.Count > 0;
-    
-    [ViewVariables] public Dialog.Data.Dialog CurrentDialog => DialogQueue[0];
     [ViewVariables] public EntProtoId? CameraFollowProtoId;
 
     [ViewVariables] public EntProtoId? SelectedCharacter;
+
+    [ViewVariables] public string? TextQueue = null;
+
+    [ViewVariables] public bool HasDialog => DialogQueue.Count > 0;
+
+    [ViewVariables] public Data.Dialog CurrentDialog => DialogQueue[0];
 }

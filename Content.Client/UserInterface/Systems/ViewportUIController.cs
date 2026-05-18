@@ -1,30 +1,22 @@
 using Content.Client.UserInterface.Controls;
-using Content.Client.Input;
-using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.Input;
 using Robust.Client.Player;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Configuration;
-using Robust.Shared.GameObjects;
-using Robust.Shared.Input.Binding;
-using Robust.Shared.IoC;
-using Robust.Shared.Log;
-using Robust.Shared.Maths;
 using Robust.Shared.Timing;
 
 namespace Content.Client.UserInterface.Systems;
 
-public sealed class ViewportUIController : UIController
+public sealed partial class ViewportUIController : UIController
 {
     public const int ViewportWidth = 16;
     public const int ViewportHeight = 9;
 
     public static readonly Vector2i ViewportSize = (EyeManager.PixelsPerMeter * 21, EyeManager.PixelsPerMeter * 15);
-    [Dependency] private readonly IConfigurationManager _configurationManager = default!;
-    [Dependency] private readonly IEntityManager _entMan = default!;
-    [Dependency] private readonly IEyeManager _eyeManager = default!;
-    [Dependency] private readonly IPlayerManager _playerMan = default!;
+    [Dependency] private IConfigurationManager _configurationManager = default!;
+    [Dependency] private IEntityManager _entMan = default!;
+    [Dependency] private IEyeManager _eyeManager = default!;
+    [Dependency] private IPlayerManager _playerMan = default!;
     private MainViewport? Viewport => UIManager.ActiveScreen?.GetWidget<MainViewport>();
 
     public override void Initialize()
@@ -45,7 +37,7 @@ public sealed class ViewportUIController : UIController
         if (Viewport == null) return;
 
         Viewport.Viewport.ViewportSize =
-            (EyeManager.PixelsPerMeter * ViewportWidth , EyeManager.PixelsPerMeter * ViewportHeight);
+            (EyeManager.PixelsPerMeter * ViewportWidth, EyeManager.PixelsPerMeter * ViewportHeight);
     }
 
     public void ReloadViewport()
@@ -71,9 +63,10 @@ public sealed class ViewportUIController : UIController
         var ent = _playerMan.LocalEntity;
         if (_eyeManager.CurrentEye.Position != default || ent == null)
             return;
-        
+
         if (_entMan.TryGetComponent(ent, out EyeComponent? eye) && eye.Eye == _eyeManager.CurrentEye
-            && _entMan.GetComponent<TransformComponent>(ent.Value).WorldPosition == default)
+                                                                && _entMan.GetComponent<TransformComponent>(ent.Value)
+                                                                    .WorldPosition == default)
             return; // nothing to worry about, the player is just in null space... actually that is probably a problem?
 
         // Currently, this shouldn't happen. This likely happened because the main eye was set to null. When this
