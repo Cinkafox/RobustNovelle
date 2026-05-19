@@ -19,14 +19,18 @@ public sealed partial class BackgroundOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        //Почему не EntityQueryEnumerator? Потому что порядок рисовки сбивается. И потому что иди нахуй да
-        var list = _entityManager.EntityQuery<BackgroundComponent>().ToList();
-        list.Reverse();
+        var parentUid = args.MapUid;
+        //Почему не EntityQueryEnumerator? Потому что порядок рисовки сбивается.
+        var list = _entityManager.EntityQuery<BackgroundComponent, TransformComponent>()
+            .Where((b) => b.Item2.ParentUid == parentUid)
+            .Select(b => b.Item1)
+            .Reverse();
 
-        foreach (var component in list) DrawBackground(component.Layer, args, (byte)component.Visibility);
+        foreach (var component in list) 
+            DrawBackground(component.Layer, args, (byte)component.Visibility);
     }
 
-    public void DrawBackground(Texture layer, OverlayDrawArgs args, byte alpha = 255)
+    private void DrawBackground(Texture layer, OverlayDrawArgs args, byte alpha = 255)
     {
         var handle = args.WorldHandle;
         handle.DrawTextureRect(layer, args.WorldBounds.Box, new Color(255, 255, 255, alpha));

@@ -1,6 +1,8 @@
 using Content.Client.Gameplay.UI;
 using Content.Client.GameTicking;
+using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems;
+using Content.Client.Viewport;
 using Robust.Client.GameObjects;
 using Robust.Client.Input;
 using Robust.Client.Player;
@@ -13,7 +15,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Client.Gameplay;
 
-public sealed partial class GameplayState : State
+public sealed partial class GameplayState : State, IMainViewportState
 {
     [Dependency] private IEntitySystemManager _entitySystemManager = default!;
     [Dependency] private IInputManager _inputManager = default!;
@@ -21,6 +23,8 @@ public sealed partial class GameplayState : State
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IUserInterfaceManager _uiManager = default!;
+    
+    public MainViewport Viewport => _uiManager.ActiveScreen!.GetWidget<MainViewport>()!;
     
     private TransformSystem _transformSystem;
     private MapSystem _mapSystem;

@@ -15,13 +15,15 @@ namespace Content.Client.Viewport;
 /// </summary>
 public sealed partial class ScalingViewport : Control, IViewportControl
 {
-    private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
     [Dependency] private IClyde _clyde = default!;
     [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IInputManager _inputManager = default!;
+    
+    private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
+    
     private IEye? _eye;
     private int _fixedRenderScale = 1;
     private ScalingViewportIgnoreDimension _ignoreDimension = ScalingViewportIgnoreDimension.Horizontal;
-    [Dependency] private IInputManager _inputManager = default!;
     private ScalingViewportRenderScaleMode _renderScaleMode = ScalingViewportRenderScaleMode.Fixed;
     private ScalingViewportStretchMode _stretchMode = ScalingViewportStretchMode.Bilinear;
 
@@ -230,6 +232,11 @@ public sealed partial class ScalingViewport : Control, IViewportControl
     public void Screenshot(CopyPixelsDelegate<Rgba32> callback)
     {
         _queuedScreenshots.Add(callback);
+    }
+
+    public void ScreenshotNow(CopyPixelsDelegate<Rgba32> callback)
+    {
+        _viewport?.RenderTarget.CopyPixelsToMemory<Rgba32>(callback);
     }
 
     // Draw box in pixel coords to draw the viewport at.
