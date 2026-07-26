@@ -81,12 +81,12 @@ public sealed partial class EntryPoint : GameClient
         if (_configurationManager.GetCVar(CCVars.CCVars.GameLoadImmediately))
             _baseClient.StartSinglePlayer();
         else
-            _baseClient.StopSinglePlayer();
+            _stateManager.RequestStateChange<MenuState>();
     }
 
     private void BaseClientOnRunLevelChanged(object? sender, RunLevelChangedEventArgs e)
     {
-        if (e.NewLevel is ClientRunLevel.InGame or ClientRunLevel.SinglePlayerGame)
+        if (e.NewLevel.IsInGameLike())
         {
             Timer.Spawn(0, () =>
             {

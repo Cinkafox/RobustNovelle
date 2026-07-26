@@ -1,0 +1,7 @@
+- type: soundCollection
+  id: Meow
+  files:
+    - /Audio/LustyDoggy/Meow/meow1.wav
+    - /Audio/LustyDoggy/Meow/meow2.wav
+    - /Audio/LustyDoggy/Meow/meow3.wav
+    - /Audio/LustyDoggy/Meow/meow4.wav

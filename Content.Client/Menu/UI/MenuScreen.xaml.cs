@@ -19,11 +19,11 @@ namespace Content.Client.Menu.UI;
 public sealed partial class MenuScreen : UIScreen
 {
     [Dependency] private IGameController _gameController = default!;
+    [Dependency] private IBaseClient _baseClient = default!;
 
     private bool _resizeFirstTime = true;
-    [Dependency] private IStateManager _stateManager = default!;
+    
     public AnimationExtend<Vector2> ButtonAnim;
-
     public AnimationExtend<Vector2> MenuLabelAnim;
 
     public MenuScreen()
@@ -92,7 +92,7 @@ public sealed partial class MenuScreen : UIScreen
 
     private void PlayButtonOnOnPressed(BaseButton.ButtonEventArgs obj)
     {
-        _stateManager.RequestStateChange<GameplayState>();
+        _baseClient.StartSinglePlayer();
     }
 
     protected override void Dispose(bool disposing)

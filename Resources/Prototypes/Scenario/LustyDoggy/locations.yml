@@ -4,7 +4,7 @@
     path: /Textures/LustyDoggy/Location/room/room.png
     lightPath: /Textures/LustyDoggy/Location/room/room.overlay.png
   ambientSounds:
-    - path: "/Audio/Background/back_city.ogg"
+    - path: "/Audio/LustyDoggy/back_city.ogg"
   entities:
     - entity: lustoeb
       position: 6,2
