@@ -22,63 +22,57 @@ namespace Content.Client.Location.Systems;
 public sealed partial class LocationSystem : EntitySystem
 {
     private readonly Dictionary<string, EntityUid> _locationsId = new();
-
-    private readonly EntProtoId _wallsId = "Wall";
+    
     [Dependency] private AudioSystem _audioSystem = default!;
-    [Dependency] private BackgroundSystem _backgroundSystem = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IResourceManager _resourceManager = default!;
 
-    private bool TryInitializeLocation(LocationPrototype proto, out EntityUid mapUid)
+    private void InitializeLocation(ProtoId<LocationPrototype> prototype, out EntityUid mapUid)
     {
+        if (!_prototypeManager.TryIndex(prototype, out var proto))
+            throw new Exception($"PROTO LOCATION {prototype} NOT EXIST!!!");
+        
         mapUid = _mapSystem.CreateMap(out var mapId);
         Log.Info($"Current location ID: {mapUid}");
         _locationsId.TryAdd(proto.ID, mapUid);
         var loc = AddComp<LocationComponent>(mapUid);
-
-        if (proto.Location is not null)
+        
+        proto.Location.LoadLocation(new Entity<LocationComponent>(mapUid, loc), EntityManager, this, _resourceManager);
+        
+        foreach (var entity in proto.Entities)
         {
-            loc.CurrentLocation = proto.Location;
-
-            proto.Location.Map ??= new ResPath(proto.Location.Path.ToString().Replace(".png", ".map.png"));
-
-            using var stream = _resourceManager.ContentFileRead(proto.Location.Map.Value.ToString());
-            var texture = Image.Load<Rgba32>(stream);
-            var map = new ColliderMap(texture);
-            foreach (var pos in map) Spawn(_wallsId, new EntityCoordinates(mapUid, pos - new Vector2(-0.5f, 0.5f)));
+            var uid = Spawn(entity.Entity,
+                new EntityCoordinates(mapUid, entity.Position - new Vector2(-0.5f, 0.5f)));
+            loc.EntityDefinitions.Add(entity.Entity, uid);
         }
-
-        if (proto.Entities is { } entities)
-            foreach (var entity in entities)
-            {
-                var uid = Spawn(entity.Entity,
-                    new EntityCoordinates(mapUid, entity.Position - new Vector2(-0.5f, 0.5f)));
-                loc.EntityDefinitions.Add(entity.Entity, uid);
-            }
-
+        
         foreach (var sound in proto.AmbientSounds)
             loc.Ambients.Add(
                 _audioSystem.PlayEntity(sound, Filter.BroadcastMap(mapId), mapUid, false,
                     AudioParams.Default.WithVolume(0.5f).WithLoop(true))!.Value.Entity);
-
-        return true;
+        
+        loc.CurrentLocation = proto.Location;
     }
 
-    public EntityUid LoadLocation(string prototype)
+    public EntityUid LoadLocation(ProtoId<LocationPrototype> prototype)
     {
-        if (!_prototypeManager.TryIndex<LocationPrototype>(prototype, out var proto))
-            throw new Exception($"PROTO LOCATION {prototype} NOT EXIST!!!");
+        EntityUid mapUid;
+        LocationComponent? component;
 
-        if (!_locationsId.TryGetValue(prototype, out var mapId) &&
-            !TryInitializeLocation(proto, out mapId))
-            throw new Exception("Увы...");
+        if (_locationsId.TryGetValue(prototype, out mapUid) && TryComp(mapUid, out component))
+        {
+            component.CurrentLocation.OnExit(new Entity<LocationComponent>(mapUid, component), EntityManager, this, _resourceManager);
+        }
+        else
+        {
+            InitializeLocation(prototype, out mapUid);
+            component = Comp<LocationComponent>(mapUid);
+        }
+        
+        component.CurrentLocation.OnEnter(new Entity<LocationComponent>(mapUid, component), EntityManager, this, _resourceManager);
 
-        if (proto.Location is not null) _backgroundSystem.LoadBackground(mapId, null);
-
-        if (proto.Background is not null) _backgroundSystem.LoadBackground(mapId, proto.Background.Value);
-
-        return mapId;
+        return mapUid;
     }
 
     public bool TryGetLocationEntity(EntityUid anotherLocationEntity, EntProtoId? ent, out EntityUid uid)

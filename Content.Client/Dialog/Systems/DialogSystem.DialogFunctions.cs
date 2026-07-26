@@ -18,7 +18,7 @@ public partial class DialogSystem
 
         if (ent.Comp.CurrentDialog.Location is not null)
         {
-            var locationUid = _location.LoadLocation(ent.Comp.CurrentDialog.Location);
+            var locationUid = _location.LoadLocation(ent.Comp.CurrentDialog.Location.Value);
 
             if (_location.TryGetLocationEntity(locationUid, ent.Comp.CameraFollowProtoId, out var camFol))
                 _cameraSystem.FollowTo(camEnt, camFol);

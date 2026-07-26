@@ -1,6 +1,7 @@
 - type: location
   id: room_bedrooom
   location:
+    !type:MapLocationDefinition
     path: /Textures/LustyDoggy/Location/room/room.png
     lightPath: /Textures/LustyDoggy/Location/room/room.overlay.png
   ambientSounds:
@@ -21,6 +22,7 @@
 - type: location
   id: station
   location:
+    !type:MapLocationDefinition
     path: /Textures/LustyDoggy/Location/station/station.png
   entities:
     - entity: lustoebIngame

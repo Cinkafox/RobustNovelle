@@ -1,4 +1,5 @@
-﻿using Content.Client.Location.Components;
+﻿using System.Numerics;
+using Content.Client.Location.Components;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Enums;
@@ -19,15 +20,10 @@ public sealed partial class LocationLightOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        var query = _entityManager.EntityQueryEnumerator<TransformComponent, LocationComponent>();
-        while (query.MoveNext(out var transform, out var locationComponent))
-            if (locationComponent.CurrentLocation is { LightPath: not null })
-            {
-                if (args.Viewport.Eye?.Position.MapId != transform.MapID) continue;
-
-                var tex = _resCache.GetResource<TextureResource>(locationComponent.CurrentLocation.LightPath.Value)
-                    .Texture;
-                args.WorldHandle.DrawTexture(tex, transform.WorldPosition);
-            }
+        if(!_entityManager.TryGetComponent<LocationLightComponent>(args.MapUid, out var locationComponent)) 
+            return;
+        
+        locationComponent.LightTexture ??= _resCache.GetResource<TextureResource>(locationComponent.LightPath).Texture;
+        args.WorldHandle.DrawTexture(locationComponent.LightTexture, Vector2.Zero);
     }
 }

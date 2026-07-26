@@ -7,7 +7,6 @@ namespace Content.Client.Location.Components;
 public sealed partial class LocationComponent : Component
 {
     [ViewVariables] public HashSet<EntityUid> Ambients = [];
-    [DataField] public LocationDefinition? CurrentLocation;
-
     [ViewVariables] public Dictionary<EntProtoId, EntityUid> EntityDefinitions = new();
+    [DataField] public ILocationDefinition CurrentLocation;
 }

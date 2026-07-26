@@ -114,7 +114,16 @@
     - text: ОГОСПАДИ!
     - character: greysha
     - cameraOn: greysha
-    - text: Ну привет нахуй, я тебе что сказал там по рации?
+    - actions:
+        - !type:RotateCharacterOnAction
+          prototype: greysha
+          rotation: 90
+    - text: Ну привет нахуй...
+    - actions:
+        - !type:RotateCharacterOnAction
+          prototype: greysha
+          rotation: 180
+    - text:  тебе что сказал там по рации?
     - character: lustoebIngame
     - cameraOn: lustoebIngame
     - text: Т..ты! ТЫ ИГРАЕШЬ ПО НОНРП! ТЫ ЗАХУЯРИЛ МОЕГО ЛЮБИМОГО МЕТАДРУГА!
@@ -127,6 +136,9 @@
         - !type:AudioAction
           sound:
             path: /Audio/LustyDoggy/strahoebina2.ogg
+        - !type:RotateCharacterOnAction
+          prototype: greysha
+          rotation: 90
     - text: БЕСКОНТАКТНОЕ УБИЙСТВО ЕРПШЕРА!
     - character: lustoebIngame
     - cameraOn: lustoebIngame

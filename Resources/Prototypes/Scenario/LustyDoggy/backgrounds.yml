@@ -1,6 +1,8 @@
 - type: location
   id: lustoeb_ficha
-  background: /Textures/LustyDoggy/Background/lustoeb_ficha.png
+  location:
+    !type:LocationWithBackgroundDefinition
+    background: /Textures/LustyDoggy/Background/lustoeb_ficha.png
   entities:
     - entity: lustoeb
     - entity: mother
@@ -8,7 +10,9 @@
 
 - type: location
   id: lustoeb_room
-  background: /Textures/LustyDoggy/Background/lustoeb_room.png
+  location:
+    !type:LocationWithBackgroundDefinition
+    background: /Textures/LustyDoggy/Background/lustoeb_room.png
   entities:
     - entity: lustoeb
     - entity: mother
@@ -16,14 +20,18 @@
   
 - type: location
   id: lustoeb_school
-  background: /Textures/LustyDoggy/Background/lustoeb_school.png
+  location:
+    !type:LocationWithBackgroundDefinition
+    background: /Textures/LustyDoggy/Background/lustoeb_school.png
   entities:
     - entity: lustoeb
     - entity: dictor
       
 - type: location
   id: dark
-  background: /Textures/LustyDoggy/Background/vpopenegra.png
+  location:
+    !type:LocationWithBackgroundDefinition
+    background: /Textures/LustyDoggy/Background/vpopenegra.png
   entities:
     - entity: lustoeb
     - entity: dictor
