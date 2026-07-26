@@ -93,14 +93,14 @@ public sealed partial class DialogSystem : EntitySystem
     {
         _dialogUiController.Show();
         if (TryComp<InteractionComponent>(ent, out var interactionComponent)) interactionComponent.IsEnabled = false;
-        if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent)) inputMoverComponent.IsEnabled = false;
+        if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent)) inputMoverComponent.IsMoveEnabled = false;
     }
 
     private void Hide(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.Hide();
         if (TryComp<InteractionComponent>(ent, out var interactionComponent)) interactionComponent.IsEnabled = true;
-        if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent)) inputMoverComponent.IsEnabled = true;
+        if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent)) inputMoverComponent.IsMoveEnabled = true;
     }
 
     private void SetDialogText(Entity<DialogContainerComponent> ent, string text)

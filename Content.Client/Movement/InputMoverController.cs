@@ -1,4 +1,5 @@
 ﻿using Content.Client.Camera.Components;
+using Content.Client.Utils;
 using Robust.Client.GameStates;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
@@ -21,29 +22,24 @@ public sealed partial class InputMoverController : VirtualController
         _inputMoverQuery = GetEntityQuery<InputMoverComponent>();
 
         CommandBinds.Builder
-            .Bind(EngineKeyFunctions.MoveUp, new MoverDirInputCmdHandler(this, Direction.North))
-            .Bind(EngineKeyFunctions.MoveLeft, new MoverDirInputCmdHandler(this, Direction.West))
-            .Bind(EngineKeyFunctions.MoveRight, new MoverDirInputCmdHandler(this, Direction.East))
-            .Bind(EngineKeyFunctions.MoveDown, new MoverDirInputCmdHandler(this, Direction.South))
+            .Bind(EngineKeyFunctions.MoveUp, new MoverDirInputCmdHandler(this, DirectionFlag.North))
+            .Bind(EngineKeyFunctions.MoveLeft, new MoverDirInputCmdHandler(this, DirectionFlag.West))
+            .Bind(EngineKeyFunctions.MoveRight, new MoverDirInputCmdHandler(this, DirectionFlag.East))
+            .Bind(EngineKeyFunctions.MoveDown, new MoverDirInputCmdHandler(this, DirectionFlag.South))
             .Bind(EngineKeyFunctions.Walk, new RunInputCmdHandler(this))
             .Register<InputMoverController>();
     }
 
-    public void HandleDirChange(EntityUid sessionAttachedEntity, Direction direction, ushort messageSubTick,
+    public void HandleDirChange(EntityUid sessionAttachedEntity, DirectionFlag direction, ushort messageSubTick,
         bool isDown)
     {
         if (!_inputMoverQuery.TryComp(sessionAttachedEntity, out var inputMoverComponent))
             return;
 
         if (isDown)
-        {
-            inputMoverComponent.ButtonPressed += 1;
-            inputMoverComponent.Direction = direction;
-        }
+            inputMoverComponent.Direction |= direction;
         else
-        {
-            inputMoverComponent.ButtonPressed -= 1;
-        }
+            inputMoverComponent.Direction &= ~direction;
     }
 
     public void HandleRunChange(EntityUid sessionAttachedEntity, ushort messageSubTick, bool isRunning)
@@ -65,28 +61,21 @@ public sealed partial class InputMoverController : VirtualController
 
         while (query.MoveNext(out var uid, out var inputMoverComponent, out var cameraComponent))
         {
-            var oldSpeed = inputMoverComponent.Speed;
-
-            if (inputMoverComponent.IsMoving && inputMoverComponent.IsEnabled)
-                inputMoverComponent.Speed += 0.25f;
-            else
-                inputMoverComponent.Speed -= 0.5f;
-
-            inputMoverComponent.Speed = float.Clamp(inputMoverComponent.Speed, 0, 3);
-
             if (cameraComponent.FollowUid is null ||
                 !TryComp<PhysicsComponent>(cameraComponent.FollowUid.Value, out var physicsComponent)) continue;
 
-            if (oldSpeed == 0 && inputMoverComponent.Speed != 0)
+            if (inputMoverComponent.OldMagnitude == 0 && inputMoverComponent.Magnitude != 0)
                 RaiseLocalEvent(cameraComponent.FollowUid.Value, new OnEntityMoving());
-            if (oldSpeed != 0 && inputMoverComponent.Speed == 0)
+            if (inputMoverComponent.OldMagnitude != 0 && inputMoverComponent.Magnitude == 0)
                 RaiseLocalEvent(cameraComponent.FollowUid.Value, new OnEntityStopMoving());
 
             PhysicsSystem.SetLinearVelocity(cameraComponent.FollowUid.Value,
-                inputMoverComponent.Direction.ToVec() * inputMoverComponent.Speed, body: physicsComponent);
+                inputMoverComponent.MoveVelocity, body: physicsComponent);
 
-            if (inputMoverComponent.IsEnabled)
+            if (inputMoverComponent.IsMoving && inputMoverComponent.IsMoveEnabled)
                 Transform(cameraComponent.FollowUid.Value).LocalRotation = inputMoverComponent.Direction.ToAngle();
+            
+            inputMoverComponent.OldMagnitude = inputMoverComponent.Magnitude;
         }
     }
 }
@@ -113,17 +102,17 @@ public sealed class RunInputCmdHandler : InputCmdHandler
     {
         if (session?.AttachedEntity is null) return false;
         _inputMoverController.HandleRunChange(session.AttachedEntity.Value, message.SubTick,
-            message.State == BoundKeyState.Up);
+            message.State != BoundKeyState.Up);
         return false;
     }
 }
 
 public sealed class MoverDirInputCmdHandler : InputCmdHandler
 {
-    private readonly Direction _dir;
+    private readonly DirectionFlag _dir;
     private readonly InputMoverController _inputMoverController;
 
-    public MoverDirInputCmdHandler(InputMoverController inputMoverController, Direction dir)
+    public MoverDirInputCmdHandler(InputMoverController inputMoverController, DirectionFlag dir)
     {
         _inputMoverController = inputMoverController;
         _dir = dir;

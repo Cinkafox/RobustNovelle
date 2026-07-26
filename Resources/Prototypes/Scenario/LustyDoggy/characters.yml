@@ -5,6 +5,7 @@
   components:
     - type: Sprite
       sprite: LustyDoggy/Entities/lustoeb.rsi
+      noRot: true
       layers:
         - state: stand
     - type: Voice
@@ -18,6 +19,7 @@
   components:
     - type: Sprite
       sprite: LustyDoggy/Entities/lustoeb_ingame.rsi
+      noRot: true
       layers:
         - state: stand
     - type: Voice
@@ -31,6 +33,7 @@
   components:
     - type: Sprite
       sprite: LustyDoggy/Entities/greysha.rsi
+      noRot: true
       layers:
         - state: stand
     - type: Voice
