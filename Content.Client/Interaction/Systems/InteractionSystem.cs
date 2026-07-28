@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Client.Dialog.Components;
 using Content.Client.Interaction.Components;
+using Content.Client.Scene.Systems;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Input;
@@ -13,6 +14,7 @@ namespace Content.Client.Interaction.Systems;
 public sealed partial class InteractionSystem : EntitySystem
 {
     [Dependency] private IOverlayManager _overlayManager = default!;
+    [Dependency] private SceneSystem _sceneSystem = default!;
 
     public override void Initialize()
     {
@@ -29,10 +31,8 @@ public sealed partial class InteractionSystem : EntitySystem
             !interactionComponent.IsEnabled ||
             interactionComponent.CurrentInteractible is null
            ) return;
-
-        foreach (var action in interactionComponent.CurrentInteractible.Value.Item1.Actions)
-            action.Act(IoCManager.Instance!, new Entity<DialogContainerComponent>(entity,
-                Comp<DialogContainerComponent>(entity)));
+        
+        _sceneSystem.LoadScene(entity, interactionComponent.CurrentInteractible.Value.Item1.Scene);
     }
 
     public override void Update(float frameTime)

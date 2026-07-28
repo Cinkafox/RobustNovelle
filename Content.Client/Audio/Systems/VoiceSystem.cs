@@ -18,14 +18,14 @@ public sealed partial class VoiceSystem : EntitySystem
     private void OnDialogAppend(EntityUid uid, VoiceComponent component, DialogAppendEvent args)
     {
         if (args.Dialog is not { Delay: > 10, SayLetters: true }) return;
-        if (args.Dialog.SkipCounter == args.Dialog.SkipSayCount)
+        if (component.SkipCounter == args.Dialog.SkipSayCount)
         {
             _audioSystem.PlayEntity(component.Voice, args.DialogEntity, uid, AudioParams.Default);
-            args.Dialog.SkipCounter = 0;
+            component.SkipCounter = 0;
         }
         else
         {
-            args.Dialog.SkipCounter += 1;
+            component.SkipCounter += 1;
         }
     }
 }

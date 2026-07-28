@@ -1,198 +1,42 @@
 - type: scene
   id: default
   dialogs:
-    - title: "Пролог"
+    - title: "Тестовая среда"
       location: lustoeb_room
     - character: dictor
-    - text: Жил был лустоеб.
-    - text: Любил он после школы играть на своем любимом сервере про 2д космонавтиков - Lust Station.
-    - location: lustoeb_school
-    - text: В школе его постоянно окунали вниз головой старшеклассники с 10б в сральник.
-    - text: Его явно тут в хуй не ставили, ведь он ходит как петух, так ещё и педик оказывается!
-    - text: Носит свои ЛГБТ пины и значок кодепа визденов.
-    - text: Приходя домой, весь в говне и в моче, он тут же придумывает очередной остросюжетный РП момент со своим персонажем - розовая вульпа маленького роста по имени Няшка Няшкова.
-    - title: "Где-то в спальне"
-      location: room_bedrooom
-      cameraOn: lustoeb
-    - character: lustoeb
-    - text: ...
-    - text: Бозе.. миня абижали вчира..
-    - text: НО СИГОДНЯ ВИХАДНОЙ! УРЯЯ! Я СМАГУ ЕРПШИТЬ НА ЛУСТЕ!
-    - text: Так.. хочу к компуктеру!
-
-- type: scene
-  id: windowLook
-  dialogs:
-    - character: lustoeb
-    - text: АА СОЛНЫШКА ААА
-    - text: ЙА ВАМПИР ПО ЭРПЕ! ФУ СОЛНЦЕ!
-
-- type: scene
-  id: doorLook
-  dialogs:
-    - character: lustoeb
-    - text: АА ДВЕРЬ! Я НИХАЧУ НА ВЫХАД!
-    - text: Т...там... трава!
-
-- type: scene
-  id: computerLook
-  dialogs:
-    - character: lustoeb
-    - text: ООО! А ЭТА МОЙ КАМПУКТЕР!
-    - text: ПРОСТА ЖЕСТЬ!
-    - text: Хм.. может ща зайти на луст?
+    - text: "AAAAAAAAAAAAAAAAAAAAAAAAbBBBb"  
+    - text: .. а че дальше?
       choices:
-        - name: Начать РПшить в игре про 2д космонавтиков
-          dialogAction:
-            !type:LoadSceneAction
-            prototype: computerPlay
-        - name: Пока нет
-    - text: Ладна! Патом как онлайн 100 будит
+        Продолжить:
+          - text: Продолжим ага
+        Задуматься:
+          - text: стоп, а нахрена мне это?
+          - text: я пока подумаю...
+          - stopDialog: true
+    - variable:
+        name: meowCount
+        value: 0
+    - scene: testSceneLoop
 
 - type: scene
-  id: bedLook
+  id: testSceneLoop
   dialogs:
-    - character: lustoeb
-    - text: Блина-а-а, обычно я хочу спать
-    - text: НО МЕНЯ ЖДЕТ КОМПУКТЕР!
-    - text: И МИНЯ ЖДУТ МЕТАДРУЗЬЯ С ЛУСТА!
-
+    - text: "Вы очень хотите мяукать?"
+    - text: "Сопротивлятся?"
+      choices:
+        Нет!:
+          - text: М...мяу!
+        Черт, парень. Да!:
+          - scene: testSceneEnd
+    - if: "$(#meowCount >= 5)"
+      then:
+        - text: "Вы сорвали голос..."
+        - scene: testSceneEnd
+    - text: "Вы мяукнули $(#meowCount = #meowCount + 1) раз"
+    - scene: testSceneLoop
+          
 - type: scene
-  id: computerPlay
+  id: testSceneEnd
   dialogs:
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/klava.ogg
-    - character: lustoeb
-    - text: Тыакс.. Блина, как же мне нравицца логотип у лаунчера визденав
-    - text: Текс, гди там луст?
-    - text: ВО! ИГРАТЬ! ИГРАТЬ!
-    - location: lustoeb_ficha
-    - text: Загрузилось!
-    - text: Тыааакс! Где тут роль мейдоч..
-    - text: Вот чёрт! Кто же выбрал мою ЛЮБИМУЮ РОЛЬ??? МЕЙДОЧКУ!!
-    - text: Я, блять, очень злой!
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/stolpunch.ogg
-    - text: "*уебал по столу своими ручками*"
-      sayLetters: false
-    - character: mother
-    - text: ЧЕ ТУТ ПРОИСХОДИТ НАХУЙ! ТЫ ТАМ ОПЯТЬ В ТУ ПЕНДОСКУЮ ХУЙНЮ ИГРАЕШЬ?
-    - character: lustoeb
-    - text: н.. НЕТ МАМ! ВСЁ ХАВАФО!
-    - character: mother
-    - text: Ну смотри, если еще раз услышу стук то я отберу у тебя компуктер на МЕСЯЦ!
-    - character: lustoeb
-    - text: х.. ХАВАФО!
-    - text: блин блин... мне нужно быть аккуратнее. Я не хочу разлучатся с метадрузьями..
-    - title: "[RU][SS14][ERP][18+IQ] ЛУСТОЁБ СТЕЙШН"
-    - location: station
-      cameraOn: lustoebIngame
-      character: lustoebIngame
-      text: "Всем привет!"
-    - character: greysha
-    - text: "Уу нахуй, подойдешь ко мне - пизда тебе!"
-    - character: lustoebIngame
-    - text: блин блин... он какой то токсик.. лишь бы не встретить его
-
-
-- type: scene
-  id: computerPlayCorridor
-  dialogs:
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/strahoebina1.ogg
-    - delay: 1000
-    - cameraOn: greysha
-    - delay: 2000
-    - cameraOn: lustoebIngame
-    - character: lustoebIngame
-    - text: ОГОСПАДИ!
-    - character: greysha
-    - cameraOn: greysha
-    - actions:
-        - !type:RotateCharacterOnAction
-          prototype: greysha
-          rotation: 90
-    - text: Ну привет нахуй...
-    - actions:
-        - !type:RotateCharacterOnAction
-          prototype: greysha
-          rotation: 180
-    - text:  тебе что сказал там по рации?
-    - character: lustoebIngame
-    - cameraOn: lustoebIngame
-    - text: Т..ты! ТЫ ИГРАЕШЬ ПО НОНРП! ТЫ ЗАХУЯРИЛ МОЕГО ЛЮБИМОГО МЕТАДРУГА!
-    - text: Я вызываю админа!
-    - text: АДМИН АДМИН ТУТ НОНРП!
-    - character: greysha
-    - cameraOn: greysha
-    - text: Ну почему ебучие ЕРПшеры такие идиоты..
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/strahoebina2.ogg
-        - !type:RotateCharacterOnAction
-          prototype: greysha
-          rotation: 90
-    - text: БЕСКОНТАКТНОЕ УБИЙСТВО ЕРПШЕРА!
-    - character: lustoebIngame
-    - cameraOn: lustoebIngame
-    - delay: 1000
-    - location: dark
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/reznya.ogg
-    - delay: 2000
-    - location: lustoeb_ficha
-    - cameraOn: lustoeb
-    - title: "Доигрался(("
-    - character: lustoeb
-      text: "..."
-      delay: 300
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/stolpunch.ogg
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/blya.ogg
-    - text: ЭТОКАКОГОХУЯЩАБЫЛОБЛЯ
-      skipDialog: true
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/stolpunch.ogg
-    - text: АДМИННАХУЙЭТОНОНРПБЛЯТЫГДЕСУЧКАЕБАННАЯСЫНШЛЮХИ
-      skipDialog: true
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/stolpunch.ogg
-    - text: ЯВРОТЕБАЛТЕБЯИТВОЮСЕМЬЮБЛЯДИНАЕБАННАЯ
-      skipDialog: true
-    - actions:
-        - !type:AudioAction
-          sound:
-            path: /Audio/LustyDoggy/stolpunch.ogg
-    - text: СУУУУУУУУУУУУУУУУУУУУУУУУУУУКААААААААААААААА!
-      skipDialog: true
-    - text: ой.. мама пришла!.....
-      delay: 100
-      skipDialog: true
-    - character: mother
-    - text: Я,БЛЯ, ЩА ДАМ,БЛЯХА, ЧЕ ЗА ХУЙНЯ ТО А???!!?
-      skipDialog: true
-    - delay: 10000
-    - character: dictor
-    - text: Вот и сказочке конец
-    - text: А кто слушал...
-    - text: Ты дурак?
-    - text: Играть надо было!
-    - actions:
-        - !type:EndGameAction
+    - text: "Все! Хватит мяукать!"
+    - action: !type:EndGameAction

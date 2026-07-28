@@ -6,4 +6,5 @@ namespace Content.Client.Audio.Components;
 public sealed partial class VoiceComponent : Component
 {
     [DataField] public SoundSpecifier Voice;
+    [ViewVariables(VVAccess.ReadOnly)] public int SkipCounter;
 }

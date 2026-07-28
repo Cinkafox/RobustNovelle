@@ -4,9 +4,7 @@
   components:
     - type: Interactible
       name: открыть дверь
-      actions:
-        - !type:LoadSceneAction
-          prototype: doorLook
+      scene: doorLook
 
 - type: entity
   id: computerInteractible
@@ -14,9 +12,7 @@
   components:
     - type: Interactible
       name: осмотреть компьютер
-      actions:
-       - !type:LoadSceneAction
-         prototype: computerLook
+      scene: computerLook
 
 - type: entity
   id: bedInteractible
@@ -24,9 +20,7 @@
   components:
     - type: Interactible
       name: осмотреть кровать
-      actions:
-        - !type:LoadSceneAction
-          prototype: bedLook
+      scene: bedLook
 
 - type: entity
   id: windowInteractible
@@ -34,9 +28,7 @@
   components:
     - type: Interactible
       name: выглянуть в окошко
-      actions:
-        - !type:LoadSceneAction
-          prototype: windowLook
+      scene: windowLook
           
 - type: entity
   id: greyTrigger
@@ -44,6 +36,4 @@
   components:
     - type: Interactible
       invokeImmediately: true
-      actions:
-        - !type:LoadSceneAction
-          prototype: computerPlayCorridor
+      scene: computerPlayCorridor

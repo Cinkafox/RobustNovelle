@@ -1,11 +1,8 @@
 using Content.Client.Character.Systems;
 using Content.Client.Dialog.Components;
 using Content.Client.Dialog.Systems;
-using Content.Client.Menu;
 using Content.Client.Scene.Components;
 using Content.Client.Scene.Data;
-using Robust.Client;
-using Robust.Client.State;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager;
@@ -39,9 +36,8 @@ public sealed partial class SceneSystem : EntitySystem
         var dialogContainer = GetDialogContainer(entity);
 
         entity.Comp.CurrentScene = _serializationManager.CreateCopy(proto, notNullableOverride: true);
-
-        foreach (var dialog in entity.Comp.CurrentScene.Dialogs) _dialogSystem.AddDialog(dialogContainer, dialog);
-
+        
+        _dialogSystem.SetDialog(dialogContainer, entity.Comp.CurrentScene.Dialogs);
         _dialogSystem.ContinueDialog(dialogContainer);
     }
 

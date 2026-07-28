@@ -2,14 +2,16 @@ using System.Linq;
 using Content.Client.Camera.Systems;
 using Content.Client.Character.Systems;
 using Content.Client.Dialog.Components;
+using Content.Client.Dialog.Data;
+using Content.Client.GameVariables;
 using Content.Client.Input;
 using Content.Client.Interaction.Components;
 using Content.Client.Location.Systems;
 using Content.Client.Movement;
+using Content.Client.Scene.Systems;
 using Content.Client.UserInterface.Systems.Dialog;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.Input;
 using Robust.Client.UserInterface;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
@@ -23,9 +25,9 @@ public sealed partial class DialogSystem : EntitySystem
     [Dependency] private CameraSystem _cameraSystem = default!;
     [Dependency] private CharacterSystem _characterSystem = default!;
     [Dependency] private IClyde _clyde = default!;
-    [Dependency] private IInputManager _input = default!;
     [Dependency] private LocationSystem _location = default!;
     [Dependency] private IUserInterfaceManager _userInterfaceManager = default!;
+    [Dependency] private VariableManager _variableManager = default!;
     
     private DialogUIController _dialogUiController = default!;
     
@@ -57,22 +59,41 @@ public sealed partial class DialogSystem : EntitySystem
 
     private void OnDialogEnd(Entity<DialogContainerComponent> ent, ref DialogEndedEvent ev)
     {
-        ent.Comp.DialogQueue.RemoveAt(0);
+        if(ev.Dialog.Action is not null)
+            ev.Dialog.Action.Act(IoCManager.Instance!, ent);
 
-        foreach (var action in ev.Dialog.Actions.ToList()) action.Act(IoCManager.Instance!, ent);
-
-        foreach (var choise in ev.Dialog.Choices.ToList()) _dialogUiController.AddButton(choise, ent);
+        if (ev.Dialog.SkipDialog)
+            ContinueDialog(ent);
+        else if(ev.Dialog.Choices.Count == 0)
+            _dialogUiController.AddButton(new DialogButton(){ Name = Loc.GetString("dialog-continue") }, ent);
+        
+        foreach (var choise in ev.Dialog.Choices) 
+            _dialogUiController.AddButton(new DialogButton(){Name = choise.Key, Dialog = choise.Value.ToArray()}, ent);
     }
-
-    public void AddDialog(Entity<DialogContainerComponent> ent, Data.Dialog dialog)
+    
+    public void SetDialog(Entity<DialogContainerComponent> ent, List<Data.Dialog> dialog)
     {
-        if (ent.Comp.DialogQueue.Count == 0) Show(ent);
-        ent.Comp.DialogQueue.Add(dialog);
+        CleanupDialog(ent);
+        
+        if(dialog.Count == 0)
+             return;
+        
+        ent.Comp.RootContainer.Dialogs.AddRange(dialog);
+    }
+    
+    public void AppendDialog(Entity<DialogContainerComponent> ent, List<Data.Dialog> dialog)
+    {
+        if(dialog.Count == 0)
+            return;
+        
+        var container = new DialogContainer();
+        container.Dialogs.AddRange(dialog);
+        ent.Comp.RootContainer.EnqueueContainer(container);
     }
 
     public void SpeedupDialog(Entity<DialogContainerComponent> ent)
     {
-        if (!ent.Comp.HasDialog || ent.Comp.CurrentDialog.DontLetSkip) return;
+        if (ent.Comp.CurrentDialog == null || ent.Comp.CurrentDialog.DontLetSkip) return;
         ent.Comp.CurrentDialog.Delay = 2;
     }
 
@@ -85,13 +106,26 @@ public sealed partial class DialogSystem : EntitySystem
         else
         {
             var btns = _dialogUiController.GetDialogButtons();
-            if (btns.Count == 1) btns[0].DialogAction.Act(IoCManager.Instance!, ent);
+            if (btns.Count == 1) ActButton(ent, btns[0]);
         }
+    }
+
+    public void ActButton(Entity<DialogContainerComponent> ent, DialogButton button)
+    {
+        if (button.Dialog is null)
+        {
+            ContinueDialog(ent);
+            return;
+        }
+        
+        AppendDialog(ent, button.Dialog.ToList());
+        ContinueDialog(ent);
     }
 
     private void Show(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.Show();
+        ent.Comp.IsDialogVisible = true;
         if (TryComp<InteractionComponent>(ent, out var interactionComponent)) interactionComponent.IsEnabled = false;
         if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent)) inputMoverComponent.IsMoveEnabled = false;
     }
@@ -99,6 +133,7 @@ public sealed partial class DialogSystem : EntitySystem
     private void Hide(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.Hide();
+        ent.Comp.IsDialogVisible = false;
         if (TryComp<InteractionComponent>(ent, out var interactionComponent)) interactionComponent.IsEnabled = true;
         if (TryComp<InputMoverComponent>(ent, out var inputMoverComponent)) inputMoverComponent.IsMoveEnabled = true;
     }
@@ -120,7 +155,7 @@ public sealed partial class DialogSystem : EntitySystem
     public void CleanupDialog(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.ClearDialogs();
-        ent.Comp.DialogQueue.Clear();
+        ent.Comp.RootContainer.Clear();
         ent.Comp.TextQueue = null;
     }
 
@@ -133,35 +168,73 @@ public sealed partial class DialogSystem : EntitySystem
     {
         var comp = ent.Comp;
 
-        if (comp.DialogQueue.Count == 0)
+        if (comp.RootContainer.IsEmpty())
         {
             Hide(ent);
             return;
         }
 
-        LoadLocation(ent);
-        SetTitle(ent);
-        SetDialogText(ent, comp.CurrentDialog.Text);
-        EnsureDialogs(ent);
-        EnsureChoices(ent);
-        ShowCharacters(ent);
-        HideCharacters(ent);
+        if(!comp.IsDialogVisible)
+        {
+            Show(ent);
+        }
 
-        if (comp.CurrentDialog.Character != null) comp.SelectedCharacter = comp.CurrentDialog.Character.ToString();
+        var dialog = comp.RootContainer.Dequeue()!;
+        comp.CurrentDialog = dialog;
+        
+        if (dialog.StopDialog)
+        {
+            CleanupDialog(ent);
+            Hide(ent);
+            return;
+        }
+
+        LoadLocation(ent, dialog);
+        SetTitle(ent, dialog);
+        SetDialogText(ent, dialog.Text);
+        EnsureDialogs(ent, dialog);
+        ShowCharacters(ent, dialog);
+        HideCharacters(ent, dialog);
+
+        if (dialog.Character != null) comp.SelectedCharacter = dialog.Character.ToString();
 
         if (!_characterSystem.TryGetCharacter(ent, comp.SelectedCharacter, out _, out var characterUid)) return;
 
-        if (comp.CurrentDialog.Name == null && comp.SelectedCharacter != null)
-            comp.CurrentDialog.Name = MetaData(characterUid).EntityName;
+        if (dialog.Name == null && comp.SelectedCharacter != null)
+            dialog.Name = MetaData(characterUid).EntityName;
 
-        if (comp.CurrentDialog.Name != null && _dialogUiController.IsEmpty())
-            _dialogUiController.AppendLabel($"[bold]{comp.CurrentDialog.Name}[/bold]: ");
+        if (dialog.Name != null && _dialogUiController.IsEmpty())
+            _dialogUiController.AppendLabel($"[bold]{dialog.Name}[/bold]: ");
+        
+        if (dialog.Variable is not null)
+        {
+            var variable = dialog.Variable;
+            _variableManager.Set(variable.Name, variable.Value);
+        }
 
-        var startedEv = new DialogStartedEvent(comp.CurrentDialog, ent);
+        if (!string.IsNullOrEmpty(dialog.If))
+        {
+            var statement = CheckObj(_variableManager.ParseAsObject(dialog.If));
+
+            if (statement && dialog.Then is not null)
+                AppendDialog(ent, dialog.Then.ToList());
+            if (!statement && dialog.Else is not null)
+                AppendDialog(ent, dialog.Else.ToList());
+        }
+
+        var startedEv = new DialogStartedEvent(dialog, ent);
 
         if (characterUid.IsValid())
             RaiseLocalEvent(characterUid, startedEv);
         RaiseLocalEvent(ent, startedEv);
+
+        if (dialog.Scene is not null)
+            EntityManager.System<SceneSystem>().LoadScene(ent, dialog.Scene.Value);
+    }
+
+    private bool CheckObj(object? value)
+    {
+        return value is not null && ((value is double d && d == 1) || (value is bool f && f));
     }
 
 
@@ -172,8 +245,7 @@ public sealed partial class DialogSystem : EntitySystem
         var query = EntityQueryEnumerator<DialogContainerComponent>();
         while (query.MoveNext(out var uid, out var dialogComponent))
         {
-            if (dialogComponent.DialogQueue.Count == 0 || dialogComponent.TextQueue == null) return;
-
+            if (dialogComponent.CurrentDialog is null || dialogComponent.TextQueue == null) return;
             var ent = new Entity<DialogContainerComponent>(uid, dialogComponent);
 
             if (string.IsNullOrEmpty(dialogComponent.TextQueue))
@@ -183,13 +255,13 @@ public sealed partial class DialogSystem : EntitySystem
                 return;
             }
 
-            if (dialogComponent.CurrentDialog.PassedTime < dialogComponent.CurrentDialog.Delay)
+            if (dialogComponent.PassedTime < dialogComponent.CurrentDialog.Delay)
             {
-                dialogComponent.CurrentDialog.PassedTime += frameTime * 1000;
+                dialogComponent.PassedTime += frameTime * 1000;
                 return;
             }
 
-            dialogComponent.CurrentDialog.PassedTime = 0;
+            dialogComponent.PassedTime = 0;
 
             if (_characterSystem.TryGetCharacter(uid, dialogComponent.SelectedCharacter, out _, out var characterUid))
                 RaiseLocalEvent(characterUid, new DialogAppendEvent(dialogComponent.CurrentDialog, ent));

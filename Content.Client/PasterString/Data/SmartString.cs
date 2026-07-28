@@ -37,27 +37,10 @@ public sealed class SmartString
 
     public override string ToString()
     {
-        if (!RawString.Contains('$'))
-        {
-            _value = RawString;
-            return RawString;
-        }
-
-        _value = "";
-
+        if(_value is not null) return _value;
+        
         var varMan = _collection.Resolve<VariableManager>();
-
-        foreach (var str in RawString.Split(' '))
-        {
-            if (str[0] == '$')
-            {
-                _value += varMan.GetValue(str[1..]) + " ";
-                continue;
-            }
-
-            _value += str + " ";
-        }
-
+        _value = varMan.Parse(RawString);
         return _value;
     }
 }

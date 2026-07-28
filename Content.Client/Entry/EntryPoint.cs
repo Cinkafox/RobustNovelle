@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Timers;
 using Content.Client.Gameplay;
+using Content.Client.GameVariables;
 using Content.Client.Input;
 using Content.Client.Menu;
 using Content.Client.Tile;
@@ -36,6 +37,7 @@ public sealed partial class EntryPoint : GameClient
     [Dependency] private IUserInterfaceManager _uiManager = default!;
     [Dependency] private IBaseClient _baseClient = default!;
     [Dependency] private IGameController _gameController = default!;
+    [Dependency] private VariableManager _variableManager = default!;
 
     public override void PreInit()
     {
@@ -72,6 +74,8 @@ public sealed partial class EntryPoint : GameClient
         foreach (var soundCollection in _prototype.EnumeratePrototypes<SoundCollectionPrototype>())
         foreach (var resPath in soundCollection.PickFiles)
             _resource.TryGetResource<AudioResource>(resPath, out _);
+        
+        _variableManager.Initialize();
 
         _clyde.SetWindowTitle("LOADING: [#####-]");
 

@@ -1,21 +1,70 @@
 namespace Content.Client.GameVariables;
 
-public sealed class VariableManager
+public sealed partial class VariableManager
 {
-    private readonly Dictionary<string, string> _variables = new();
+    [Dependency] private IViewVariablesManager _variablesManager = default!;
 
-    public void SetValue(string name, string value)
+    private ViewVariablesContainer _container = default!;
+    private VariableStringParser _variableStringParser = default!;
+
+    public void Initialize()
     {
-        _variables[name] = value;
+        _container = new ViewVariablesContainer(_variablesManager);
+        _variableStringParser = new VariableStringParser(_container);
     }
 
-    public string GetValue(string name, string defa = "")
+    public string Parse(string text)
     {
-        return _variables.GetValueOrDefault(name, defa);
+        return _variableStringParser.Parse(text);
     }
 
-    public void Clear()
+    public object? ParseAsObject(string text)
     {
-        _variables.Clear();
+        return _variableStringParser.EvaluateToObject(text);
+    }
+
+    public void Set(string name, object? value)
+    {
+        _container.Set(name, value);
+    }
+}
+
+public sealed class ViewVariablesContainer : IVariableContainer
+{
+    private readonly IViewVariablesManager _variablesManager;
+    private Dictionary<string, object> _variables = new();
+
+    public ViewVariablesContainer(IViewVariablesManager variablesManager)
+    {
+        _variablesManager = variablesManager;
+    }
+    
+    public object? Get(string name)
+    {
+        return name.StartsWith('/') ? _variablesManager.ReadPath(name) : _variables.GetValueOrDefault(name);
+    }
+
+    public void Set(string name, object? value)
+    {
+        if (name.StartsWith('/'))
+        {
+            _variablesManager.ResolvePath(name)?.Set(value);
+            return;
+        }
+        
+        if(value != null)
+            _variables[name] = value;
+        else
+            _variables.Remove(name);
+    }
+
+    public bool Contains(string name)
+    {
+        if (name.StartsWith('/'))
+        {
+            return _variablesManager.ResolvePath(name) != null;
+        }
+        
+        return _variables.ContainsKey(name);
     }
 }
