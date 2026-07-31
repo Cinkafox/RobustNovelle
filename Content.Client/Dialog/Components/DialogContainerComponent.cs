@@ -9,9 +9,12 @@ public sealed partial class DialogContainerComponent : Component
     [ViewVariables] public readonly DialogContainer RootContainer = new DialogContainer();
     [ViewVariables] public EntProtoId? CameraFollowProtoId;
     [ViewVariables] public EntProtoId? SelectedCharacter;
-    [ViewVariables] public string? TextQueue = null;
+    
+    [ViewVariables] public Queue<char> TextQueue = [];
     [ViewVariables] public bool IsDialogVisible;
     [ViewVariables] public Data.Dialog? CurrentDialog;
+    [ViewVariables] public float CurrentMessageDelay = 30;
+    
     [ViewVariables(VVAccess.ReadOnly)] public float PassedTime;
 }
 

@@ -51,6 +51,11 @@ public sealed class DialogUIController : UIController
         _dialogGui?.AddButton(button, entity);
     }
 
+    public void ClearButtons()
+    {
+        _dialogGui?.ClearButtons();
+    }
+
     public List<DialogButton> GetDialogButtons()
     {
         return _dialogGui?.Buttons != null ? _dialogGui.Buttons : [];

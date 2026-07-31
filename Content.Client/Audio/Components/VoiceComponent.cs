@@ -6,5 +6,6 @@ namespace Content.Client.Audio.Components;
 public sealed partial class VoiceComponent : Component
 {
     [DataField] public SoundSpecifier Voice;
-    [ViewVariables(VVAccess.ReadOnly)] public int SkipCounter;
+    [DataField] public TimeSpan MinVoiceTimeSpan = TimeSpan.FromMilliseconds(50);
+    [ViewVariables] public TimeSpan LastVoiceTime;
 }

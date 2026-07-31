@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 using Content.Client.Camera.Systems;
 using Content.Client.Character.Systems;
 using Content.Client.Dialog.Components;
@@ -61,14 +62,27 @@ public sealed partial class DialogSystem : EntitySystem
     {
         if(ev.Dialog.Action is not null)
             ev.Dialog.Action.Act(IoCManager.Instance!, ent);
-
-        if (ev.Dialog.SkipDialog)
-            ContinueDialog(ent);
-        else if(ev.Dialog.Choices.Count == 0)
-            _dialogUiController.AddButton(new DialogButton(){ Name = Loc.GetString("dialog-continue") }, ent);
         
-        foreach (var choise in ev.Dialog.Choices) 
-            _dialogUiController.AddButton(new DialogButton(){Name = choise.Key, Dialog = choise.Value.ToArray()}, ent);
+        if (!string.IsNullOrEmpty(ev.Dialog.Text?.ToString()))
+        {
+            if (ev.Dialog.SkipDialog)
+            {
+                ContinueDialog(ent);
+                return;
+            }
+
+            if(ev.Dialog.Choices.Count == 0)
+                _dialogUiController.AddButton(new DialogButton(){ Name = Loc.GetString("dialog-continue") }, ent);
+            
+            foreach (var choise in ev.Dialog.Choices) 
+                _dialogUiController.AddButton(new DialogButton(){Name = choise.Key, Dialog = choise.Value.ToArray()}, ent);
+            
+            ent.Comp.CurrentDialog = null;
+        }
+        else
+        {
+            ContinueDialog(ent);
+        }
     }
     
     public void SetDialog(Entity<DialogContainerComponent> ent, List<Data.Dialog> dialog)
@@ -94,12 +108,12 @@ public sealed partial class DialogSystem : EntitySystem
     public void SpeedupDialog(Entity<DialogContainerComponent> ent)
     {
         if (ent.Comp.CurrentDialog == null || ent.Comp.CurrentDialog.DontLetSkip) return;
-        ent.Comp.CurrentDialog.Delay = 2;
+        ent.Comp.CurrentMessageDelay = 2;
     }
 
     public void SkipMessage(Entity<DialogContainerComponent> ent)
     {
-        if (ent.Comp.TextQueue != null)
+        if (ent.Comp.TextQueue.Count != 0)
         {
             SpeedupDialog(ent);
         }
@@ -140,23 +154,39 @@ public sealed partial class DialogSystem : EntitySystem
 
     private void SetDialogText(Entity<DialogContainerComponent> ent, string text)
     {
-        ent.Comp.TextQueue = text;
+        foreach (var ch in text)
+        {
+            ent.Comp.TextQueue.Enqueue(ch);
+        }
     }
 
     private char NextDialogLetter(Entity<DialogContainerComponent> ent)
     {
-        if (ent.Comp.TextQueue == null) return ' ';
-        var a = ent.Comp.TextQueue[0];
-        ent.Comp.TextQueue = ent.Comp.TextQueue.Substring(1);
+        if (!ent.Comp.TextQueue.TryDequeue(out var letter)) return ' ';
+        
+        if (letter != '{') 
+            return letter;
+        
+        var cmd = new StringBuilder();
+        while (ent.Comp.TextQueue.TryDequeue(out letter) && letter != '}')
+        {
+            cmd.Append(letter);
+        }
 
-        return a;
+        ent.Comp.TextQueue.TryDequeue(out letter);
+
+        if (!int.TryParse(cmd.ToString(), out var newDelay)) 
+            return letter;
+        
+        ent.Comp.CurrentMessageDelay = newDelay;
+        return letter;
     }
 
     public void CleanupDialog(Entity<DialogContainerComponent> ent)
     {
         _dialogUiController.ClearDialogs();
         ent.Comp.RootContainer.Clear();
-        ent.Comp.TextQueue = null;
+        ent.Comp.TextQueue.Clear();
     }
 
     public void SetEmote(Texture? texture)
@@ -181,6 +211,9 @@ public sealed partial class DialogSystem : EntitySystem
 
         var dialog = comp.RootContainer.Dequeue()!;
         comp.CurrentDialog = dialog;
+        comp.CurrentMessageDelay = dialog.Delay;
+        
+        _dialogUiController.ClearButtons();
         
         if (dialog.StopDialog)
         {
@@ -188,10 +221,12 @@ public sealed partial class DialogSystem : EntitySystem
             Hide(ent);
             return;
         }
-
+        
+        CheckTweaksOfText(ent, dialog);
         LoadLocation(ent, dialog);
         SetTitle(ent, dialog);
-        SetDialogText(ent, dialog.Text);
+        if (dialog.Text != null) 
+            SetDialogText(ent, dialog.Text);
         EnsureDialogs(ent, dialog);
         ShowCharacters(ent, dialog);
         HideCharacters(ent, dialog);
@@ -210,6 +245,11 @@ public sealed partial class DialogSystem : EntitySystem
         {
             var variable = dialog.Variable;
             _variableManager.Set(variable.Name, variable.Value);
+        }
+
+        if (!string.IsNullOrEmpty(dialog.Set))
+        {
+            _variableManager.ParseAsObject(dialog.Set);
         }
 
         if (!string.IsNullOrEmpty(dialog.If))
@@ -237,7 +277,6 @@ public sealed partial class DialogSystem : EntitySystem
         return value is not null && ((value is double d && d == 1) || (value is bool f && f));
     }
 
-
     public override void FrameUpdate(float frameTime)
     {
         base.FrameUpdate(frameTime);
@@ -245,20 +284,20 @@ public sealed partial class DialogSystem : EntitySystem
         var query = EntityQueryEnumerator<DialogContainerComponent>();
         while (query.MoveNext(out var uid, out var dialogComponent))
         {
-            if (dialogComponent.CurrentDialog is null || dialogComponent.TextQueue == null) return;
+            if (dialogComponent.CurrentDialog is null) continue;
+            
             var ent = new Entity<DialogContainerComponent>(uid, dialogComponent);
 
-            if (string.IsNullOrEmpty(dialogComponent.TextQueue))
+            if (dialogComponent.TextQueue.Count == 0)
             {
-                dialogComponent.TextQueue = null;
                 RaiseLocalEvent(uid, new DialogEndedEvent(dialogComponent.CurrentDialog, ent));
-                return;
+                continue;
             }
-
-            if (dialogComponent.PassedTime < dialogComponent.CurrentDialog.Delay)
+            
+            if (dialogComponent.PassedTime < dialogComponent.CurrentMessageDelay)
             {
                 dialogComponent.PassedTime += frameTime * 1000;
-                return;
+                continue;
             }
 
             dialogComponent.PassedTime = 0;
@@ -269,11 +308,6 @@ public sealed partial class DialogSystem : EntitySystem
             _dialogUiController.AppendLetter(
                 NextDialogLetter(new Entity<DialogContainerComponent>(uid, dialogComponent)));
         }
-    }
-
-    private bool IsEmptyString(string text)
-    {
-        return string.IsNullOrEmpty(text) || text == " ";
     }
 }
 

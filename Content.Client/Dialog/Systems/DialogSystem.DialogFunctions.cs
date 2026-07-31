@@ -1,4 +1,5 @@
-﻿using Content.Client.Camera.Components;
+﻿using System.Text;
+using Content.Client.Camera.Components;
 using Content.Client.Character.Components;
 using Content.Client.Dialog.Components;
 using Robust.Client.Animations;
@@ -8,6 +9,27 @@ namespace Content.Client.Dialog.Systems;
 
 public partial class DialogSystem
 {
+    private void CheckTweaksOfText(Entity<DialogContainerComponent> ent, Data.Dialog dialog)
+    {
+        var text = dialog.Text?.ToString();
+        
+        if(string.IsNullOrEmpty(text)) return;
+
+        if (text[0] == '>')
+        {
+            text = text.Substring(1);
+            dialog.NewDialog = false;
+        }
+
+        if (text[0] == '!')
+        {
+            text = text.Substring(1);
+            dialog.DontLetSkip = true;
+        }
+        
+        dialog.Text = text;
+    }
+    
     private void LoadLocation(Entity<DialogContainerComponent> ent, Data.Dialog dialog)
     {
         if (!TryComp<CameraComponent>(ent, out var camera)) return;
@@ -39,10 +61,10 @@ public partial class DialogSystem
     private void EnsureDialogs(Entity<DialogContainerComponent> ent, Data.Dialog dialog)
     {
         if (dialog.NewDialog) _dialogUiController.ClearDialogs();
-
-        if (IsEmptyString(dialog.Text))
+        
+        if (string.IsNullOrEmpty(dialog.Text?.ToString()))
         {
-            dialog.IsDialog = false;
+            dialog.ShowEmotes = false;
             if (dialog.Choices.Count == 0)
             {
                 dialog.SkipDialog = true;

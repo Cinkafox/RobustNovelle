@@ -4,8 +4,7 @@
     - title: "Тестовая среда"
       location: lustoeb_room
     - character: dictor
-    - text: "AAAAAAAAAAAAAAAAAAAAAAAAbBBBb"  
-    - text: .. а че дальше?
+    - text: "!{1000}...{100} а че дальше?"
       choices:
         Продолжить:
           - text: Продолжим ага
@@ -13,19 +12,17 @@
           - text: стоп, а нахрена мне это?
           - text: я пока подумаю...
           - stopDialog: true
-    - variable:
-        name: meowCount
-        value: 0
+    - set: "#meowCount = 1"
     - scene: testSceneLoop
 
 - type: scene
   id: testSceneLoop
   dialogs:
-    - text: "Вы очень хотите мяукать?"
-    - text: "Сопротивлятся?"
+    - text: "{30}Вы {100}очень {30}хотите мяукать{100}..."
+    - text: "> Сопротивлятся?"
       choices:
         Нет!:
-          - text: М...мяу!
+          - text: "!{300}М...{100}мяу!"
         Черт, парень. Да!:
           - scene: testSceneEnd
     - if: "$(#meowCount >= 5)"

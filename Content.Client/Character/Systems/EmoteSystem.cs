@@ -21,7 +21,7 @@ public sealed partial class EmoteSystem : EntitySystem
 
     private void OnDialogStarted(DialogStartedEvent ev)
     {
-        if (ev.Dialog.IsDialog && ev.DialogEntity.Comp.SelectedCharacter == null)
+        if (ev.Dialog.ShowEmotes && ev.DialogEntity.Comp.SelectedCharacter == null)
             _dialog.SetEmote(null);
     }
 
@@ -31,7 +31,7 @@ public sealed partial class EmoteSystem : EntitySystem
 
         if (TryGetEmotesSprite(uid, out var resource) && resource.RSI.TryGetState(dialogState, out var state))
             _dialog.SetEmote(state.Frame0);
-        else if (args.Dialog.IsDialog)
+        else if (args.Dialog.ShowEmotes)
             _dialog.SetEmote(null);
     }
 

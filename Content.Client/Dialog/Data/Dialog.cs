@@ -15,21 +15,20 @@ public sealed partial class Dialog
     [DataField] public Dictionary<string, List<Dialog>> Choices = [];
     
     [DataField] public bool DontLetSkip;
-    [DataField] public bool IsDialog = true;
+    [DataField] public bool ShowEmotes = true;
     [DataField] public bool NewDialog = true;
     [DataField] public bool SayLetters = true;
     [DataField] public bool SkipDialog;
     [DataField] public bool StopDialog;
-    
-    [DataField] public int SkipSayCount = 1;
     [DataField] public float Delay = 30;
     
     [DataField] public string? CameraOn;
     [DataField] public string? Show;
     [DataField] public string? Emote;
     [DataField] public string? Hide;
+    [DataField] public string? Set;
     
-    [DataField] public SmartString Text = " ";
+    [DataField] public SmartString? Text;
     [DataField] public SmartString? Title;
     [DataField] public SmartString? Name;
     [DataField] public SmartString? Character;
