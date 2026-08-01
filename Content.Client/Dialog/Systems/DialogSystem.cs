@@ -174,11 +174,21 @@ public sealed partial class DialogSystem : EntitySystem
         }
 
         ent.Comp.TextQueue.TryDequeue(out letter);
-
-        if (!int.TryParse(cmd.ToString(), out var newDelay)) 
-            return letter;
+        var result = cmd.ToString();
         
-        ent.Comp.CurrentMessageDelay = newDelay;
+        if (result == "~")
+        {
+            if (ent.Comp.CurrentDialog != null) 
+                ent.Comp.CurrentMessageDelay = ent.Comp.CurrentDialog.Delay;
+            return letter;
+        }
+
+        if (int.TryParse(result, out var newDelay))
+        {
+            ent.Comp.CurrentMessageDelay = newDelay;
+            return letter;
+        }
+        
         return letter;
     }
 
